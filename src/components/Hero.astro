@@ -1,52 +1,49 @@
 ---
 import { BOOKING_URL, BRAND_COLOR, DEV_MODE } from '../config/site';
-import WaveContactButton from './ui/WaveContactButton.astro';
+import { homepageContent } from '../config/homepage';
 ---
 
 <section class="hero" aria-labelledby="hero-title" style={`--homepage-brand: ${BRAND_COLOR};`}>
   <div class="hero-bg" aria-hidden="true"></div>
 
   <div class="container hero-layout">
-    <aside class="hero-visual" aria-hidden="true">
-      <div class="placeholder-image placeholder-image--large">
-        <img
-          src="https://images.pexels.com/photos/4586740/pexels-photo-4586740.jpeg?auto=compress&cs=tinysrgb&w=1200"
-          alt=""
-          loading="eager"
-          decoding="async"
-        />
-        <p class="placeholder-credit">Eksempelbilde (gratis stock)</p>
-      </div>
-      <div class="placeholder-image placeholder-image--small">
-        <img
-          src="https://images.pexels.com/photos/7089401/pexels-photo-7089401.jpeg?auto=compress&cs=tinysrgb&w=800"
-          alt=""
-          loading="lazy"
-          decoding="async"
-        />
-        <p class="placeholder-badge">Eksempel</p>
-      </div>
-    </aside>
+    <figure class="hero-visual" data-reveal style="--reveal-delay: 60ms;">
+      <img
+        src={homepageContent.hero.image.src}
+        alt={homepageContent.hero.image.alt}
+        loading="eager"
+        decoding="async"
+        fetchpriority="high"
+      />
+      {homepageContent.hero.image.note && <figcaption>{homepageContent.hero.image.note}</figcaption>}
+    </figure>
 
     <div class="hero-content">
       {DEV_MODE && <p class="hero-preview" data-reveal style="--reveal-delay: 20ms;">Forhåndsvisning</p>}
-      <p class="hero-kicker" data-reveal style="--reveal-delay: 90ms;">Sound of Simone</p>
+      <p class="hero-kicker" data-reveal style="--reveal-delay: 90ms;">{homepageContent.hero.kicker}</p>
       <h1 id="hero-title" data-reveal style="--reveal-delay: 150ms;">
-        Fysioterapi med fordypning i kvinnehelse
+        {homepageContent.hero.title}
       </h1>
       <p class="hero-lead" data-reveal style="--reveal-delay: 220ms;">
-        Skreddersydde behandlingsforløp for deg som ønsker helhetlig oppfølging, trygghet og ro i
-        møte med kroppen din.
+        {homepageContent.hero.lead}
       </p>
+
+      <div class="hero-actions" data-reveal style="--reveal-delay: 280ms;">
+        <a class="hero-btn hero-btn--primary" href={BOOKING_URL}>
+          {homepageContent.hero.primaryCtaLabel}
+        </a>
+        <a class="hero-btn hero-btn--light" href="#kontakt">{homepageContent.hero.secondaryCtaLabel}</a>
+      </div>
+
+      <nav class="hero-chip-nav" aria-label="Fagomrader" data-reveal style="--reveal-delay: 340ms;">
+        {
+          homepageContent.hero.chips.map((chip) => (
+            <a class={chip.label === homepageContent.hero.primaryCtaLabel ? 'hero-chip hero-chip--cta' : 'hero-chip'} href={chip.href}>
+              {chip.label}
+            </a>
+          ))
+        }
+      </nav>
     </div>
   </div>
-
-  <nav class="floating-nav" aria-label="Fagområder">
-    <a class="hero-chip" href="#tjenester">Urologi</a>
-    <a class="hero-chip" href="#tjenester">Fertilitet</a>
-    <a class="hero-chip" href="#tjenester">Gynekologi</a>
-    <a class="hero-chip" href="#tjenester">Ortopedi</a>
-    <a class="hero-chip" href="#tjenester">Flere fagområder</a>
-    <WaveContactButton href={BOOKING_URL} size="sm" class="floating-wave-button" label="Gå til kontakt" />
-  </nav>
 </section>

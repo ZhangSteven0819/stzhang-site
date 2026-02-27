@@ -1,0 +1,18 @@
+---
+import { homepageContent } from '../config/homepage';
+---
+
+<section class="booking-skeleton" id="booking" aria-labelledby="booking-title">
+  <div class="container booking-layout">
+    <div class="booking-copy">
+      <p class="booking-kicker" data-reveal style="--reveal-delay: 60ms;">Booking</p>
+      <h2 id="booking-title" data-reveal style="--reveal-delay: 110ms;">{homepageContent.booking.title}</h2>
+      <p data-reveal style="--reveal-delay: 160ms;">{homepageContent.booking.lead}</p>
+    </div>
+
+    <aside class="booking-panel" data-reveal style="--reveal-delay: 210ms;">
+      <p class="booking-status">{homepageContent.booking.statusLabel}</p>
+      <a href="#kontakt" class="hero-btn hero-btn--primary">{homepageContent.booking.ctaLabel}</a>
+    </aside>
+  </div>
+</section>

@@ -4,7 +4,8 @@ import Hero from '../components/Hero.astro';
 import StickyBrandBar from '../components/StickyBrandBar.astro';
 import Section from '../components/Section.astro';
 import Card from '../components/SimpleCard.astro';
-import CTA from '../components/CTA.astro';
+import BookingSkeleton from '../components/BookingSkeleton.astro';
+import ContactInfo from '../components/ContactInfo.astro';
 ---
 
 <Layout title="Sound of Simone">
@@ -12,32 +13,34 @@ import CTA from '../components/CTA.astro';
 
   <main class="home-page" id="top">
     <Hero />
+    <BookingSkeleton />
+    <ContactInfo />
 
     <Section
       id="tjenester"
-      title="Våre tjenester"
-      subtitle="Skreddersydd behandling tilpasset dine behov"
+      title="Kompetanseomrader"
+      subtitle="Faglig forankret fysioterapi med tydelig retning og trygg oppfolging."
     >
       <div class="grid-3">
-        <Card title="Hormonell balanse" text="Individuell vurdering og behandling." />
-        <Card title="Fertilitet" text="Helhetlig støtte gjennom hele prosessen." />
-        <Card title="Livsstil & helse" text="Forebyggende og styrkende tiltak." />
+        <Card title="Underlivsplager" text="Grundig kartlegging og skreddersydd behandling i trygge rammer." />
+        <Card title="Vaginisme" text="Trinnvis oppfolging med respekt for tempo, kropp og livssituasjon." />
+        <Card title="Foredrag og fagformidling" text="Erfaringsbasert undervisning om kvinnehelse for fagmiljoer og arrangementer." />
       </div>
     </Section>
 
     <section class="trust-strip" aria-label="Hvorfor velge Sound of Simone">
       <div class="container trust-grid">
         <article class="trust-item">
-          <h3 data-reveal>Trygg oppfølging</h3>
-          <p data-reveal>Rolige rammer, tett dialog og behandlingsplan tilpasset deg.</p>
+          <h3 data-reveal>Faglig tyngde</h3>
+          <p data-reveal>Lang erfaring fra kvinnehelse, pasientarbeid og klinisk vurdering.</p>
         </article>
         <article class="trust-item">
-          <h3 data-reveal>Helhetlig vurdering</h3>
-          <p data-reveal>Vi ser sammenhengen mellom symptomer, livssituasjon og mål.</p>
+          <h3 data-reveal>Tydelig kommunikasjon</h3>
+          <p data-reveal>Du far konkrete steg, realistiske forventninger og oppfolging som er lett a forsta.</p>
         </article>
         <article class="trust-item">
-          <h3 data-reveal>Tydelig neste steg</h3>
-          <p data-reveal>Du får konkret retning på hva som bør gjøres videre.</p>
+          <h3 data-reveal>Trygg prosess</h3>
+          <p data-reveal>Behandlingen tilpasses deg, med rom for sporsmal, justeringer og progresjon over tid.</p>
         </article>
       </div>
     </section>
@@ -46,29 +49,27 @@ import CTA from '../components/CTA.astro';
       <div class="container faq-layout">
         <div class="faq-copy">
           <p class="faq-kicker" data-reveal>Vanlige spørsmål</p>
-          <h2 id="faq-tittel" data-reveal>Praktisk informasjon før første time</h2>
+          <h2 id="faq-tittel" data-reveal>Praktisk informasjon for nye pasienter</h2>
           <p data-reveal>
-            Her kommer full FAQ etter hvert. I dev-versjonen bruker vi korte, nøytrale tekster for
-            å teste struktur og lesbarhet.
+            Fullstendig FAQ publiseres sammen med ferdig bookingflyt. Her er de viktigste avklaringene
+            i denne versjonen.
           </p>
         </div>
         <div class="faq-list">
           <details class="faq-item">
             <summary>Trenger jeg henvisning?</summary>
-            <p>Dette avklares tydelig per tjeneste når innholdet ferdigstilles.</p>
+            <p>Dette avklares per tjeneste. Kontakt oss, sa veileder vi deg til riktig neste steg.</p>
           </details>
           <details class="faq-item">
             <summary>Hvor lang er en konsultasjon?</summary>
-            <p>Standard varighet og forløp publiseres når bookingflyten er endelig avklart.</p>
+            <p>Varighet varierer etter behov. Endelig oversikt legges ut nar bookingmodulen er klar.</p>
           </details>
           <details class="faq-item">
             <summary>Kan jeg bestille oppfølgingstime med en gang?</summary>
-            <p>Ja, i v1 styrer vi booking fra samme CTA-lenke for alle seksjoner.</p>
+            <p>Ja. I V1 gar all bookingforesporsel via kontaktseksjonen, mens Physica-integrasjon bygges.</p>
           </details>
         </div>
       </div>
     </section>
-
-    <CTA />
   </main>
 </Layout>

@@ -1,0 +1,23 @@
+---
+import { homepageContent } from '../config/homepage';
+---
+
+<section class="contact-section" id="kontakt" aria-labelledby="contact-title">
+  <div class="container">
+    <div class="contact-shell">
+      <div class="contact-copy">
+        <p class="contact-kicker" data-reveal style="--reveal-delay: 70ms;">Kontakt</p>
+        <h2 id="contact-title" data-reveal style="--reveal-delay: 120ms;">{homepageContent.contact.title}</h2>
+        <p data-reveal style="--reveal-delay: 170ms;">{homepageContent.contact.lead}</p>
+      </div>
+
+      <div class="contact-details" data-reveal style="--reveal-delay: 220ms;">
+        <a href={`mailto:${homepageContent.contact.email}`} class="contact-link">{homepageContent.contact.email}</a>
+        <a href={`tel:${homepageContent.contact.phoneLink}`} class="contact-link">
+          Tlf: {homepageContent.contact.phoneDisplay}
+        </a>
+        {homepageContent.contact.address && <p class="contact-address">{homepageContent.contact.address}</p>}
+      </div>
+    </div>
+  </div>
+</section>
