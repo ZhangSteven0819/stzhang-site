@@ -1,6 +1,7 @@
 ---
 import { BOOKING_URL, BRAND_COLOR, DEV_MODE } from '../config/site';
 import { homepageContent } from '../config/homepage';
+import Logo from './ui/Logo.astro';
 ---
 
 <section class="hero" aria-labelledby="hero-title" style={`--homepage-brand: ${BRAND_COLOR};`}>
@@ -20,8 +21,10 @@ import { homepageContent } from '../config/homepage';
 
   <div class="hero-layout">
     <div class="hero-content" data-reveal style="--reveal-delay: 90ms;">
-      {DEV_MODE && <p class="hero-preview" data-reveal style="--reveal-delay: 20ms;">Forhåndsvisning</p>}
-      <p class="hero-kicker" data-reveal style="--reveal-delay: 120ms;">{homepageContent.hero.kicker}</p>
+      {DEV_MODE && <p class="hero-preview" data-reveal style="--reveal-delay: 20ms;">Forhandsvisning</p>}
+      <div class="hero-brand-mark" data-reveal style="--reveal-delay: 120ms;" aria-hidden="true">
+        <Logo size="base" color="#411e25" ariaLabel="Sound of Simone" />
+      </div>
       <h1 id="hero-title" data-reveal style="--reveal-delay: 170ms;">
         {homepageContent.hero.title}
       </h1>
@@ -33,7 +36,7 @@ import { homepageContent } from '../config/homepage';
         <a class="hero-btn hero-btn--primary" href={BOOKING_URL}>
           {homepageContent.hero.primaryCtaLabel}
         </a>
-        <a class="hero-btn hero-btn--light" href="#kontakt">{homepageContent.hero.secondaryCtaLabel}</a>
+        <a class="hero-btn hero-btn--light" href="/kontakt">{homepageContent.hero.secondaryCtaLabel}</a>
       </div>
     </div>
   </div>

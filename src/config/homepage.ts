@@ -64,37 +64,21 @@ export interface HomepageContent {
 
 export const homepageContent: HomepageContent = {
   bottomQuickNav: [
-    { label: 'Hjem', href: '#top', kind: 'link' },
-    { label: 'Om', href: '#om-simone', kind: 'link' },
-    { label: 'Tjenester', href: '#tjenester', kind: 'link' },
-    { label: 'Booking', href: '#booking', kind: 'link' },
-    { label: 'Kontakt', href: '#kontakt', kind: 'link' },
+    { label: 'Hjem', href: '/', kind: 'link' },
+    { label: 'Om', href: '/om', kind: 'link' },
+    { label: 'Tjenester', href: '/tjenester', kind: 'link' },
+    { label: 'Booking', href: '/booking', kind: 'link' },
+    { label: 'Kontakt', href: '/kontakt', kind: 'link' },
   ],
   menuGroups: [
     {
-      title: 'Navigasjon',
+      title: 'Sider',
       items: [
-        { label: 'Hjem', href: '#top' },
-        { label: 'Om Simone', href: '#om-simone' },
-        { label: 'Tjenester', href: '#tjenester' },
-        { label: 'Booking', href: '#booking' },
-        { label: 'Kontakt', href: '#kontakt' },
-      ],
-    },
-    {
-      title: 'Tjenester',
-      items: [
-        { label: 'Underlivsplager', href: '#tjenester' },
-        { label: 'Vaginisme', href: '#tjenester' },
-        { label: 'Foredrag', href: '#tjenester' },
-      ],
-    },
-    {
-      title: 'Direkte',
-      items: [
-        { label: 'Bestill time', href: '#kontakt' },
-        { label: 'Kontakt', href: '#kontakt' },
         { label: 'Hjem', href: '/' },
+        { label: 'Om', href: '/om' },
+        { label: 'Tjenester', href: '/tjenester' },
+        { label: 'Booking', href: '/booking' },
+        { label: 'Kontakt', href: '/kontakt' },
       ],
     },
   ],

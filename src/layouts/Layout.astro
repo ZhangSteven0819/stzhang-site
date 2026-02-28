@@ -5,6 +5,8 @@ import '../styles/global.css';
 import '../styles/utilities.css';
 import '../styles/homepage.css';
 import ScrollRevealScript from '../components/ScrollRevealScript.astro';
+import GlobalBrandRail from '../components/GlobalBrandRail.astro';
+import BottomPillMenu from '../components/BottomPillMenu.astro';
 ---
 
 <!doctype html>
@@ -20,7 +22,9 @@ import ScrollRevealScript from '../components/ScrollRevealScript.astro';
 		<title>Sound of Simone - Fysioterapeut med fordypning i kvinnehelse</title>
 	</head>
 	<body>
+		<GlobalBrandRail />
 		<slot />
+		<BottomPillMenu />
 		<ScrollRevealScript />
 	</body>
 </html>

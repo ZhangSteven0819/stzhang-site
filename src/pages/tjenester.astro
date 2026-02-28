@@ -1,27 +1,24 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import Hero from '../components/Hero.astro';
 import Section from '../components/Section.astro';
 import Card from '../components/SimpleCard.astro';
-import CTA from '../components/CTA.astro';
+import ProofStrip from '../components/ProofStrip.astro';
 ---
 
-<Layout title="Sound of Simone">
+<Layout title="Tjenester | Sound of Simone">
   <main class="home-page" id="top">
-    <Hero />
-
     <Section
-      id="forside-intro"
+      id="tjenester"
       title="Tjenester"
-      subtitle="Faglig oppfolging med tydelig vurdering, konkret plan og trygg gjennomforing."
+      subtitle="Klinisk oppfolging med tydelig vurdering, konkret plan og trygg gjennomforing."
     >
       <div class="grid-3">
         <Card title="Underlivsplager" text="Systematisk kartlegging og fysioterapeutisk behandling tilpasset ditt behov." />
         <Card title="Vaginisme" text="Trinnvis behandlingslop med fokus pa trygghet, funksjon og mestring." />
-        <Card title="Foredrag" text="Faglige foredrag om kvinnehelse for klinikker, seminarer og fagmiljoer." />
+        <Card title="Foredrag og fagformidling" text="Faglige foredrag om kvinnehelse for klinikker, seminarer og fagmiljoer." />
       </div>
     </Section>
 
-    <CTA />
+    <ProofStrip />
   </main>
 </Layout>

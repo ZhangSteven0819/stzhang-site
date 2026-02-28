@@ -1,38 +1,21 @@
 ---
 import { homepageContent } from '../config/homepage';
-import { BOOKING_URL, WAVE_EMBED_ANIMATED } from '../config/site';
+
+const path = Astro.url.pathname.replace(/\/$/, '') || '/';
+const normalize = (href: string) => href.replace(/\/$/, '') || '/';
 ---
 
-<nav class="bottom-pill-menu" aria-label="Hurtigmeny">
+<nav class="bottom-pill-menu" aria-label="Hovedmeny">
   {
-    homepageContent.bottomQuickNav.map((item) =>
-      item.kind === 'menu' ? (
-        <button
-          type="button"
-          class="bottom-pill bottom-pill--menu"
-          data-bottom-menu-toggle
-          aria-expanded="false"
-          aria-controls="bottom-menu-overlay"
-        >
-          <span class="bottom-pill__wave-frame bottom-pill__wave-frame--interactive" aria-hidden="true">
-            <iframe src={WAVE_EMBED_ANIMATED} title="Menybølge" loading="lazy" tabindex="-1"></iframe>
-          </span>
-          <span class="sr-only">Åpne meny</span>
-        </button>
-      ) : (
-        <a
-          href={item.href}
-          class={
-            item.href === BOOKING_URL ||
-            item.label.toLowerCase().includes('bestill') ||
-            item.label.toLowerCase() === 'booking'
-              ? 'bottom-pill bottom-pill--booking'
-              : 'bottom-pill'
-          }
-        >
+    homepageContent.bottomQuickNav.map((item) => {
+      const href = normalize(item.href);
+      const isActive = href === '/' ? path === '/' : path === href || path.startsWith(`${href}/`);
+
+      return (
+        <a href={item.href} class={isActive ? 'bottom-pill bottom-pill--active' : 'bottom-pill'} aria-current={isActive ? 'page' : undefined}>
           {item.label}
         </a>
-      )
-    )
+      );
+    })
   }
 </nav>

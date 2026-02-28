@@ -41,6 +41,65 @@ body.menu-open {
   border: 0;
 }
 
+.global-brand-rail {
+  position: fixed;
+  top: 0.8rem;
+  left: 0.9rem;
+  z-index: 75;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.42rem;
+}
+
+.global-brand-rail__logo-link,
+.global-brand-rail__wave-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none !important;
+}
+
+.global-brand-rail__logo {
+  width: clamp(160px, 20vw, 250px);
+  height: auto;
+  display: block;
+}
+
+.global-brand-rail__wave-link {
+  width: 38px;
+  height: 38px;
+  border: 1px solid rgb(58 32 38 / 30%);
+  border-radius: 999px;
+  background: rgb(255 255 255 / 72%);
+  backdrop-filter: blur(4px);
+}
+
+.global-brand-rail__wave-link:hover,
+.global-brand-rail__wave-link:focus-visible {
+  background: rgb(58 32 38 / 96%);
+  border-color: rgb(58 32 38 / 96%);
+}
+
+.global-brand-rail__wave-link:focus-visible {
+  outline: 2px solid var(--homepage-brand-deep);
+  outline-offset: 2px;
+}
+
+.global-brand-rail__wave-visual {
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.global-brand-rail__wave-visual iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+  pointer-events: none;
+}
+
 .brand-bar {
   position: fixed;
   top: 0;
@@ -173,6 +232,16 @@ body.menu-open {
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+}
+
+.hero-brand-mark {
+  margin-inline: auto;
+  width: fit-content;
+  opacity: 0.96;
+}
+
+.hero-brand-mark .logo {
+  width: clamp(156px, 20vw, 248px);
 }
 
 .hero-kicker {
@@ -696,14 +765,16 @@ body.menu-open {
 
 .bottom-pill:hover,
 .bottom-pill:focus-visible {
+  background: var(--homepage-brand-deep);
+  color: #ffffff;
+  border-color: var(--homepage-brand-deep);
   text-decoration: none;
   transform: translateY(-1px);
 }
 
-.bottom-pill--booking {
-  background: var(--homepage-accent);
-  border-color: var(--homepage-accent);
-  color: #1d1b10;
+.bottom-pill--active {
+  border-color: var(--homepage-brand-deep);
+  color: var(--homepage-brand-deep);
   font-weight: 700;
 }
 
@@ -973,3 +1044,22 @@ body.menu-open .bottom-pill-menu {
     transform: none;
   }
 }
+  .global-brand-rail {
+    top: 0.6rem;
+    left: 0.62rem;
+    gap: 0.35rem;
+  }
+
+  .global-brand-rail__logo {
+    width: clamp(138px, 42vw, 192px);
+  }
+
+  .global-brand-rail__wave-link {
+    width: 34px;
+    height: 34px;
+  }
+
+  .global-brand-rail__wave-visual {
+    width: 20px;
+    height: 20px;
+  }

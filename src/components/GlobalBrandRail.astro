@@ -1,0 +1,16 @@
+---
+import { LOGO_HOME_HREF, WAVE_EMBED_STATIC, WAVE_CONTACT_TARGET } from '../config/site';
+import Logo from './ui/Logo.astro';
+---
+
+<div class="global-brand-rail" aria-label="Global merkeprofil">
+  <a href={LOGO_HOME_HREF} class="global-brand-rail__logo-link" aria-label="Gå til forsiden">
+    <Logo class="global-brand-rail__logo" size="base" color="var(--homepage-brand-deep)" ariaLabel="Sound of Simone" />
+  </a>
+
+  <a href={WAVE_CONTACT_TARGET} class="global-brand-rail__wave-link" aria-label="Gå til kontakt">
+    <span class="global-brand-rail__wave-visual" aria-hidden="true">
+      <iframe src={WAVE_EMBED_STATIC} title="Wave symbol" loading="lazy" tabindex="-1"></iframe>
+    </span>
+  </a>
+</div>
