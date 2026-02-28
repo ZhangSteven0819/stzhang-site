@@ -93,7 +93,7 @@ import Logo from '@/components/ui/Logo.astro';
 ```
 
 ### WaveAnimation
-An animated sound wave visualization in a circle. Prepared for future use as an interactive menu button.
+An SVG-based wave component used in demos and secondary UI contexts.
 
 **Props:**
 - `size`: 'sm' | 'base' | 'lg' | 'xl' (default: 'base')
@@ -118,6 +118,26 @@ import WaveAnimation from '@/components/ui/WaveAnimation.astro';
 <WaveAnimation />
 <WaveAnimation size="lg" animationSpeed="fast" />
 <WaveAnimation color="#ffffff" ringColor="#ffffff" />
+```
+
+### WaveContactButton
+Primary wave component for the homepage/navigation. It embeds `public/wave-simone.html` in an iframe and supports animated or static mode.
+
+**Props:**
+- `href`: URL target (default from `WAVE_CONTACT_TARGET`)
+- `size`: 'sm' | 'md' | 'lg' (default: 'md')
+- `mode`: 'animated' | 'static' (default: 'animated')
+- `label`: Accessible label text
+- `class`: Additional CSS classes
+
+**Usage:**
+```astro
+---
+import WaveContactButton from '@/components/ui/WaveContactButton.astro';
+---
+
+<WaveContactButton mode="animated" />
+<WaveContactButton size="sm" mode="static" />
 ```
 
 ## Creating New Components

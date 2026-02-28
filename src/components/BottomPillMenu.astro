@@ -1,7 +1,6 @@
 ---
 import { homepageContent } from '../config/homepage';
-import { BOOKING_URL } from '../config/site';
-import WaveAnimation from './ui/WaveAnimation.astro';
+import { BOOKING_URL, WAVE_EMBED_ANIMATED } from '../config/site';
 ---
 
 <nav class="bottom-pill-menu" aria-label="Hurtigmeny">
@@ -15,13 +14,8 @@ import WaveAnimation from './ui/WaveAnimation.astro';
           aria-expanded="false"
           aria-controls="bottom-menu-overlay"
         >
-          <span aria-hidden="true">
-            <WaveAnimation
-              size="sm"
-              animationSpeed="normal"
-              class="bottom-pill__wave bottom-pill__wave--interactive"
-              ariaLabel="Menybølge"
-            />
+          <span class="bottom-pill__wave-frame bottom-pill__wave-frame--interactive" aria-hidden="true">
+            <iframe src={WAVE_EMBED_ANIMATED} title="Menybølge" loading="lazy" tabindex="-1"></iframe>
           </span>
           <span class="sr-only">Åpne meny</span>
         </button>

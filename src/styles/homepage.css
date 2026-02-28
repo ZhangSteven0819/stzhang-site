@@ -43,19 +43,21 @@ body.menu-open {
 
 .brand-bar {
   position: fixed;
-  top: 1rem;
-  left: 1rem;
-  right: auto;
+  top: 0;
+  left: 0;
+  right: 0;
   z-index: 70;
   pointer-events: none;
-  transition: background-color 220ms var(--ease-out), box-shadow 220ms var(--ease-out), transform 220ms var(--ease-out);
-  --header-logo-color: #ffffff;
+  transition: background-color 220ms var(--ease-out), border-color 220ms var(--ease-out);
+  --header-logo-color: var(--homepage-brand-deep);
+  border-bottom: 1px solid transparent;
 }
 
 .brand-bar__inner {
   min-height: var(--brand-bar-height);
   display: flex;
   align-items: center;
+  padding-inline: clamp(0.9rem, 2vw, 1.5rem);
 }
 
 .brand-home-link {
@@ -68,23 +70,13 @@ body.menu-open {
   width: clamp(178px, 22vw, 280px);
   height: auto;
   display: block;
-  filter: drop-shadow(0 8px 22px rgb(0 0 0 / 28%));
-}
-
-.brand-bar.is-scrolled {
-  background: rgb(255 255 255 / 82%);
-  backdrop-filter: blur(10px);
-  border-radius: 999px;
-  padding: 0.12rem 0.72rem;
-  box-shadow: 0 12px 28px -22px rgb(0 0 0 / 55%);
-}
-
-.brand-bar.is-scrolled {
-  --header-logo-color: var(--homepage-brand-deep);
-}
-
-.brand-bar.is-scrolled .brand-logo {
   filter: none;
+}
+
+.brand-bar.is-scrolled {
+  background: rgb(244 239 236 / 92%);
+  backdrop-filter: blur(6px);
+  border-bottom-color: rgb(58 32 38 / 12%);
 }
 
 .hero {
@@ -723,26 +715,28 @@ body.menu-open {
   background: rgb(255 255 255 / 95%);
 }
 
-.bottom-pill__wave {
+.bottom-pill__wave-frame {
   display: inline-flex;
-  width: 20px;
-  height: 20px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  overflow: hidden;
 }
 
-.bottom-pill__wave.wave-container {
-  width: 100%;
-}
-
-.bottom-pill__wave.wave-container .wave-svg {
+.bottom-pill__wave-frame iframe {
   width: 100%;
   height: 100%;
+  border: 0;
+  display: block;
+  pointer-events: none;
 }
 
-.bottom-pill__wave--interactive .wave-ring {
-  opacity: 0.72;
+.bottom-pill__wave-frame--interactive {
+  width: 24px;
+  height: 24px;
 }
 
-.bottom-pill__wave--static {
+.bottom-pill__wave-frame--static {
   width: 14px;
   height: 14px;
   opacity: 0.7;
@@ -919,8 +913,7 @@ body.menu-open .bottom-pill-menu {
   }
 
   .brand-bar {
-    top: 0.7rem;
-    left: 0.7rem;
+    --brand-bar-height: 58px;
   }
 
   .brand-logo {

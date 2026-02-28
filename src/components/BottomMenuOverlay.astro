@@ -1,6 +1,6 @@
 ---
 import { homepageContent } from '../config/homepage';
-import WaveAnimation from './ui/WaveAnimation.astro';
+import { WAVE_EMBED_STATIC } from '../config/site';
 ---
 
 <section
@@ -30,13 +30,8 @@ import WaveAnimation from './ui/WaveAnimation.astro';
         homepageContent.menuGroups.map((group) => (
           <section class="bottom-menu-group">
             <h3>
-              <span class="bottom-menu-group__wave" aria-hidden="true">
-                <WaveAnimation
-                  size="sm"
-                  animated={false}
-                  class="bottom-pill__wave bottom-pill__wave--static"
-                  ariaLabel="Dekorativt bølgesymbol"
-                />
+              <span class="bottom-pill__wave-frame bottom-pill__wave-frame--static bottom-menu-group__wave" aria-hidden="true">
+                <iframe src={WAVE_EMBED_STATIC} title="Dekorativt bølgesymbol" loading="lazy" tabindex="-1"></iframe>
               </span>
               {group.title}
             </h3>

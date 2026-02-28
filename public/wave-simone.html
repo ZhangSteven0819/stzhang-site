@@ -3,6 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <title>Simone Wave</title>
+<script>
+  (() => {
+    const params = new URLSearchParams(window.location.search);
+    const mode = params.get('mode') === 'static' ? 'static' : 'animated';
+    document.documentElement.setAttribute('data-wave-mode', mode);
+  })();
+</script>
 
 <style>
 html,
@@ -29,6 +36,11 @@ body{
   animation-name:pulse;
   animation-iteration-count:infinite;
   animation-timing-function:cubic-bezier(.4,0,.2,1);
+}
+
+html[data-wave-mode="static"] .wave rect{
+  animation:none;
+  transform:scaleY(0.82);
 }
 
 /* Organisk men raskere */
