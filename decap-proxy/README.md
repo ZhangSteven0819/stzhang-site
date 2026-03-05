@@ -116,6 +116,23 @@ These records are created and managed automatically by Cloudflare when you add a
 
 ### Other Issues
 
+
+### Cloudflare Worker exceptions (Error 1101 / runtime exceptions)
+
+This worker now returns structured JSON errors (with `traceId` from the `cf-ray` header when available) instead of failing silently on unhandled exceptions.
+
+If you see intermittent Worker failures:
+
+1. Open Cloudflare Worker logs and search by `traceId`.
+2. Correlate with the failing request path (`/auth` or `/callback`).
+3. Use the returned `error` and `message` fields to isolate whether it is:
+   - origin rejection,
+   - missing OAuth secrets,
+   - provider denial,
+   - GitHub token endpoint/network issue,
+   - or an unhandled exception.
+
+
 **Error: "Missing GITHUB_CLIENT_ID"**
 - Verify secrets were set correctly: `npx wrangler secret list`
 - Redeploy the worker: `npm run deploy`

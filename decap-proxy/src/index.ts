@@ -58,6 +58,22 @@ function jsonResponse(body: Record<string, unknown>, status = 200, headers?: Hea
   });
 }
 
+function buildErrorResponse(
+  message: string,
+  status: number,
+  origin: string,
+  details?: Record<string, unknown>
+): Response {
+  return jsonResponse(
+    {
+      error: message,
+      ...(details ?? {})
+    },
+    status,
+    getCorsHeaders(origin)
+  );
+}
+
 function htmlResponse(html: string, headers?: HeadersInit): Response {
   return new Response(html, {
     status: 200,
@@ -73,93 +89,111 @@ export default {
     const url = new URL(request.url);
     const allowedOrigins = getAllowedOrigins(env);
     const origin = resolveOrigin(request, url);
+    const traceId = request.headers.get("cf-ray") ?? "unknown";
 
-    if (request.method === "OPTIONS") {
-      if (!origin || !allowedOrigins.has(origin)) {
-        return new Response("Forbidden", { status: 403 });
+    try {
+      if (request.method !== "GET" && request.method !== "OPTIONS") {
+        return buildErrorResponse("Method not allowed", 405, origin, {
+          traceId
+        });
       }
 
-      return new Response(null, {
-        status: 204,
-        headers: getCorsHeaders(origin)
-      });
-    }
+      if (request.method === "OPTIONS") {
+        if (!origin || !allowedOrigins.has(origin)) {
+          return new Response("Forbidden", { status: 403 });
+        }
 
-    if (url.pathname === "/health") {
-      return jsonResponse({ ok: true }, 200, getCorsHeaders(origin));
-    }
-
-    if (url.pathname === "/auth") {
-      if (!origin || !allowedOrigins.has(origin)) {
-        return jsonResponse({ error: "Forbidden origin" }, 403);
+        return new Response(null, {
+          status: 204,
+          headers: getCorsHeaders(origin)
+        });
       }
 
-      if (!env.GITHUB_CLIENT_ID) {
-        return jsonResponse({ error: "Missing GITHUB_CLIENT_ID" }, 500, getCorsHeaders(origin));
+      if (url.pathname === "/health") {
+        return jsonResponse({ ok: true }, 200, getCorsHeaders(origin));
       }
 
-      const callbackUrl = new URL("/callback", url.origin);
-      callbackUrl.searchParams.set("origin", origin);
+      if (url.pathname === "/auth") {
+        if (!origin || !allowedOrigins.has(origin)) {
+          return buildErrorResponse("Forbidden origin", 403, origin, { traceId });
+        }
 
-      const githubAuthUrl = new URL("https://github.com/login/oauth/authorize");
-      githubAuthUrl.searchParams.set("client_id", env.GITHUB_CLIENT_ID);
-      githubAuthUrl.searchParams.set("redirect_uri", callbackUrl.toString());
-      githubAuthUrl.searchParams.set("scope", "repo");
+        if (!env.GITHUB_CLIENT_ID) {
+          return buildErrorResponse("Missing GITHUB_CLIENT_ID", 500, origin, { traceId });
+        }
 
-      return Response.redirect(githubAuthUrl.toString(), 302);
-    }
+        const callbackUrl = new URL("/callback", url.origin);
+        callbackUrl.searchParams.set("origin", origin);
 
-    if (url.pathname === "/callback") {
-      const callbackOrigin = normalizeOrigin(url.searchParams.get("origin") ?? "");
-      if (!callbackOrigin || !allowedOrigins.has(callbackOrigin)) {
-        return jsonResponse({ error: "Forbidden callback origin" }, 403);
+        const githubAuthUrl = new URL("https://github.com/login/oauth/authorize");
+        githubAuthUrl.searchParams.set("client_id", env.GITHUB_CLIENT_ID);
+        githubAuthUrl.searchParams.set("redirect_uri", callbackUrl.toString());
+        githubAuthUrl.searchParams.set("scope", "repo");
+
+        return Response.redirect(githubAuthUrl.toString(), 302);
       }
 
-      const code = url.searchParams.get("code");
-      if (!code) {
-        return jsonResponse({ error: "Missing OAuth code" }, 400, getCorsHeaders(callbackOrigin));
-      }
+      if (url.pathname === "/callback") {
+        const callbackOrigin = normalizeOrigin(url.searchParams.get("origin") ?? "");
+        if (!callbackOrigin || !allowedOrigins.has(callbackOrigin)) {
+          return buildErrorResponse("Forbidden callback origin", 403, callbackOrigin, { traceId });
+        }
 
-      if (!env.GITHUB_CLIENT_ID || !env.GITHUB_CLIENT_SECRET) {
-        return jsonResponse(
-          { error: "Missing GitHub OAuth credentials" },
-          500,
-          getCorsHeaders(callbackOrigin)
-        );
-      }
+        const providerError = url.searchParams.get("error");
+        if (providerError) {
+          return buildErrorResponse("GitHub OAuth denied", 400, callbackOrigin, {
+            traceId,
+            providerError
+          });
+        }
 
-      const tokenResponse = await fetch("https://github.com/login/oauth/access_token", {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          client_id: env.GITHUB_CLIENT_ID,
-          client_secret: env.GITHUB_CLIENT_SECRET,
-          code
-        })
-      });
+        const code = url.searchParams.get("code");
+        if (!code) {
+          return buildErrorResponse("Missing OAuth code", 400, callbackOrigin, { traceId });
+        }
 
-      const tokenJson = (await tokenResponse.json()) as {
-        access_token?: string;
-        error?: string;
-        error_description?: string;
-      };
+        if (!env.GITHUB_CLIENT_ID || !env.GITHUB_CLIENT_SECRET) {
+          return buildErrorResponse("Missing GitHub OAuth credentials", 500, callbackOrigin, {
+            traceId
+          });
+        }
 
-      if (!tokenResponse.ok || !tokenJson.access_token) {
-        return jsonResponse(
-          {
-            error: tokenJson.error ?? "oauth_error",
+        let tokenResponse: Response;
+        try {
+          tokenResponse = await fetch("https://github.com/login/oauth/access_token", {
+            method: "POST",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              client_id: env.GITHUB_CLIENT_ID,
+              client_secret: env.GITHUB_CLIENT_SECRET,
+              code
+            })
+          });
+        } catch (error) {
+          return buildErrorResponse("GitHub token endpoint unreachable", 502, callbackOrigin, {
+            traceId,
+            message: error instanceof Error ? error.message : "unknown"
+          });
+        }
+
+        const tokenJson = (await tokenResponse.json()) as {
+          access_token?: string;
+          error?: string;
+          error_description?: string;
+        };
+
+        if (!tokenResponse.ok || !tokenJson.access_token) {
+          return buildErrorResponse(tokenJson.error ?? "oauth_error", 502, callbackOrigin, {
+            traceId,
             message: tokenJson.error_description ?? "GitHub token exchange failed"
-          },
-          502,
-          getCorsHeaders(callbackOrigin)
-        );
-      }
+          });
+        }
 
-      return htmlResponse(
-        `<!doctype html>
+        return htmlResponse(
+          `<!doctype html>
 <html lang="en">
   <body>
     <script>
@@ -174,10 +208,16 @@ export default {
     </script>
   </body>
 </html>`,
-        getCorsHeaders(callbackOrigin)
-      );
-    }
+          getCorsHeaders(callbackOrigin)
+        );
+      }
 
-    return jsonResponse({ error: "Not found" }, 404, getCorsHeaders(origin));
+      return buildErrorResponse("Not found", 404, origin, { traceId });
+    } catch (error) {
+      return buildErrorResponse("Unhandled worker exception", 500, origin, {
+        traceId,
+        message: error instanceof Error ? error.message : "unknown"
+      });
+    }
   }
 };
