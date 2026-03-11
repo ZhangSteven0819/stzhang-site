@@ -1,0 +1,102 @@
+---
+import { homepageContent } from '../config/homepage';
+import { siteSettings } from '../config/site-settings';
+
+const path = Astro.url.pathname.replace(/\/$/, '') || '/';
+const normalize = (href: string) => href.replace(/\/$/, '') || '/';
+const servicesPanelId = 'bottom-pill-services-panel';
+const servicesLinks = siteSettings.navigation.servicesMenuLinks;
+---
+
+<nav class="bottom-pill-menu" aria-label="Hovedmeny">
+  {
+    homepageContent.bottomQuickNav.map((item) => {
+      const href = normalize(item.href);
+      const isActive = href === '/' ? path === '/' : path === href || path.startsWith(`${href}/`);
+
+      if (item.kind === 'menu') {
+        return (
+          <div class="bottom-pill-menu__menu-item" data-services-menu-root>
+            <button
+              type="button"
+              class={isActive ? 'bottom-pill bottom-pill--button bottom-pill--active' : 'bottom-pill bottom-pill--button'}
+              data-services-menu-toggle
+              aria-expanded="false"
+              aria-controls={servicesPanelId}
+            >
+              {item.label}
+            </button>
+
+            <div
+              class="bottom-pill-menu__services-panel"
+              id={servicesPanelId}
+              data-services-menu-panel
+              aria-hidden="true"
+            >
+              {servicesLinks.map((service) => <a href={service.href} data-services-menu-link>{service.label}</a>)}
+            </div>
+          </div>
+        );
+      }
+
+      return (
+        <a href={item.href} class={isActive ? 'bottom-pill bottom-pill--active' : 'bottom-pill'} aria-current={isActive ? 'page' : undefined}>
+          {item.label}
+        </a>
+      );
+    })
+  }
+</nav>
+
+<script is:inline>
+  (() => {
+    const roots = Array.from(document.querySelectorAll('[data-services-menu-root]'));
+    if (roots.length === 0) return;
+
+    roots.forEach((root) => {
+      if (!(root instanceof HTMLElement)) return;
+
+      const toggle = root.querySelector('[data-services-menu-toggle]');
+      const panel = root.querySelector('[data-services-menu-panel]');
+      if (!(toggle instanceof HTMLButtonElement) || !(panel instanceof HTMLElement)) return;
+
+      const links = Array.from(root.querySelectorAll('[data-services-menu-link]'));
+      let isOpen = false;
+
+      const setOpen = (nextOpen, focusToggle = false) => {
+        isOpen = nextOpen;
+        root.classList.toggle('is-open', isOpen);
+        toggle.setAttribute('aria-expanded', String(isOpen));
+        panel.setAttribute('aria-hidden', isOpen ? 'false' : 'true');
+
+        if (!isOpen && focusToggle) toggle.focus();
+      };
+
+      toggle.addEventListener('click', () => {
+        setOpen(!isOpen);
+      });
+
+      links.forEach((link) => {
+        link.addEventListener('click', () => {
+          setOpen(false);
+        });
+      });
+
+      document.addEventListener('pointerdown', (event) => {
+        if (!isOpen) return;
+        const target = event.target;
+        if (!(target instanceof Node)) return;
+        if (!root.contains(target)) {
+          setOpen(false);
+        }
+      });
+
+      document.addEventListener('keydown', (event) => {
+        if (!isOpen) return;
+        if (event.key === 'Escape') {
+          setOpen(false, true);
+        }
+      });
+    });
+  })();
+</script>

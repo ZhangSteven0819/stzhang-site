@@ -1,26 +1,47 @@
 ---
-// Import global styles
+import BottomPillMenu from '../components/BottomPillMenu.astro';
+import GlobalBrandRail from '../components/GlobalBrandRail.astro';
+import ScrollRevealScript from '../components/ScrollRevealScript.astro';
+import WaveContactDock from '../components/WaveContactDock.astro';
+import { siteSettings } from '../config/site-settings';
 import '../styles/design-tokens.css';
 import '../styles/global.css';
-import '../styles/utilities.css';
 import '../styles/homepage.css';
-import ScrollRevealScript from '../components/ScrollRevealScript.astro';
+import '../styles/utilities.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title, description } = Astro.props;
+const resolvedTitle = title
+  ? `${title} | ${siteSettings.seo.titleSuffix}`
+  : siteSettings.seo.defaultTitle;
+const resolvedDescription = description ?? siteSettings.seo.description;
 ---
 
 <!doctype html>
-<html lang="no">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="generator" content={Astro.generator} />
-		<link rel="preconnect" href="https://fonts.googleapis.com">
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-		<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Six+Caps&display=swap" rel="stylesheet">
-		<title>Sound of Simone - Fysioterapeut med fordypning i kvinnehelse</title>
-	</head>
-	<body>
-		<slot />
-		<ScrollRevealScript />
-	</body>
+<html lang={siteSettings.localization.defaultLocale}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="description" content={resolvedDescription} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Six+Caps&display=swap"
+      rel="stylesheet"
+    />
+    <title>{resolvedTitle}</title>
+  </head>
+  <body>
+    <GlobalBrandRail />
+    <slot />
+    <BottomPillMenu />
+    <WaveContactDock />
+    <ScrollRevealScript />
+  </body>
 </html>

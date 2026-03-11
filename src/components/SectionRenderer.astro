@@ -1,0 +1,128 @@
+---
+import AboutSimone from './AboutSimone.astro';
+import CTA from './CTA.astro';
+import ContactInfo from './ContactInfo.astro';
+import Hero from './Hero.astro';
+import ProofStrip from './ProofStrip.astro';
+import SocialFeedSection from './SocialFeedSection.astro';
+import type { HomepageModule, SocialFeedModule } from '../config/homepage';
+import { homepageContent } from '../config/homepage';
+
+interface Props {
+  module: HomepageModule;
+}
+
+const { module } = Astro.props;
+---
+
+{module.type === 'hero' && <Hero />}
+
+{module.type === 'proof_strip' && <ProofStrip />}
+
+{
+  module.type === 'service_cards' && (
+    <section class="services-overview" aria-label="Tjenester">
+      <div class="container services-overview__grid">
+        <article class="services-overview__card">
+          <h2>{homepageContent.services.physio.title}</h2>
+          <p>{homepageContent.services.physio.lead}</p>
+          <a href="/tjenester/sound-of-physio">Les mer</a>
+        </article>
+        <article class="services-overview__card">
+          <h2>{homepageContent.services.women.title}</h2>
+          <p>{homepageContent.services.women.lead}</p>
+          <a href="/tjenester/sound-of-women">Les mer</a>
+        </article>
+        <article class="services-overview__card">
+          <h2>{homepageContent.services.waves.title}</h2>
+          <p>{homepageContent.services.waves.lead}</p>
+          <a href="/tjenester/sound-of-waves">Les mer</a>
+        </article>
+      </div>
+    </section>
+  )
+}
+
+{module.type === 'rich_text' && <AboutSimone variant={module.variant === 'expanded' ? 'full' : 'teaser'} />}
+
+{
+  module.type === 'gallery' && module.variant === 'expanded' && (
+    <section class="about-gallery" aria-label="Galleri">
+      <div class="container about-gallery__grid">
+        {homepageContent.aboutSimone.gallery.map((item) => (
+          <figure>
+            <img src={item.src} alt={item.alt} loading="lazy" decoding="async" />
+            <figcaption>{item.caption}</figcaption>
+          </figure>
+        ))}
+      </div>
+    </section>
+  )
+}
+
+{module.type === 'contact_block' && <ContactInfo />}
+
+{
+  module.type === 'social_feed' && (
+    <SocialFeedSection module={module as SocialFeedModule} />
+  )
+}
+
+{module.type === 'cta_band' && <CTA />}
+
+<style>
+  .services-overview {
+    padding: var(--space-16) 0;
+  }
+
+  .services-overview__grid {
+    display: grid;
+    gap: var(--space-6);
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  }
+
+  .services-overview__card {
+    border: 1px solid var(--color-border-light);
+    border-radius: var(--border-radius-xl);
+    padding: var(--space-6);
+    background: var(--color-bg-primary);
+  }
+
+  .services-overview__card h2 {
+    margin-top: 0;
+  }
+
+  .services-overview__card a {
+    font-weight: var(--font-weight-semibold);
+  }
+
+  .about-gallery {
+    padding: var(--space-8) 0 var(--space-16);
+  }
+
+  .about-gallery__grid {
+    display: grid;
+    gap: var(--space-4);
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  }
+
+  .about-gallery__grid figure {
+    margin: 0;
+    border-radius: var(--border-radius-lg);
+    overflow: hidden;
+    background: var(--color-bg-primary);
+    border: 1px solid var(--color-border-light);
+  }
+
+  .about-gallery__grid img {
+    display: block;
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+  }
+
+  .about-gallery__grid figcaption {
+    padding: var(--space-3);
+    font-size: var(--font-size-sm);
+  }
+</style>

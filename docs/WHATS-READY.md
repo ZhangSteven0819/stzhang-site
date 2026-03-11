@@ -128,7 +128,7 @@ Want to verify deployment?
 
 3. **Configure Cloudflare Worker Secrets** (5 minutes)
    - After first worker deployment
-   - Add `OAUTH_CLIENT_ID` and `OAUTH_CLIENT_SECRET` in Cloudflare Dashboard
+   - Add `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET` in Cloudflare Dashboard
 
 4. **Set up Custom Domains** (10 minutes)
    - Configure `soundofsimone.no` for Pages

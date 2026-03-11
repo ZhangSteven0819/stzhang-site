@@ -278,7 +278,7 @@ git push origin main
 3. Cloudflare API token has Workers permissions
 
 **Solution:**
-- Verify secrets: `OAUTH_CLIENT_ID`, `OAUTH_CLIENT_SECRET`
+- Verify secrets: `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET`
 - Check worker logs in Cloudflare dashboard
 - Manually deploy: `cd decap-proxy && npm run deploy`
 

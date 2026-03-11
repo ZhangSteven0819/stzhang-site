@@ -1,9 +1,15 @@
 ---
-import { BRAND_COLOR, WAVE_CONTACT_TARGET, WAVE_EMBED_SRC } from '../../config/site';
+import {
+  BRAND_COLOR,
+  WAVE_CONTACT_TARGET,
+  WAVE_EMBED_ANIMATED,
+  WAVE_EMBED_STATIC,
+} from '../../config/site';
 
 interface Props {
   href?: string;
   size?: 'sm' | 'md' | 'lg';
+  mode?: 'animated' | 'static';
   label?: string;
   class?: string;
 }
@@ -11,6 +17,7 @@ interface Props {
 const {
   href = WAVE_CONTACT_TARGET,
   size = 'md',
+  mode = 'animated',
   label = 'Gå til kontakt',
   class: className = '',
 } = Astro.props;
@@ -22,6 +29,7 @@ const sizeClasses = {
 };
 
 const classes = ['wave-contact-btn', sizeClasses[size], className].filter(Boolean).join(' ');
+const embedSrc = mode === 'static' ? WAVE_EMBED_STATIC : WAVE_EMBED_ANIMATED;
 ---
 
 <a
@@ -32,7 +40,7 @@ const classes = ['wave-contact-btn', sizeClasses[size], className].filter(Boolea
 >
   <span class="wave-contact-btn__visual" aria-hidden="true">
     <iframe
-      src={WAVE_EMBED_SRC}
+      src={embedSrc}
       title="Wave contact symbol"
       loading="lazy"
       tabindex="-1"

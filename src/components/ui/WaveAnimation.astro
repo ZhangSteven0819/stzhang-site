@@ -12,6 +12,7 @@ interface Props {
   color?: string;
   ringColor?: string;
   animationSpeed?: 'slow' | 'normal' | 'fast';
+  animated?: boolean;
   class?: string;
   ariaLabel?: string;
 }
@@ -21,6 +22,7 @@ const {
   color = '#411e25',
   ringColor = '#411e25',
   animationSpeed = 'normal',
+  animated = true,
   class: className = '',
   ariaLabel = 'Sound wave animation',
 } = Astro.props;
@@ -41,7 +43,7 @@ const speedClasses = {
 const classes = [
   'wave-container',
   sizeClasses[size],
-  speedClasses[animationSpeed],
+  animated ? speedClasses[animationSpeed] : 'wave-static',
   className,
 ].filter(Boolean).join(' ');
 
@@ -120,6 +122,11 @@ const uniqueId = `clip-${Math.random().toString(36).substring(2, 9)}`;
     animation-name: pulse;
     animation-iteration-count: infinite;
     animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .wave-static .wave rect {
+    animation: none;
+    transform: scaleY(0.82);
   }
   
   /* Organic animation with different durations and delays for each bar */

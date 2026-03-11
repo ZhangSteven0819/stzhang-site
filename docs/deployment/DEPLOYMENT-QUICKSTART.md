@@ -45,8 +45,8 @@ npm run deploy
 2. Navigate to **Workers & Pages** → **decap-oauth-proxy**
 3. Go to **Settings** → **Variables**
 4. Click **Add variable** → **Encrypt** for each:
-   - Name: `OAUTH_CLIENT_ID`, Value: [Your GitHub Client ID from Step 1]
-   - Name: `OAUTH_CLIENT_SECRET`, Value: [Your GitHub Client Secret from Step 1]
+   - Name: `GITHUB_CLIENT_ID`, Value: [Your GitHub Client ID from Step 1]
+   - Name: `GITHUB_CLIENT_SECRET`, Value: [Your GitHub Client Secret from Step 1]
 5. Click **Save and deploy**
 
 ---

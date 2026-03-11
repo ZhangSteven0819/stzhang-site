@@ -4,6 +4,53 @@
 > **👉 START HERE: [DEPLOYMENT-READY.md](docs/deployment/DEPLOYMENT-READY.md)** - Everything you need to deploy!  
 > **⚡ Quick Links:** [Setup Guide](docs/deployment/DEPLOYMENT-INSTRUCTIONS.md) | [Trigger Deploy](docs/deployment/HOW-TO-TRIGGER-DEPLOYMENT.md)
 
+## Template Factory v1 (Client Bootstrap)
+
+This repo now supports deterministic client setup with shared CMS + Cloudflare infrastructure.
+
+No-CLI onboarding is available via GitHub Actions:
+- Run workflow: `.github/workflows/client-onboard-form.yml`
+- `mode=onboard` for new client drafts (supports placeholder production domain)
+- `mode=domain_ready` to switch from placeholder to final domain/origin
+- See [No-CLI runbook](docs/client/NO-CLI-ONBOARDING.md)
+- Internal guide: [Bruksanvisning (Internt)](docs/client/BRUKSANVISNING-INTERNT.md)
+- Customer guide: [Bruksanvisning (Kunde)](docs/client/BRUKSANVISNING-KUNDE.md)
+
+```bash
+# Live onboarding wizard (recommended)
+npm run client:onboard
+
+# Validate current client configuration
+npm run client:validate
+
+# Re-render generated CMS/CSP files from config/client.config.json
+npm run client:render
+
+# Bootstrap a new client
+npm run client:bootstrap -- \
+  --client-id my-client \
+  --brand-name "My Client" \
+  --repo-owner your-org \
+  --repo-name my-client-site \
+  --prod-domain myclient.no \
+  --dev-domain my-client-dev.pages.dev \
+  --cms-proxy-domain decap.myclient.no \
+  --language-mode single \
+  --default-locale no \
+  --theme-preset wellness
+
+# Full onboarding smoke flow from saved intake
+npm run client:onboard:smoke -- config/intake/example.json
+
+# Internal helper used by GitHub onboarding form (build/update intake from inputs)
+npm run client:intake:dispatch -- --mode onboard --client-id my-client --brand-name "My Client"
+
+# Set CMS origin target in config/client.config.json
+npm run client:cms-origin -- --target dev
+```
+
+See [Template Factory docs](docs/client/TEMPLATE-FACTORY.md) and [Onboarding checklist](docs/client/onboarding-checklist.md).
+
 A starter template for building a static site with [Astro](https://astro.build) and managing its content with [Decap CMS](https://decapcms.org/), all deployed on [Cloudflare Pages](https://pages.cloudflare.com/). This setup includes a Cloudflare Worker acting as a custom GitHub OAuth proxy, allowing you to authenticate via GitHub without relying on Netlify Identity or Git Gateway. Additionally, you can use [Cloudflare Zero Trust (Access)](https://www.cloudflare.com/products/zero-trust/access/) to add an extra layer of security to your `/admin` page.
 
 ## 🚀 Deployment Resources
@@ -15,6 +62,7 @@ A starter template for building a static site with [Astro](https://astro.build) 
 - **[DEPLOYMENT-INSTRUCTIONS.md](docs/deployment/DEPLOYMENT-INSTRUCTIONS.md)** - Complete deployment setup guide (~40 min)
 - **[HOW-TO-TRIGGER-DEPLOYMENT.md](docs/deployment/HOW-TO-TRIGGER-DEPLOYMENT.md)** - How to deploy after initial setup
 - **[DEPLOYMENT-QUICKSTART.md](docs/deployment/DEPLOYMENT-QUICKSTART.md)** - Alternative step-by-step guide
+- **[CMS-DEV-FIRST-LAUNCH.md](docs/deployment/CMS-DEV-FIRST-LAUNCH.md)** - Prelaunch DEV-only CMS + launch cutover runbook
 
 ### 📋 Reference Documentation
 - **[WHATS-READY.md](docs/WHATS-READY.md)** - Complete overview of what's been set up
@@ -39,7 +87,7 @@ A starter template for building a static site with [Astro](https://astro.build) 
 ## 📁 Project Structure
 
 ```
-sound-of-simone/
+project-name/
 ├── .github/              # GitHub Actions workflows
 ├── archive/              # Archived/old files (not used in builds)
 │   ├── old-versions/     # Previous versions of files

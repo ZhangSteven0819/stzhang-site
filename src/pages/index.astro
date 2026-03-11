@@ -1,74 +1,11 @@
 ---
+import SectionRenderer from '../components/SectionRenderer.astro';
+import { homepageModules } from '../config/homepage';
 import Layout from '../layouts/Layout.astro';
-import Hero from '../components/Hero.astro';
-import StickyBrandBar from '../components/StickyBrandBar.astro';
-import Section from '../components/Section.astro';
-import Card from '../components/SimpleCard.astro';
-import CTA from '../components/CTA.astro';
 ---
 
-<Layout title="Sound of Simone">
-  <StickyBrandBar />
-
+<Layout>
   <main class="home-page" id="top">
-    <Hero />
-
-    <Section
-      id="tjenester"
-      title="Våre tjenester"
-      subtitle="Skreddersydd behandling tilpasset dine behov"
-    >
-      <div class="grid-3">
-        <Card title="Hormonell balanse" text="Individuell vurdering og behandling." />
-        <Card title="Fertilitet" text="Helhetlig støtte gjennom hele prosessen." />
-        <Card title="Livsstil & helse" text="Forebyggende og styrkende tiltak." />
-      </div>
-    </Section>
-
-    <section class="trust-strip" aria-label="Hvorfor velge Sound of Simone">
-      <div class="container trust-grid">
-        <article class="trust-item">
-          <h3 data-reveal>Trygg oppfølging</h3>
-          <p data-reveal>Rolige rammer, tett dialog og behandlingsplan tilpasset deg.</p>
-        </article>
-        <article class="trust-item">
-          <h3 data-reveal>Helhetlig vurdering</h3>
-          <p data-reveal>Vi ser sammenhengen mellom symptomer, livssituasjon og mål.</p>
-        </article>
-        <article class="trust-item">
-          <h3 data-reveal>Tydelig neste steg</h3>
-          <p data-reveal>Du får konkret retning på hva som bør gjøres videre.</p>
-        </article>
-      </div>
-    </section>
-
-    <section class="faq-teaser" id="faq" aria-labelledby="faq-tittel">
-      <div class="container faq-layout">
-        <div class="faq-copy">
-          <p class="faq-kicker" data-reveal>Vanlige spørsmål</p>
-          <h2 id="faq-tittel" data-reveal>Praktisk informasjon før første time</h2>
-          <p data-reveal>
-            Her kommer full FAQ etter hvert. I dev-versjonen bruker vi korte, nøytrale tekster for
-            å teste struktur og lesbarhet.
-          </p>
-        </div>
-        <div class="faq-list">
-          <details class="faq-item">
-            <summary>Trenger jeg henvisning?</summary>
-            <p>Dette avklares tydelig per tjeneste når innholdet ferdigstilles.</p>
-          </details>
-          <details class="faq-item">
-            <summary>Hvor lang er en konsultasjon?</summary>
-            <p>Standard varighet og forløp publiseres når bookingflyten er endelig avklart.</p>
-          </details>
-          <details class="faq-item">
-            <summary>Kan jeg bestille oppfølgingstime med en gang?</summary>
-            <p>Ja, i v1 styrer vi booking fra samme CTA-lenke for alle seksjoner.</p>
-          </details>
-        </div>
-      </div>
-    </section>
-
-    <CTA />
+    {homepageModules.map((module) => <SectionRenderer module={module} />)}
   </main>
 </Layout>

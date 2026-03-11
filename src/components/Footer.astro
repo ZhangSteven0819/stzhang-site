@@ -1,23 +1,26 @@
 ---
+import { siteSettings } from '../config/site-settings';
+
+const year = new Date().getFullYear();
 ---
 
 <footer class="footer">
   <div class="footer-container">
     <div class="footer-content">
       <div class="footer-section">
-        <h3>Sound of Simone</h3>
-        <p>Fysioterapeut med fordypning i kvinnehelse</p>
+        <h3>{siteSettings.brand.name}</h3>
+        <p>{siteSettings.brand.tagline}</p>
       </div>
       <div class="footer-section">
         <h3>Kontakt</h3>
         <p>
-          <a href="mailto:Hei@soundofsimone.no">Hei@soundofsimone.no</a><br />
-          Tlf: <a href="tel:91170100">911 70 100</a>
+          <a href={`mailto:${siteSettings.contact.email}`}>{siteSettings.contact.email}</a><br />
+          Tlf: <a href={`tel:${siteSettings.contact.phoneLink}`}>{siteSettings.contact.phoneDisplay}</a>
         </p>
       </div>
     </div>
     <div class="footer-bottom">
-      <p>&copy; {new Date().getFullYear()} Sound of Simone. All rights reserved.</p>
+      <p>&copy; {year} {siteSettings.brand.name}. {siteSettings.footer.legalText}</p>
     </div>
   </div>
 </footer>

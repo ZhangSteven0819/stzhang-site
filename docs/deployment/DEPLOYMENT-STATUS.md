@@ -92,8 +92,8 @@ If you prefer manual deployment or automation is not yet set up, follow the step
    ```
 
 4. ⏳ **Configure Worker Secrets**
-   - Add `OAUTH_CLIENT_ID` in Cloudflare Dashboard
-   - Add `OAUTH_CLIENT_SECRET` in Cloudflare Dashboard
+   - Add `GITHUB_CLIENT_ID` in Cloudflare Dashboard
+   - Add `GITHUB_CLIENT_SECRET` in Cloudflare Dashboard
 
 5. ⏳ **Deploy Main Site**
    - Connect GitHub repo to Cloudflare Pages
@@ -199,7 +199,7 @@ npm run preview
 
 ### OAuth Issues
 - Verify callback URL matches GitHub OAuth app settings
-- Check Worker secrets are set: `OAUTH_CLIENT_ID` and `OAUTH_CLIENT_SECRET`
+- Check Worker secrets are set: `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET`
 - Test proxy directly: `curl https://decap.soundofsimone.no`
 
 ## Next Steps

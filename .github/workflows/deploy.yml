@@ -12,7 +12,11 @@ jobs:
     permissions:
       contents: read
       deployments: write
-    
+
+    env:
+      CF_PAGES_PROD_PROJECT: ${{ vars.CF_PAGES_PROD_PROJECT }}
+      CF_PAGES_DEPLOY_BRANCH: ${{ vars.CF_PAGES_DEPLOY_BRANCH }}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -26,14 +30,10 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build site
-        run: npm run build
-
       - name: Deploy to Cloudflare Pages
-        uses: cloudflare/pages-action@v1
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          projectName: shy-term-e0aa
-          directory: dist
-          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+        run: ./scripts/deploy-main.sh
+        env:
+          CF_PAGES_PROD_PROJECT: ${{ env.CF_PAGES_PROD_PROJECT }}
+          CF_PAGES_DEPLOY_BRANCH: ${{ env.CF_PAGES_DEPLOY_BRANCH }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}

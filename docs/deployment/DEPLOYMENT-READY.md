@@ -159,8 +159,8 @@ You'll need to configure these:
 - Client Secret - Create OAuth app
 
 ### Cloudflare Worker Secrets
-- `OAUTH_CLIENT_ID` - From GitHub OAuth app
-- `OAUTH_CLIENT_SECRET` - From GitHub OAuth app
+- `GITHUB_CLIENT_ID` - From GitHub OAuth app
+- `GITHUB_CLIENT_SECRET` - From GitHub OAuth app
 
 **Where to add these:** See [DEPLOYMENT-INSTRUCTIONS.md](./DEPLOYMENT-INSTRUCTIONS.md)
 

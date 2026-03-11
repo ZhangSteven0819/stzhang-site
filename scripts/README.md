@@ -1,106 +1,152 @@
 # Scripts Directory
 
-This directory contains utility scripts for deployment and verification.
+Utility scripts for template setup, deployment, and verification.
 
-## Available Scripts
+## Client factory scripts
 
-### deploy-dev.sh
+### `bootstrap-client.mjs`
+Creates a new client setup from required flags and writes:
+- `config/client.config.json`
+- `src/data/site-settings.json`
+- `src/data/page-modules/home.json`
+- `docs/client/onboarding-checklist.md`
+- generated `public/admin/config.yml` and `public/_headers`
 
-**Purpose:** Build and deploy the current Astro site to the DEV Pages project.
-
-**Usage:**
+Usage:
 ```bash
-./scripts/deploy-dev.sh
+npm run client:bootstrap -- --client-id my-client --brand-name "My Client" --repo-owner your-org --repo-name my-client-site --prod-domain myclient.no --dev-domain my-client-dev.pages.dev --cms-proxy-domain decap.myclient.no --language-mode single --default-locale no --theme-preset wellness
 ```
 
-**What it does:**
-- ✅ Installs dependencies automatically if `node_modules` is missing
-- ✅ Builds Astro output into `dist/`
-- ✅ Deploys to Cloudflare Pages project `sound-of-simone-dev`
+### `render-client-config.mjs`
+Renders generated files from `config/client.config.json`.
 
-**Result:**
-- Updated DEV site at `https://sound-of-simone-dev.pages.dev`
-
-### verify-deployment.sh
-
-**Purpose:** Verify that all deployed components are accessible and working correctly.
-
-**Usage:**
+Usage:
 ```bash
-# Use default domains
-./scripts/verify-deployment.sh
-
-# Use custom domains
-MAIN_DOMAIN=soundofsimone.no PROXY_DOMAIN=decap.soundofsimone.no ./scripts/verify-deployment.sh
+npm run client:render
+npm run client:validate
 ```
 
-**What it checks:**
-- ✅ Main site accessibility (https://soundofsimone.no)
-- ✅ About page (https://soundofsimone.no/about)
-- ✅ Blog posts (https://soundofsimone.no/blog/welcome)
-- ✅ CMS admin interface (https://soundofsimone.no/admin/)
-- ✅ OAuth proxy health (https://decap.soundofsimone.no/health)
-- ✅ DNS resolution for both domains
+### `onboard-client.mjs`
+Interactive meeting-mode onboarding wizard.
 
-**Requirements:**
-- `curl` command
-- `dig` command (for DNS checks)
+Writes:
+- `config/intake/<client-id>.json`
+- standard bootstrap outputs (config/data/rendered templates)
+- `docs/client/generated/<client-id>-onboarding.md`
 
-**Example Output:**
-```
-🔍 Verifying deployment of Sound of Simone...
+Usage:
+```bash
+# Interactive
+npm run client:onboard
 
-📍 Testing Main Site
-====================
-Checking Main site (https://soundofsimone.no)... ✓ OK
-Checking About page (https://soundofsimone.no/about)... ✓ OK
-Checking Blog post (https://soundofsimone.no/blog/welcome)... ✓ OK
-Checking CMS admin interface (https://soundofsimone.no/admin/)... ✓ OK
+# Replay from a saved intake
+npm run client:onboard -- --from-file config/intake/<client-id>.json --force
 
-🔐 Testing OAuth Proxy
-======================
-Checking OAuth proxy health (https://decap.soundofsimone.no/health)... ✓ OK
-Checking OAuth proxy health response content... ✓ OK
-
-🔧 Testing DNS Resolution
-==========================
-Resolving soundofsimone.no... ✓ OK
-Resolving decap.soundofsimone.no... ✓ OK
-
-📋 Deployment Summary
-=====================
-Note: This script only verifies that URLs are accessible.
-For full CMS functionality, ensure:
-  1. GitHub OAuth app is configured
-  2. Worker secrets (GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET) are set
-  3. Custom domains are properly configured in Cloudflare
+# Dry run
+npm run client:onboard -- --from-file config/intake/<client-id>.json --dry-run
 ```
 
-## Adding New Scripts
+### `build-dispatch-intake.mjs`
+Builds or updates `config/intake/<client-id>.json` from GitHub `workflow_dispatch` inputs.
 
-When adding new scripts to this directory:
+Modes:
+- `onboard`: create a fresh intake from form fields
+- `go_live`: update technical domains in an existing intake
 
-1. Make them executable:
-   ```bash
-   chmod +x scripts/your-script.sh
-   ```
+Usage:
+```bash
+npm run client:intake:dispatch -- --mode onboard --client-id my-client --brand-name "My Client"
+npm run client:intake:dispatch -- --mode go_live --client-id my-client --production-domain myclient.no
+```
 
-2. Use bash shebang:
-   ```bash
-   #!/bin/bash
-   ```
+### `apply-intake-domains.mjs`
+Copies technical domain fields from intake to `config/client.config.json` without regenerating content modules.
 
-3. Include error handling:
-   ```bash
-   set -e  # Exit on error
-   ```
+Usage:
+```bash
+npm run client:apply-intake-domains -- --client-id my-client
+```
 
-4. Document in this README
+### `set-cms-origins.mjs`
+Sets `cms.siteOrigin`, `cms.displayOrigin`, and target publish mode in `config/client.config.json`.
 
-## Best Practices
+Usage:
+```bash
+npm run client:cms-origin -- --target dev
+npm run client:cms-origin -- --target production
+```
 
-- Keep scripts simple and focused on a single task
-- Include helpful error messages
-- Use colors for output (GREEN, RED, YELLOW)
-- Test scripts locally before committing
-- Document all environment variables and requirements
+## Deployment scripts
+
+### `deploy-dev.sh`
+Builds and deploys to DEV Pages project.
+
+Config resolution order:
+1. `CF_PAGES_DEV_PROJECT` env var
+2. `config/client.config.json -> cloudflare.pagesProjectDev`
+3. if missing, script fails preflight (no hardcoded customer fallback)
+
+Deploy branch resolution order:
+1. `CF_PAGES_DEPLOY_BRANCH` env var
+2. `config/client.config.json -> cloudflare.pagesBranchDev`
+3. fallback `main`
+
+Safety guardrails:
+- Script verifies generated `public/admin/config.yml` matches current `config/client.config.json` before deploy.
+
+### `deploy-main.sh`
+Builds and deploys to production/main candidate Pages project.
+
+Config resolution order:
+1. `CF_PAGES_PROD_PROJECT` env var
+2. `config/client.config.json -> cloudflare.pagesProjectProd`
+3. if missing, script fails preflight (no hardcoded customer fallback)
+
+Deploy branch resolution order:
+1. `CF_PAGES_DEPLOY_BRANCH` env var
+2. `config/client.config.json -> cloudflare.pagesBranchProd`
+3. fallback `main`
+
+## Verification scripts
+
+### `verify-deployment.sh`
+Verifies:
+- production routes: `/`, `/about`, `/blog/welcome`, `/admin/`
+- DEV routes: `/`, `/about`, `/blog/welcome`, `/admin/`
+- OAuth worker `/health`
+- DNS resolution for production/dev/proxy domains
+
+Domain defaults come from `config/client.config.json` unless overridden.
+
+### `diagnose-cms-oauth.sh`
+Runs strict OAuth diagnostics for CMS login:
+- analyzes HAR for expected login chain (`/auth` -> GitHub authorize -> `/callback`)
+- tests live proxy endpoints and prints `cf-ray`/status/body summary
+- validates strict-origin behavior (`403` for unknown origin)
+
+Usage:
+```bash
+npm run cms:diagnose-oauth
+# Optional custom HAR path:
+./scripts/diagnose-cms-oauth.sh /absolute/path/to/capture.har
+```
+
+### `smoke-test-client.sh`
+Runs a full onboarding smoke test:
+1. `npm run client:validate`
+2. `npm run build`
+3. `./scripts/deploy-dev.sh`
+4. `./scripts/verify-deployment.sh`
+
+### `onboard-smoke.sh`
+Runs full meeting-intake onboarding + deploy verification in one command:
+1. `npm run client:onboard -- --from-file <intake-file> --force`
+2. `npm run client:validate`
+3. `npm run build`
+4. `./scripts/deploy-dev.sh`
+5. `./scripts/verify-deployment.sh`
+
+Usage:
+```bash
+npm run client:onboard:smoke -- config/intake/example.json
+```

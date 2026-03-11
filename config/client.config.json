@@ -1,0 +1,40 @@
+{
+  "clientId": "sound-of-simone",
+  "brandName": "Sound of Simone",
+  "repository": {
+    "owner": "allisson79",
+    "name": "sound-of-simone",
+    "branch": "dev"
+  },
+  "domains": {
+    "production": "soundofsimone.no",
+    "dev": "dev.sound-of-simone-dev.pages.dev",
+    "cmsProxy": "decap.soundofsimone.no"
+  },
+  "cloudflare": {
+    "pagesProjectDev": "sound-of-simone-dev",
+    "pagesBranchDev": "dev",
+    "pagesProjectProd": "sound-of-simone-main",
+    "pagesBranchProd": "main"
+  },
+  "cms": {
+    "publishMode": "simple",
+    "siteOrigin": "https://dev.sound-of-simone-dev.pages.dev",
+    "displayOrigin": "https://dev.sound-of-simone-dev.pages.dev",
+    "mediaFolder": "public/images",
+    "publicFolder": "/images"
+  },
+  "localization": {
+    "mode": "single",
+    "defaultLocale": "no",
+    "locales": [
+      "no"
+    ]
+  },
+  "theme": {
+    "preset": "wellness",
+    "tokens": {
+      "brandColor": "#411e25"
+    }
+  }
+}

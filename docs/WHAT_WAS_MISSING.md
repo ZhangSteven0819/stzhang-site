@@ -99,8 +99,8 @@ npm run deploy
 ```
 
 Then add environment variables in Cloudflare Dashboard:
-- `OAUTH_CLIENT_ID` = Your GitHub OAuth Client ID
-- `OAUTH_CLIENT_SECRET` = Your GitHub OAuth Client Secret
+- `GITHUB_CLIENT_ID` = Your GitHub OAuth Client ID
+- `GITHUB_CLIENT_SECRET` = Your GitHub OAuth Client Secret
 
 ### 3. Deploy the Main Site to Cloudflare Pages
 1. Connect your GitHub repository to Cloudflare Pages

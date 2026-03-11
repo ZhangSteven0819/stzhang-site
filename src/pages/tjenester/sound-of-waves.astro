@@ -1,0 +1,22 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { homepageContent } from '../../config/homepage';
+import ServiceBrandLogo from '../../components/ui/ServiceBrandLogo.astro';
+
+const waves = homepageContent.services.waves;
+---
+
+<Layout title="Sound of Waves">
+  <main class="home-page" id="top">
+    <section class="services-showcase" aria-label="Sound of Waves">
+      <div class="container services-showcase__stack">
+        <article class="services-showcase__card services-showcase__card--waves">
+          <ServiceBrandLogo variant="waves" class="services-showcase__brand" />
+          <p class="services-showcase__lead">{waves.lead}</p>
+          <p class="services-launch-pill">{waves.launchLabel}</p>
+          <a href="/tjenester" class="hero-btn hero-btn--light">Tilbake til tjenester</a>
+        </article>
+      </div>
+    </section>
+  </main>
+</Layout>

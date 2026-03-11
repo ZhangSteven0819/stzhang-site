@@ -102,8 +102,8 @@ Follow **[DEPLOYMENT-INSTRUCTIONS.md](./DEPLOYMENT-INSTRUCTIONS.md)**:
    - Manually deploy: `cd decap-proxy && npm run deploy`
 
 6. **Configure Worker Secrets**
-   - Add `OAUTH_CLIENT_ID` in Cloudflare Dashboard
-   - Add `OAUTH_CLIENT_SECRET` in Cloudflare Dashboard
+   - Add `GITHUB_CLIENT_ID` in Cloudflare Dashboard
+   - Add `GITHUB_CLIENT_SECRET` in Cloudflare Dashboard
 
 7. **Set Up Worker Domain**
    - Use "Add Custom Domain" feature
@@ -191,8 +191,8 @@ Complete and comprehensive:
 - `CLOUDFLARE_ACCOUNT_ID` - From Cloudflare Dashboard
 
 ### Cloudflare Worker Secrets (User must add)
-- `OAUTH_CLIENT_ID` - From GitHub OAuth App
-- `OAUTH_CLIENT_SECRET` - From GitHub OAuth App
+- `GITHUB_CLIENT_ID` - From GitHub OAuth App
+- `GITHUB_CLIENT_SECRET` - From GitHub OAuth App
 
 ---
 

@@ -143,11 +143,11 @@ npm run deploy
    - Click **"Add variable"** (select "Encrypt" for each)
 
    **Variable 1:**
-   - Name: `OAUTH_CLIENT_ID`
+   - Name: `GITHUB_CLIENT_ID`
    - Value: [GitHub Client ID from Step 3]
 
    **Variable 2:**
-   - Name: `OAUTH_CLIENT_SECRET`
+   - Name: `GITHUB_CLIENT_SECRET`
    - Value: [GitHub Client Secret from Step 3]
 
 3. **Save and Deploy**

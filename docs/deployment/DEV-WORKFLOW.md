@@ -5,14 +5,14 @@ This project now uses a separate DEV environment so you can share progress safel
 ## Environments
 
 - **Production:** `https://soundofsimone.no`
-- **DEV:** `https://sound-of-simone-dev.pages.dev`
+- **DEV:** `https://dev.sound-of-simone-dev.pages.dev`
 
 ## Daily Workflow
 
 1. Work on a `dev` or `develop` branch.
 2. Push branch changes to GitHub.
 3. GitHub Action `Deploy DEV to Cloudflare Pages` deploys automatically to `sound-of-simone-dev`.
-4. Share `https://sound-of-simone-dev.pages.dev` with client for review.
+4. Share `https://dev.sound-of-simone-dev.pages.dev` with client for review.
 5. Apply feedback on `dev/develop` until approved.
 6. Merge approved changes to `main`.
 7. Deploy production only when approved.

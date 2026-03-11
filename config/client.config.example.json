@@ -1,0 +1,38 @@
+{
+  "clientId": "example-clinic",
+  "brandName": "Example Clinic",
+  "repository": {
+    "owner": "your-org",
+    "name": "example-clinic-site",
+    "branch": "main"
+  },
+  "domains": {
+    "production": "example.no",
+    "dev": "example-clinic-dev.pages.dev",
+    "cmsProxy": "decap.example.no"
+  },
+  "cloudflare": {
+    "pagesProjectDev": "example-clinic-dev",
+    "pagesBranchDev": "main",
+    "pagesProjectProd": "example-clinic",
+    "pagesBranchProd": "main"
+  },
+  "cms": {
+    "publishMode": "simple",
+    "siteOrigin": "https://example-clinic-dev.pages.dev",
+    "displayOrigin": "https://example-clinic-dev.pages.dev",
+    "mediaFolder": "public/images",
+    "publicFolder": "/images"
+  },
+  "localization": {
+    "mode": "single",
+    "defaultLocale": "nb",
+    "locales": ["nb"]
+  },
+  "theme": {
+    "preset": "wellness",
+    "tokens": {
+      "brandColor": "#411e25"
+    }
+  }
+}

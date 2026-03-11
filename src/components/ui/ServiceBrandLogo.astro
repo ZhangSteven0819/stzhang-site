@@ -1,0 +1,80 @@
+---
+interface Props {
+  variant: 'physio' | 'women' | 'waves';
+  class?: string;
+}
+
+const { variant, class: className = '' } = Astro.props;
+
+const variants = {
+  physio: {
+    title: 'Sound of Physio',
+    subline: 'Klinisk kvinnehelse',
+    accent: '#4a242c',
+    glow: 'rgb(124 79 58 / 26%)',
+  },
+  women: {
+    title: 'Sound of Women',
+    subline: 'Kompetanse for arbeidsliv',
+    accent: '#5d2b38',
+    glow: 'rgb(113 67 84 / 24%)',
+  },
+  waves: {
+    title: 'Sound of Waves',
+    subline: 'Nytt konsept',
+    accent: '#3f2a55',
+    glow: 'rgb(79 64 111 / 24%)',
+  },
+} as const;
+
+const brand = variants[variant];
+const classes = ['service-brand-logo', `service-brand-logo--${variant}`, className].filter(Boolean).join(' ');
+---
+
+<svg
+  class={classes}
+  viewBox="0 0 860 230"
+  role="img"
+  aria-label={brand.title}
+  style={`--service-brand-accent: ${brand.accent}; --service-brand-glow: ${brand.glow};`}
+>
+  <defs>
+    <linearGradient id={`service-gradient-${variant}`} x1="0%" x2="100%" y1="0%" y2="0%">
+      <stop offset="0%" stop-color="rgb(255 255 255 / 86%)"></stop>
+      <stop offset="100%" stop-color="rgb(247 241 235 / 55%)"></stop>
+    </linearGradient>
+  </defs>
+
+  <rect x="4" y="4" width="852" height="222" rx="40" fill={`url(#service-gradient-${variant})`} stroke="var(--service-brand-accent)" stroke-opacity="0.22" stroke-width="2"></rect>
+
+  <circle cx="770" cy="66" r="58" fill="var(--service-brand-glow)"></circle>
+  <circle cx="120" cy="178" r="46" fill="var(--service-brand-glow)"></circle>
+
+  <g fill="var(--service-brand-accent)" opacity="0.93">
+    <rect x="646" y="44" width="12" height="142" rx="6"></rect>
+    <rect x="670" y="26" width="12" height="178" rx="6"></rect>
+    <rect x="694" y="44" width="12" height="142" rx="6"></rect>
+    <rect x="718" y="68" width="12" height="94" rx="6"></rect>
+  </g>
+
+  <text x="48" y="112" fill="var(--service-brand-accent)" font-family="Montserrat, sans-serif" font-size="56" font-weight="600" letter-spacing="-0.01em">
+    {brand.title}
+  </text>
+  <text x="52" y="154" fill="var(--service-brand-accent)" font-family="Montserrat, sans-serif" font-size="24" font-weight="500" opacity="0.8">
+    {brand.subline}
+  </text>
+</svg>
+
+<style>
+  .service-brand-logo {
+    width: min(100%, 560px);
+    height: auto;
+    display: block;
+  }
+
+  @media (max-width: 820px) {
+    .service-brand-logo {
+      width: min(100%, 420px);
+    }
+  }
+</style>

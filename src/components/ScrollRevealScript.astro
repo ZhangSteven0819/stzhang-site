@@ -6,6 +6,8 @@
     const root = document.documentElement;
     const revealItems = Array.from(document.querySelectorAll('[data-reveal]'));
     const brandBar = document.querySelector('[data-brand-bar]');
+    const brandRail = document.querySelector('.global-brand-rail');
+    const hero = document.querySelector('.hero');
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     const updateBrandBar = () => {
@@ -14,10 +16,19 @@
       else brandBar.classList.remove('is-scrolled');
     };
 
+    const updateBrandRail = () => {
+      if (!brandRail || !hero) return;
+      const heroRect = hero.getBoundingClientRect();
+      const heroInFocus = heroRect.bottom > 120;
+      brandRail.classList.toggle('is-minimal', !heroInFocus);
+    };
+
     if (prefersReducedMotion) {
       revealItems.forEach((item) => item.classList.add('is-visible'));
       updateBrandBar();
+      updateBrandRail();
       window.addEventListener('scroll', updateBrandBar, { passive: true });
+      window.addEventListener('scroll', updateBrandRail, { passive: true });
       return;
     }
 
@@ -54,6 +65,8 @@
     }
 
     updateBrandBar();
+    updateBrandRail();
     window.addEventListener('scroll', updateBrandBar, { passive: true });
+    window.addEventListener('scroll', updateBrandRail, { passive: true });
   })();
 </script>

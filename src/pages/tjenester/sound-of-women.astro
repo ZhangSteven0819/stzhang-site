@@ -1,0 +1,33 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { homepageContent } from '../../config/homepage';
+import ServiceBrandLogo from '../../components/ui/ServiceBrandLogo.astro';
+
+const women = homepageContent.services.women;
+---
+
+<Layout title="Sound of Women">
+  <main class="home-page" id="top">
+    <section class="services-showcase" aria-label="Sound of Women">
+      <div class="container services-showcase__stack">
+        <article class="services-showcase__card">
+          <ServiceBrandLogo variant="women" class="services-showcase__brand" />
+          <p class="services-showcase__lead">{women.lead}</p>
+
+          <div class="services-women-grid">
+            {women.blocks.map((block) => (
+              <article class="services-women-card">
+                <h3>{block.title}</h3>
+                <p>{block.body}</p>
+                <a href={block.ctaHref} class="hero-btn hero-btn--primary">{block.ctaLabel}</a>
+                {block.ctaPending && <p class="services-link-note">Lenke kommer</p>}
+              </article>
+            ))}
+          </div>
+
+          <a href="/tjenester" class="hero-btn hero-btn--light">Tilbake til tjenester</a>
+        </article>
+      </div>
+    </section>
+  </main>
+</Layout>

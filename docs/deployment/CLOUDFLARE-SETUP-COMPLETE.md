@@ -167,8 +167,8 @@ npm run deploy
 Then add environment variables in Cloudflare Dashboard:
 
 - [ ] Navigate to Workers & Pages → decap-oauth-proxy → Settings → Variables
-- [ ] Add secret: `OAUTH_CLIENT_ID` = Your GitHub OAuth Client ID
-- [ ] Add secret: `OAUTH_CLIENT_SECRET` = Your GitHub OAuth Client Secret
+- [ ] Add secret: `GITHUB_CLIENT_ID` = Your GitHub OAuth Client ID
+- [ ] Add secret: `GITHUB_CLIENT_SECRET` = Your GitHub OAuth Client Secret
 
 ### Step 3: Configure Custom Domain for Worker
 

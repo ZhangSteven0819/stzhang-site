@@ -1,0 +1,157 @@
+{
+  "modules": [
+    {
+      "id": "hero-main",
+      "type": "hero",
+      "enabled": true,
+      "variant": "standard",
+      "order": 10,
+      "kicker": "Kunde Utkast",
+      "title": "En tydelig tjenesteopplevelse for dine kunder",
+      "lead": "Bruk denne templaten til rask lansering med god struktur for innhold, design og konvertering.",
+      "image": {
+        "src": "/images/simone-hero-portrait.jpg",
+        "webpSrc": "/images/simone-hero-portrait.webp",
+        "alt": "Hero-bilde"
+      },
+      "primaryCtaLabel": "Bestill time",
+      "secondaryCtaLabel": "Kontakt"
+    },
+    {
+      "id": "proof-main",
+      "type": "proof_strip",
+      "enabled": true,
+      "variant": "standard",
+      "order": 20,
+      "items": [
+        {
+          "id": "proof-1",
+          "label": "Faglig ramme",
+          "value": "Dokumentert metodikk og tydelig leveranse",
+          "verified": true,
+          "sourceNote": "Template baseline"
+        },
+        {
+          "id": "proof-2",
+          "label": "Tilgjengelighet",
+          "value": "Direkte kontakt via e-post og telefon",
+          "verified": true,
+          "sourceNote": "Template baseline"
+        }
+      ]
+    },
+    {
+      "id": "services-main",
+      "type": "service_cards",
+      "enabled": true,
+      "variant": "standard",
+      "order": 30,
+      "cards": [
+        {
+          "id": "physio",
+          "title": "Service A",
+          "lead": "Tjenester presentert som modulaere kort med tydelige CTA-er.",
+          "moreTopics": [
+            "Tema 1",
+            "Tema 2"
+          ]
+        },
+        {
+          "id": "women",
+          "title": "Service B",
+          "lead": "Tjenester presentert som modulaere kort med tydelige CTA-er.",
+          "blocks": [
+            {
+              "title": "Eksempelblokk",
+              "body": "Bytt ut med kundeinnhold i CMS.",
+              "ctaLabel": "Kontakt",
+              "ctaHref": "/kontakt",
+              "ctaPending": false
+            }
+          ]
+        },
+        {
+          "id": "waves",
+          "title": "Service C",
+          "lead": "Tjenester presentert som modulaere kort med tydelige CTA-er.",
+          "launchLabel": "Kommer snart"
+        }
+      ]
+    },
+    {
+      "id": "rich-about",
+      "type": "rich_text",
+      "enabled": true,
+      "variant": "standard",
+      "order": 40,
+      "title": "Om oss",
+      "name": "Kunde Utkast",
+      "ingress": "Denne seksjonen er modulbasert og kan tilpasses per kunde direkte i CMS.",
+      "primaryCtaLabel": "Bestill time",
+      "roles": [
+        "Fagperson",
+        "Radgiver"
+      ],
+      "journey": [
+        "Dette er starttekst for kundehistorie. Oppdateres i CMS."
+      ],
+      "education": [
+        "Utdanning"
+      ],
+      "courses": [
+        "Kurs"
+      ]
+    },
+    {
+      "id": "gallery-about",
+      "type": "gallery",
+      "enabled": true,
+      "variant": "standard",
+      "order": 50,
+      "items": [
+        {
+          "src": "/images/om-workshop-circle.jpg",
+          "alt": "Galleri bilde 1",
+          "caption": "Bildetekst 1",
+          "kind": "photo"
+        }
+      ]
+    },
+    {
+      "id": "contact-main",
+      "type": "contact_block",
+      "enabled": true,
+      "variant": "standard",
+      "order": 60,
+      "title": "Kontakt oss",
+      "lead": "Ta kontakt for sporsmal, bestilling eller samarbeid.",
+      "email": "kontakt@kunde-utkast.no",
+      "phoneDisplay": "99 88 77 66",
+      "phoneLink": "99887766",
+      "address": ""
+    },
+    {
+      "id": "social-main",
+      "type": "social_feed",
+      "enabled": false,
+      "variant": "standard",
+      "order": 65,
+      "provider": "taggbox",
+      "widgetId": "",
+      "profileSources": [],
+      "refreshCadence": "daily",
+      "title": "Folg oss i sosiale medier",
+      "lead": "Oppdatert feed fra sosiale plattformer."
+    },
+    {
+      "id": "cta-main",
+      "type": "cta_band",
+      "enabled": true,
+      "variant": "standard",
+      "order": 70,
+      "title": "Klar for neste steg?",
+      "primaryLabel": "Bestill time",
+      "secondaryLabel": "Kontakt"
+    }
+  ]
+}

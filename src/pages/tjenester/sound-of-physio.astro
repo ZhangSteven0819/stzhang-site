@@ -1,0 +1,30 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { homepageContent } from '../../config/homepage';
+import ServiceBrandLogo from '../../components/ui/ServiceBrandLogo.astro';
+
+const physio = homepageContent.services.physio;
+---
+
+<Layout title="Sound of Physio">
+  <main class="home-page" id="top">
+    <section class="services-showcase" aria-label="Sound of Physio">
+      <div class="container services-showcase__stack">
+        <article class="services-showcase__card">
+          <ServiceBrandLogo variant="physio" class="services-showcase__brand" />
+          <p class="services-showcase__lead">{physio.lead}</p>
+
+          <div class="services-topics" aria-label="Temaer i Sound of Physio">
+            {physio.moreTopics.map((topic) => (
+              <details class="services-topic">
+                <summary>{topic}</summary>
+              </details>
+            ))}
+          </div>
+
+          <a href="/tjenester" class="hero-btn hero-btn--light">Tilbake til tjenester</a>
+        </article>
+      </div>
+    </section>
+  </main>
+</Layout>

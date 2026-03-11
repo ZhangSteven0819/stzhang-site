@@ -6,6 +6,7 @@ This directory contains all project documentation organized by topic.
 
 ```
 docs/
+├── client/              # Client bootstrap and onboarding docs
 ├── deployment/          # Deployment guides and configuration
 ├── design/             # Design system documentation
 ├── README.md           # This file
@@ -34,6 +35,15 @@ The `design/` directory contains design system documentation:
 
 - **[DESIGN-SYSTEM-SETUP.md](design/DESIGN-SYSTEM-SETUP.md)** - Complete design system guide
 - **[DESIGN-QUICK-REFERENCE.md](design/DESIGN-QUICK-REFERENCE.md)** - Quick reference for tokens and components
+
+## Client Factory Documentation
+
+- **[TEMPLATE-FACTORY.md](client/TEMPLATE-FACTORY.md)** - Template factory architecture and workflow
+- **[MEETING-INTAKE.md](client/MEETING-INTAKE.md)** - Interactive onboarding intake contract
+- **[NO-CLI-ONBOARDING.md](client/NO-CLI-ONBOARDING.md)** - GitHub form onboarding without local terminal usage
+- **[BRUKSANVISNING-INTERNT.md](client/BRUKSANVISNING-INTERNT.md)** - Intern operativ guide for onboarding/drift
+- **[BRUKSANVISNING-KUNDE.md](client/BRUKSANVISNING-KUNDE.md)** - Kundeveiledning for CMS-redigering
+- **[onboarding-checklist.md](client/onboarding-checklist.md)** - Standard customer onboarding steps
 
 ## Status & History
 

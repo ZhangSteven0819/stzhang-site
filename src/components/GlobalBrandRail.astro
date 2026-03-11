@@ -1,0 +1,20 @@
+---
+import { LOGO_HOME_HREF } from '../config/site';
+import { siteSettings } from '../config/site-settings';
+import Logo from './ui/Logo.astro';
+---
+
+<div class="global-brand-rail" aria-label="Global merkeprofil">
+  <a
+    href={LOGO_HOME_HREF}
+    class="global-brand-rail__logo-link"
+    aria-label={siteSettings.brand.homeLinkAriaLabel}
+  >
+    <Logo
+      class="global-brand-rail__logo"
+      size="base"
+      color="var(--homepage-brand-deep)"
+      ariaLabel={siteSettings.brand.logoAriaLabel}
+    />
+  </a>
+</div>

@@ -1,0 +1,66 @@
+{
+  "version": "1.0",
+  "capturedAt": "2026-03-11T02:41:31.791Z",
+  "client": {
+    "id": "megard-bil",
+    "brandName": "Megård Bil",
+    "primaryContact": {
+      "name": "Megård Bil",
+      "email": "post@megardbil.no",
+      "phone": "99 99 99 99",
+      "role": "Daglig leder"
+    }
+  },
+  "technical": {
+    "repoOwner": "allisson79",
+    "repoName": "megard-bil-site",
+    "productionDomain": "megardbil.no",
+    "devDomain": "megard-bil-dev.pages.dev",
+    "cmsProxyDomain": "decap.soundofsimone.no",
+    "languageMode": "single",
+    "defaultLocale": "nb",
+    "secondaryLocale": "en",
+    "themePreset": "minimal"
+  },
+  "design": {
+    "styleDirection": "Moderne og tillitsvekkende",
+    "visualWeight": "balanced",
+    "notes": "Bilforhandler med tydelig CTA og enkel kontakt."
+  },
+  "timeline": {
+    "goLiveTarget": "DEV klart innen 24 timer fra onboarding",
+    "milestones": [
+      {
+        "label": "DEV preview",
+        "targetDate": "TBD"
+      },
+      {
+        "label": "Production launch",
+        "targetDate": "TBD"
+      }
+    ]
+  },
+  "modules": {
+    "selected": [
+      "hero",
+      "proof_strip",
+      "service_cards",
+      "rich_text",
+      "gallery",
+      "contact_block",
+      "cta_band"
+    ],
+    "ownEditingLevel": "medium"
+  },
+  "social": {
+    "taggbox": {
+      "enabled": false,
+      "provider": "taggbox",
+      "widgetId": "",
+      "profileSources": [],
+      "refreshCadence": "daily",
+      "title": "Folg oss i sosiale medier",
+      "lead": "Oppdatert feed fra sosiale plattformer."
+    }
+  }
+}

@@ -1,18 +1,362 @@
 backend:
   name: github
   repo: allisson79/sound-of-simone
-  branch: main
+  branch: dev
   base_url: https://decap.soundofsimone.no
   auth_endpoint: /auth
 
-publish_mode: editorial_workflow
+publish_mode: simple
 
-site_url: https://soundofsimone.no
+site_url: https://dev.sound-of-simone-dev.pages.dev
+display_url: https://dev.sound-of-simone-dev.pages.dev
 
 media_folder: "public/images"
 public_folder: "/images"
 
 collections:
+  - name: "site_settings"
+    label: "Site Settings"
+    files:
+      - label: "Global Settings"
+        name: "global_settings"
+        file: "src/data/site-settings.json"
+        format: "json"
+        fields:
+          - label: "Brand"
+            name: "brand"
+            widget: "object"
+            fields:
+              - { label: "Name", name: "name", widget: "string" }
+              - { label: "Tagline", name: "tagline", widget: "string" }
+              - { label: "Logo aria-label", name: "logoAriaLabel", widget: "string" }
+              - { label: "Home link aria-label", name: "homeLinkAriaLabel", widget: "string" }
+
+          - label: "SEO"
+            name: "seo"
+            widget: "object"
+            fields:
+              - { label: "Default title", name: "defaultTitle", widget: "string" }
+              - { label: "Title suffix", name: "titleSuffix", widget: "string" }
+              - { label: "Description", name: "description", widget: "text" }
+
+          - label: "Localization"
+            name: "localization"
+            widget: "object"
+            fields:
+              - label: "Mode"
+                name: "mode"
+                widget: "select"
+                options: ["single", "bilingual"]
+              - { label: "Default locale", name: "defaultLocale", widget: "string" }
+              - label: "Locales"
+                name: "locales"
+                widget: "list"
+                field: { label: "Locale", name: "locale", widget: "string" }
+
+          - label: "Theme"
+            name: "theme"
+            widget: "object"
+            fields:
+              - { label: "Preset", name: "preset", widget: "string" }
+              - label: "Tokens"
+                name: "tokens"
+                widget: "object"
+                fields:
+                  - { label: "Brand color", name: "brandColor", widget: "string" }
+
+          - label: "Navigation"
+            name: "navigation"
+            widget: "object"
+            fields:
+              - { label: "Logo home link", name: "logoHomeHref", widget: "string" }
+              - { label: "Booking URL", name: "bookingUrl", widget: "string" }
+              - { label: "Wave contact target", name: "waveContactTarget", widget: "string" }
+              - { label: "Wave embed src", name: "waveEmbedSrc", widget: "string" }
+              - { label: "Wave embed animated", name: "waveEmbedAnimated", widget: "string" }
+              - { label: "Wave embed static", name: "waveEmbedStatic", widget: "string" }
+              - label: "Bottom quick nav"
+                name: "bottomQuickNav"
+                widget: "list"
+                summary: "{{fields.label}} -> {{fields.href}}"
+                fields:
+                  - { label: "Label", name: "label", widget: "string" }
+                  - { label: "Href", name: "href", widget: "string" }
+                  - label: "Kind"
+                    name: "kind"
+                    widget: "select"
+                    options: ["link", "menu"]
+              - label: "Menu groups"
+                name: "menuGroups"
+                widget: "list"
+                summary: "{{fields.title}}"
+                fields:
+                  - { label: "Title", name: "title", widget: "string" }
+                  - label: "Items"
+                    name: "items"
+                    widget: "list"
+                    summary: "{{fields.label}} -> {{fields.href}}"
+                    fields:
+                      - { label: "Label", name: "label", widget: "string" }
+                      - { label: "Href", name: "href", widget: "string" }
+              - label: "Services menu links"
+                name: "servicesMenuLinks"
+                widget: "list"
+                summary: "{{fields.label}} -> {{fields.href}}"
+                fields:
+                  - { label: "Label", name: "label", widget: "string" }
+                  - { label: "Href", name: "href", widget: "string" }
+
+          - label: "Contact"
+            name: "contact"
+            widget: "object"
+            fields:
+              - { label: "Email", name: "email", widget: "string" }
+              - { label: "Phone display", name: "phoneDisplay", widget: "string" }
+              - { label: "Phone link", name: "phoneLink", widget: "string" }
+              - { label: "Address", name: "address", widget: "string", required: false }
+
+          - label: "Booking"
+            name: "booking"
+            widget: "object"
+            fields:
+              - { label: "Title", name: "title", widget: "string" }
+              - { label: "Lead", name: "lead", widget: "text" }
+              - { label: "Status label", name: "statusLabel", widget: "string" }
+              - { label: "CTA label", name: "ctaLabel", widget: "string" }
+
+          - label: "Footer"
+            name: "footer"
+            widget: "object"
+            fields:
+              - { label: "Legal text", name: "legalText", widget: "string" }
+
+  - name: "page_modules"
+    label: "Page Modules"
+    files:
+      - label: "Homepage"
+        name: "home_modules"
+        file: "src/data/page-modules/home.json"
+        format: "json"
+        fields:
+          - label: "Modules"
+            name: "modules"
+            widget: "list"
+            summary: "{{fields.type}} - {{fields.id}}"
+            types:
+              - label: "Hero"
+                name: "hero"
+                widget: "object"
+                fields:
+                  - { label: "Module ID", name: "id", widget: "string" }
+                  - { label: "Type", name: "type", widget: "hidden", default: "hero" }
+                  - { label: "Enabled", name: "enabled", widget: "boolean", default: true }
+                  - label: "Variant"
+                    name: "variant"
+                    widget: "select"
+                    options: ["compact", "standard", "expanded"]
+                    default: "standard"
+                  - { label: "Order", name: "order", widget: "number", value_type: "int" }
+                  - { label: "Kicker", name: "kicker", widget: "string", required: false }
+                  - { label: "Title", name: "title", widget: "string" }
+                  - { label: "Lead", name: "lead", widget: "text" }
+                  - label: "Image"
+                    name: "image"
+                    widget: "object"
+                    fields:
+                      - { label: "Image", name: "src", widget: "image", allow_multiple: false }
+                      - { label: "WebP path", name: "webpSrc", widget: "string" }
+                      - { label: "Alt", name: "alt", widget: "string" }
+                  - { label: "Primary CTA", name: "primaryCtaLabel", widget: "string" }
+                  - { label: "Secondary CTA", name: "secondaryCtaLabel", widget: "string" }
+
+              - label: "Proof Strip"
+                name: "proof_strip"
+                widget: "object"
+                fields:
+                  - { label: "Module ID", name: "id", widget: "string" }
+                  - { label: "Type", name: "type", widget: "hidden", default: "proof_strip" }
+                  - { label: "Enabled", name: "enabled", widget: "boolean", default: true }
+                  - label: "Variant"
+                    name: "variant"
+                    widget: "select"
+                    options: ["compact", "standard", "expanded"]
+                    default: "standard"
+                  - { label: "Order", name: "order", widget: "number", value_type: "int" }
+                  - label: "Items"
+                    name: "items"
+                    widget: "list"
+                    summary: "{{fields.label}}"
+                    fields:
+                      - { label: "ID", name: "id", widget: "string" }
+                      - { label: "Label", name: "label", widget: "string" }
+                      - { label: "Value", name: "value", widget: "string" }
+                      - { label: "Verified", name: "verified", widget: "boolean", default: true }
+                      - { label: "Source note", name: "sourceNote", widget: "string" }
+
+              - label: "Service Cards"
+                name: "service_cards"
+                widget: "object"
+                fields:
+                  - { label: "Module ID", name: "id", widget: "string" }
+                  - { label: "Type", name: "type", widget: "hidden", default: "service_cards" }
+                  - { label: "Enabled", name: "enabled", widget: "boolean", default: true }
+                  - label: "Variant"
+                    name: "variant"
+                    widget: "select"
+                    options: ["compact", "standard", "expanded"]
+                    default: "standard"
+                  - { label: "Order", name: "order", widget: "number", value_type: "int" }
+                  - label: "Cards"
+                    name: "cards"
+                    widget: "list"
+                    summary: "{{fields.title}}"
+                    fields:
+                      - { label: "Card ID", name: "id", widget: "string" }
+                      - { label: "Title", name: "title", widget: "string" }
+                      - { label: "Lead", name: "lead", widget: "text" }
+                      - label: "More topics"
+                        name: "moreTopics"
+                        widget: "list"
+                        required: false
+                        field: { label: "Topic", name: "topic", widget: "string" }
+                      - label: "Blocks"
+                        name: "blocks"
+                        widget: "list"
+                        required: false
+                        summary: "{{fields.title}}"
+                        fields:
+                          - { label: "Title", name: "title", widget: "string" }
+                          - { label: "Body", name: "body", widget: "text" }
+                          - { label: "CTA label", name: "ctaLabel", widget: "string" }
+                          - { label: "CTA href", name: "ctaHref", widget: "string" }
+                          - { label: "CTA pending", name: "ctaPending", widget: "boolean", default: false }
+                      - { label: "Launch label", name: "launchLabel", widget: "string", required: false }
+
+              - label: "Rich Text"
+                name: "rich_text"
+                widget: "object"
+                fields:
+                  - { label: "Module ID", name: "id", widget: "string" }
+                  - { label: "Type", name: "type", widget: "hidden", default: "rich_text" }
+                  - { label: "Enabled", name: "enabled", widget: "boolean", default: true }
+                  - label: "Variant"
+                    name: "variant"
+                    widget: "select"
+                    options: ["compact", "standard", "expanded"]
+                    default: "standard"
+                  - { label: "Order", name: "order", widget: "number", value_type: "int" }
+                  - { label: "Title", name: "title", widget: "string" }
+                  - { label: "Name", name: "name", widget: "string" }
+                  - { label: "Ingress", name: "ingress", widget: "text" }
+                  - { label: "Primary CTA", name: "primaryCtaLabel", widget: "string" }
+                  - label: "Roles"
+                    name: "roles"
+                    widget: "list"
+                    field: { label: "Role", name: "role", widget: "string" }
+                  - label: "Journey"
+                    name: "journey"
+                    widget: "list"
+                    field: { label: "Paragraph", name: "paragraph", widget: "text" }
+                  - label: "Education"
+                    name: "education"
+                    widget: "list"
+                    field: { label: "Item", name: "item", widget: "string" }
+                  - label: "Courses"
+                    name: "courses"
+                    widget: "list"
+                    field: { label: "Item", name: "item", widget: "string" }
+
+              - label: "Gallery"
+                name: "gallery"
+                widget: "object"
+                fields:
+                  - { label: "Module ID", name: "id", widget: "string" }
+                  - { label: "Type", name: "type", widget: "hidden", default: "gallery" }
+                  - { label: "Enabled", name: "enabled", widget: "boolean", default: true }
+                  - label: "Variant"
+                    name: "variant"
+                    widget: "select"
+                    options: ["compact", "standard", "expanded"]
+                    default: "standard"
+                  - { label: "Order", name: "order", widget: "number", value_type: "int" }
+                  - label: "Items"
+                    name: "items"
+                    widget: "list"
+                    summary: "{{fields.caption}}"
+                    fields:
+                      - { label: "Image", name: "src", widget: "image", allow_multiple: false }
+                      - { label: "Alt", name: "alt", widget: "string" }
+                      - { label: "Caption", name: "caption", widget: "string" }
+                      - label: "Kind"
+                        name: "kind"
+                        widget: "select"
+                        options: ["photo", "book"]
+
+              - label: "CTA Band"
+                name: "cta_band"
+                widget: "object"
+                fields:
+                  - { label: "Module ID", name: "id", widget: "string" }
+                  - { label: "Type", name: "type", widget: "hidden", default: "cta_band" }
+                  - { label: "Enabled", name: "enabled", widget: "boolean", default: true }
+                  - label: "Variant"
+                    name: "variant"
+                    widget: "select"
+                    options: ["compact", "standard", "expanded"]
+                    default: "standard"
+                  - { label: "Order", name: "order", widget: "number", value_type: "int" }
+                  - { label: "Title", name: "title", widget: "string" }
+                  - { label: "Primary label", name: "primaryLabel", widget: "string" }
+                  - { label: "Secondary label", name: "secondaryLabel", widget: "string" }
+
+              - label: "Contact Block"
+                name: "contact_block"
+                widget: "object"
+                fields:
+                  - { label: "Module ID", name: "id", widget: "string" }
+                  - { label: "Type", name: "type", widget: "hidden", default: "contact_block" }
+                  - { label: "Enabled", name: "enabled", widget: "boolean", default: true }
+                  - label: "Variant"
+                    name: "variant"
+                    widget: "select"
+                    options: ["compact", "standard", "expanded"]
+                    default: "standard"
+                  - { label: "Order", name: "order", widget: "number", value_type: "int" }
+                  - { label: "Title", name: "title", widget: "string" }
+                  - { label: "Lead", name: "lead", widget: "text" }
+                  - { label: "Email", name: "email", widget: "string" }
+                  - { label: "Phone display", name: "phoneDisplay", widget: "string" }
+                  - { label: "Phone link", name: "phoneLink", widget: "string" }
+                  - { label: "Address", name: "address", widget: "string", required: false }
+
+              - label: "Social Feed"
+                name: "social_feed"
+                widget: "object"
+                fields:
+                  - { label: "Module ID", name: "id", widget: "string" }
+                  - { label: "Type", name: "type", widget: "hidden", default: "social_feed" }
+                  - { label: "Enabled", name: "enabled", widget: "boolean", default: false }
+                  - label: "Variant"
+                    name: "variant"
+                    widget: "select"
+                    options: ["compact", "standard", "expanded"]
+                    default: "standard"
+                  - { label: "Order", name: "order", widget: "number", value_type: "int" }
+                  - label: "Provider"
+                    name: "provider"
+                    widget: "select"
+                    options: ["taggbox"]
+                    default: "taggbox"
+                  - { label: "Widget ID", name: "widgetId", widget: "string", required: false }
+                  - label: "Profile sources"
+                    name: "profileSources"
+                    widget: "list"
+                    required: false
+                    field: { label: "Source", name: "source", widget: "string" }
+                  - { label: "Refresh cadence", name: "refreshCadence", widget: "string", default: "daily" }
+                  - { label: "Title", name: "title", widget: "string", required: false }
+                  - { label: "Lead", name: "lead", widget: "text", required: false }
+
   - name: "pages"
     label: "Pages"
     files:

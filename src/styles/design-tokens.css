@@ -21,7 +21,7 @@
   --color-primary-400: #bd7f8f;
   --color-primary-500: #a75f74;
   --color-primary-600: #8d465c;
-  --color-primary-700: #6b2f42;
+  --color-primary-700: #411e25;
   --color-primary-800: #542335;
   --color-primary-900: #3b1725;
   
@@ -44,10 +44,10 @@
   --color-info: #3b82f6;
   
   /* Text Colors */
-  --color-text-primary: #171717;
-  --color-text-secondary: #525252;
-  --color-text-muted: #737373;
-  --color-text-inverse: #ffffff;
+  --color-text-primary: #411e25;
+  --color-text-secondary: #411e25;
+  --color-text-muted: #411e25;
+  --color-text-inverse: #411e25;
   
   /* Background Colors */
   --color-bg-primary: #ffffff;

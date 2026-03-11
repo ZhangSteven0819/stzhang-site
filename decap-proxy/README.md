@@ -80,7 +80,20 @@ The worker will be available at `http://localhost:8787`.
 
 - `GITHUB_CLIENT_ID` - GitHub OAuth App Client ID (secret)
 - `GITHUB_CLIENT_SECRET` - GitHub OAuth App Client Secret (secret)
-- `ALLOWED_ORIGINS` - comma-separated allowlist for OAuth origin checks (non-secret var)
+- `ALLOWED_ORIGINS` - comma-separated explicit allowlist (production + localhost)
+- `DEV_ORIGIN_REGEX` - regex for auto-allowing DEV origins (default: `^https://([a-z0-9-]+\\.)?[a-z0-9-]+-dev\\.pages\\.dev$`)
+
+### Shared Worker Ops Routine (Template Factory)
+
+Prelaunch (recommended): keep `ALLOWED_ORIGINS` production-ready + localhost.
+- `https://customer-domain.tld`
+- `https://www.customer-domain.tld`
+- `http://localhost:4321`
+- DEV domains (`*-dev.pages.dev`) are handled by `DEV_ORIGIN_REGEX`.
+
+Launch cutover: add production origin(s) when going live.
+- `https://customer-domain.tld`
+- `https://www.customer-domain.tld` (if used)
 
 ## Troubleshooting
 
@@ -142,5 +155,5 @@ If you see intermittent Worker failures:
 - Check that the OAuth App has not been suspended
 
 **CORS errors**
-- Verify your main site URL (`https://soundofsimone.no`) is correctly set in the worker code
+- Verify `ALLOWED_ORIGINS` matches active CMS origin(s) for current phase (prelaunch vs launch)
 - Check browser console for specific error messages

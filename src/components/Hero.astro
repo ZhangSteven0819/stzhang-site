@@ -1,52 +1,44 @@
 ---
 import { BOOKING_URL, BRAND_COLOR, DEV_MODE } from '../config/site';
-import WaveContactButton from './ui/WaveContactButton.astro';
+import { homepageContent } from '../config/homepage';
+import { siteSettings } from '../config/site-settings';
+import Logo from './ui/Logo.astro';
 ---
 
 <section class="hero" aria-labelledby="hero-title" style={`--homepage-brand: ${BRAND_COLOR};`}>
+  <div class="hero-media">
+    <picture>
+      <source srcset={homepageContent.hero.image.webpSrc} type="image/webp" />
+      <img
+        src={homepageContent.hero.image.src}
+        alt={homepageContent.hero.image.alt}
+        loading="eager"
+        decoding="async"
+        fetchpriority="high"
+      />
+    </picture>
+  </div>
   <div class="hero-bg" aria-hidden="true"></div>
 
-  <div class="container hero-layout">
-    <aside class="hero-visual" aria-hidden="true">
-      <div class="placeholder-image placeholder-image--large">
-        <img
-          src="https://images.pexels.com/photos/4586740/pexels-photo-4586740.jpeg?auto=compress&cs=tinysrgb&w=1200"
-          alt=""
-          loading="eager"
-          decoding="async"
-        />
-        <p class="placeholder-credit">Eksempelbilde (gratis stock)</p>
+  <div class="hero-layout">
+    <div class="hero-content" data-reveal style="--reveal-delay: 90ms;">
+      {DEV_MODE && <p class="hero-preview" data-reveal style="--reveal-delay: 20ms;">Forhandsvisning</p>}
+      <div class="hero-brand-mark" data-reveal style="--reveal-delay: 120ms;" aria-hidden="true">
+        <Logo size="base" color={BRAND_COLOR} ariaLabel={siteSettings.brand.logoAriaLabel} />
       </div>
-      <div class="placeholder-image placeholder-image--small">
-        <img
-          src="https://images.pexels.com/photos/7089401/pexels-photo-7089401.jpeg?auto=compress&cs=tinysrgb&w=800"
-          alt=""
-          loading="lazy"
-          decoding="async"
-        />
-        <p class="placeholder-badge">Eksempel</p>
-      </div>
-    </aside>
-
-    <div class="hero-content">
-      {DEV_MODE && <p class="hero-preview" data-reveal style="--reveal-delay: 20ms;">Forhåndsvisning</p>}
-      <p class="hero-kicker" data-reveal style="--reveal-delay: 90ms;">Sound of Simone</p>
-      <h1 id="hero-title" data-reveal style="--reveal-delay: 150ms;">
-        Fysioterapi med fordypning i kvinnehelse
+      <h1 id="hero-title" data-reveal style="--reveal-delay: 170ms;">
+        {homepageContent.hero.title}
       </h1>
       <p class="hero-lead" data-reveal style="--reveal-delay: 220ms;">
-        Skreddersydde behandlingsforløp for deg som ønsker helhetlig oppfølging, trygghet og ro i
-        møte med kroppen din.
+        {homepageContent.hero.lead}
       </p>
+
+      <div class="hero-actions" data-reveal style="--reveal-delay: 260ms;">
+        <a class="hero-btn hero-btn--primary" href={BOOKING_URL}>
+          {homepageContent.hero.primaryCtaLabel}
+        </a>
+        <a class="hero-btn hero-btn--light" href="/kontakt">{homepageContent.hero.secondaryCtaLabel}</a>
+      </div>
     </div>
   </div>
-
-  <nav class="floating-nav" aria-label="Fagområder">
-    <a class="hero-chip" href="#tjenester">Urologi</a>
-    <a class="hero-chip" href="#tjenester">Fertilitet</a>
-    <a class="hero-chip" href="#tjenester">Gynekologi</a>
-    <a class="hero-chip" href="#tjenester">Ortopedi</a>
-    <a class="hero-chip" href="#tjenester">Flere fagområder</a>
-    <WaveContactButton href={BOOKING_URL} size="sm" class="floating-wave-button" label="Gå til kontakt" />
-  </nav>
 </section>

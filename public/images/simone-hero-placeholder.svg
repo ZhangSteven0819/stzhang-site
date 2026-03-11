@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1200" role="img" aria-labelledby="title desc">
+  <title id="title">Midlertidig Simone hero-bilde</title>
+  <desc id="desc">Plassholder inntil endelig portrett av Simone er levert.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f5ebee" />
+      <stop offset="100%" stop-color="#dcc4cb" />
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#552630" stop-opacity="0.85" />
+      <stop offset="100%" stop-color="#2f151b" stop-opacity="0.9" />
+    </linearGradient>
+  </defs>
+
+  <rect width="900" height="1200" fill="url(#bg)" />
+  <circle cx="745" cy="250" r="190" fill="#ffffff" fill-opacity="0.45" />
+  <circle cx="120" cy="1040" r="220" fill="#ffffff" fill-opacity="0.35" />
+
+  <g transform="translate(120 250)">
+    <ellipse cx="330" cy="390" rx="300" ry="410" fill="url(#accent)" />
+    <rect x="230" y="480" width="200" height="340" rx="96" fill="#ffffff" fill-opacity="0.16" />
+    <circle cx="330" cy="265" r="136" fill="#ffffff" fill-opacity="0.16" />
+  </g>
+
+  <g fill="#411e25" font-family="Montserrat, Arial, sans-serif" text-anchor="middle">
+    <text x="450" y="955" font-size="42" font-weight="700" letter-spacing="1">FOTO AV SIMONE KOMMER</text>
+    <text x="450" y="1006" font-size="29" font-weight="500">Midlertidig plassholder for hero-seksjonen</text>
+  </g>
+</svg>

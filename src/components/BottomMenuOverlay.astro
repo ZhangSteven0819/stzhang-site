@@ -1,0 +1,84 @@
+---
+import { homepageContent } from '../config/homepage';
+import { WAVE_EMBED_STATIC } from '../config/site';
+---
+
+<section
+  class="bottom-menu-overlay"
+  id="bottom-menu-overlay"
+  data-bottom-menu-overlay
+  hidden
+  aria-hidden="true"
+>
+  <button
+    type="button"
+    class="bottom-menu-overlay__backdrop"
+    data-bottom-menu-close
+    aria-label="Lukk meny"
+  ></button>
+
+  <div class="bottom-menu-overlay__panel" role="dialog" aria-modal="true" aria-labelledby="bottom-menu-title">
+    <header class="bottom-menu-overlay__header">
+      <h2 id="bottom-menu-title">Meny</h2>
+      <button type="button" class="bottom-menu-overlay__close" data-bottom-menu-close aria-label="Lukk meny">
+        Lukk
+      </button>
+    </header>
+
+    <div class="bottom-menu-overlay__groups">
+      {
+        homepageContent.menuGroups.map((group) => (
+          <section class="bottom-menu-group">
+            <h3>
+              <span class="bottom-pill__wave-frame bottom-pill__wave-frame--static bottom-menu-group__wave" aria-hidden="true">
+                <iframe src={WAVE_EMBED_STATIC} title="Dekorativt bølgesymbol" loading="lazy" tabindex="-1"></iframe>
+              </span>
+              {group.title}
+            </h3>
+            <ul>
+              {group.items.map((item) => <li><a href={item.href}>{item.label}</a></li>)}
+            </ul>
+          </section>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<script is:inline>
+  (() => {
+    const overlay = document.querySelector('[data-bottom-menu-overlay]');
+    const toggles = Array.from(document.querySelectorAll('[data-bottom-menu-toggle]'));
+    if (!(overlay instanceof HTMLElement) || toggles.length === 0) return;
+
+    const closeEls = Array.from(overlay.querySelectorAll('[data-bottom-menu-close], a'));
+    let previousFocus = null;
+
+    const setOpen = (open) => {
+      overlay.hidden = !open;
+      overlay.setAttribute('aria-hidden', open ? 'false' : 'true');
+      document.body.classList.toggle('menu-open', open);
+      toggles.forEach((toggle) => toggle.setAttribute('aria-expanded', String(open)));
+
+      if (open) {
+        previousFocus = document.activeElement;
+        const firstFocusable = overlay.querySelector('a, button');
+        if (firstFocusable instanceof HTMLElement) firstFocusable.focus();
+      } else if (previousFocus instanceof HTMLElement) {
+        previousFocus.focus();
+      }
+    };
+
+    toggles.forEach((toggle) => {
+      toggle.addEventListener('click', () => setOpen(overlay.hidden));
+    });
+
+    closeEls.forEach((el) => {
+      el.addEventListener('click', () => setOpen(false));
+    });
+
+    overlay.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') setOpen(false);
+    });
+  })();
+</script>

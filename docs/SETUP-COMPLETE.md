@@ -53,8 +53,8 @@ The CMS backend is configured to use GitHub with an OAuth proxy at `https://deca
 3. **Add Environment Variables in Cloudflare**:
    - Go to Cloudflare Dashboard → Workers & Pages → decap-oauth-proxy
    - Settings → Variables → Add secrets:
-     - `OAUTH_CLIENT_ID` = Your GitHub OAuth Client ID
-     - `OAUTH_CLIENT_SECRET` = Your GitHub OAuth Client Secret
+     - `GITHUB_CLIENT_ID` = Your GitHub OAuth Client ID
+     - `GITHUB_CLIENT_SECRET` = Your GitHub OAuth Client Secret
 
 4. **Configure Worker Route**:
    - Update `decap-proxy/wrangler.toml` with your domain:

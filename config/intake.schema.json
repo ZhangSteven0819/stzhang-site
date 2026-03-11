@@ -1,0 +1,141 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://template-factory.local/schemas/meeting-intake.schema.json",
+  "title": "MeetingIntake",
+  "type": "object",
+  "required": [
+    "version",
+    "capturedAt",
+    "client",
+    "technical",
+    "design",
+    "timeline",
+    "modules",
+    "social"
+  ],
+  "properties": {
+    "version": { "type": "string", "const": "1.0" },
+    "capturedAt": { "type": "string", "format": "date-time" },
+    "client": {
+      "type": "object",
+      "required": ["id", "brandName", "primaryContact"],
+      "properties": {
+        "id": { "type": "string", "minLength": 2 },
+        "brandName": { "type": "string", "minLength": 2 },
+        "primaryContact": {
+          "type": "object",
+          "required": ["name", "email", "phone", "role"],
+          "properties": {
+            "name": { "type": "string", "minLength": 2 },
+            "email": { "type": "string", "minLength": 5 },
+            "phone": { "type": "string", "minLength": 5 },
+            "role": { "type": "string", "minLength": 2 }
+          }
+        }
+      }
+    },
+    "technical": {
+      "type": "object",
+      "required": [
+        "repoOwner",
+        "repoName",
+        "productionDomain",
+        "devDomain",
+        "cmsProxyDomain",
+        "languageMode",
+        "defaultLocale",
+        "secondaryLocale",
+        "themePreset"
+      ],
+      "properties": {
+        "repoOwner": { "type": "string", "minLength": 2 },
+        "repoName": { "type": "string", "minLength": 2 },
+        "productionDomain": { "type": "string", "minLength": 3 },
+        "devDomain": { "type": "string", "minLength": 3 },
+        "cmsProxyDomain": { "type": "string", "minLength": 3 },
+        "languageMode": { "type": "string", "enum": ["single", "bilingual"] },
+        "defaultLocale": { "type": "string", "minLength": 2 },
+        "secondaryLocale": { "type": "string", "minLength": 2 },
+        "themePreset": { "type": "string", "minLength": 2 }
+      }
+    },
+    "design": {
+      "type": "object",
+      "required": ["styleDirection", "visualWeight", "notes"],
+      "properties": {
+        "styleDirection": { "type": "string", "minLength": 2 },
+        "visualWeight": { "type": "string", "enum": ["light", "balanced", "bold"] },
+        "notes": { "type": "string" }
+      }
+    },
+    "timeline": {
+      "type": "object",
+      "required": ["goLiveTarget", "milestones"],
+      "properties": {
+        "goLiveTarget": { "type": "string" },
+        "milestones": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["label", "targetDate"],
+            "properties": {
+              "label": { "type": "string", "minLength": 2 },
+              "targetDate": { "type": "string", "minLength": 4 }
+            }
+          }
+        }
+      }
+    },
+    "modules": {
+      "type": "object",
+      "required": ["selected", "ownEditingLevel"],
+      "properties": {
+        "selected": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "enum": [
+              "hero",
+              "proof_strip",
+              "service_cards",
+              "rich_text",
+              "gallery",
+              "cta_band",
+              "contact_block",
+              "social_feed"
+            ]
+          }
+        },
+        "ownEditingLevel": { "type": "string", "enum": ["low", "medium", "high"] }
+      }
+    },
+    "social": {
+      "type": "object",
+      "required": ["taggbox"],
+      "properties": {
+        "taggbox": {
+          "type": "object",
+          "required": [
+            "enabled",
+            "provider",
+            "widgetId",
+            "profileSources",
+            "refreshCadence",
+            "title",
+            "lead"
+          ],
+          "properties": {
+            "enabled": { "type": "boolean" },
+            "provider": { "type": "string", "const": "taggbox" },
+            "widgetId": { "type": "string" },
+            "profileSources": { "type": "array", "items": { "type": "string" } },
+            "refreshCadence": { "type": "string" },
+            "title": { "type": "string" },
+            "lead": { "type": "string" }
+          }
+        }
+      }
+    }
+  }
+}

@@ -86,8 +86,8 @@ If not using automated deployment via GitHub Actions:
 
 - [ ] Worker secrets configured in Cloudflare Dashboard
   - [ ] Go to Workers & Pages → decap-oauth-proxy → Settings → Variables
-  - [ ] Add encrypted variable: `OAUTH_CLIENT_ID` (from GitHub OAuth App)
-  - [ ] Add encrypted variable: `OAUTH_CLIENT_SECRET` (from GitHub OAuth App)
+  - [ ] Add encrypted variable: `GITHUB_CLIENT_ID` (from GitHub OAuth App)
+  - [ ] Add encrypted variable: `GITHUB_CLIENT_SECRET` (from GitHub OAuth App)
   - [ ] Click "Save and deploy"
 
 - [ ] Worker custom domain configured
