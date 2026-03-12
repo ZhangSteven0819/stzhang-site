@@ -1,0 +1,225 @@
+---
+/**
+ * Wave Animation Component
+ * 
+ * An animated sound wave visualization in a circle.
+ * Will be used as a clickable menu button in the future.
+ * Features organic, energetic pulse animation.
+ */
+
+interface Props {
+  size?: 'sm' | 'base' | 'lg' | 'xl';
+  color?: string;
+  ringColor?: string;
+  animationSpeed?: 'slow' | 'normal' | 'fast';
+  animated?: boolean;
+  class?: string;
+  ariaLabel?: string;
+}
+
+const { 
+  size = 'base',
+  color = '#411e25',
+  ringColor = '#411e25',
+  animationSpeed = 'normal',
+  animated = true,
+  class: className = '',
+  ariaLabel = 'Sound wave animation',
+} = Astro.props;
+
+const sizeClasses = {
+  sm: 'wave-sm',
+  base: 'wave-base',
+  lg: 'wave-lg',
+  xl: 'wave-xl',
+};
+
+const speedClasses = {
+  slow: 'wave-slow',
+  normal: 'wave-normal',
+  fast: 'wave-fast',
+};
+
+const classes = [
+  'wave-container',
+  sizeClasses[size],
+  animated ? speedClasses[animationSpeed] : 'wave-static',
+  className,
+].filter(Boolean).join(' ');
+
+// Generate unique IDs for clip path to avoid conflicts
+const uniqueId = `clip-${Math.random().toString(36).substring(2, 9)}`;
+---
+
+<div class={classes} role="img" aria-label={ariaLabel}>
+  <svg viewBox="0 0 600 600" class="wave-svg">
+    <defs>
+      <clipPath id={uniqueId}>
+        <circle cx="300" cy="300" r="210"/>
+      </clipPath>
+    </defs>
+
+    <!-- Static circle ring -->
+    <circle 
+      class="wave-ring" 
+      cx="300" 
+      cy="300" 
+      r="210"
+      fill="none"
+      stroke={ringColor}
+      stroke-width="2"
+    />
+
+    <!-- Animated wave bars -->
+    <g class="wave" clip-path={`url(#${uniqueId})`} fill={color}>
+      <!-- Centerline = 300 -->
+      <rect x="170" y="275" width="12" height="50" rx="6"/>
+      <rect x="200" y="250" width="12" height="100" rx="6"/>
+      <rect x="230" y="220" width="12" height="160" rx="6"/>
+      <rect x="260" y="190" width="12" height="220" rx="6"/>
+      <rect x="290" y="170" width="12" height="260" rx="6"/>
+      <rect x="320" y="190" width="12" height="220" rx="6"/>
+      <rect x="350" y="220" width="12" height="160" rx="6"/>
+      <rect x="380" y="250" width="12" height="100" rx="6"/>
+      <rect x="410" y="275" width="12" height="50" rx="6"/>
+    </g>
+  </svg>
+</div>
+
+<style>
+  .wave-container {
+    display: inline-block;
+    transition: transform 0.2s ease;
+  }
+  
+  .wave-svg {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  
+  /* Size variants */
+  .wave-sm {
+    width: 80px;
+  }
+  
+  .wave-base {
+    width: 150px;
+  }
+  
+  .wave-lg {
+    width: 200px;
+  }
+  
+  .wave-xl {
+    width: 300px;
+  }
+  
+  /* Animation */
+  .wave rect {
+    transform-origin: center center;
+    transform-box: fill-box;
+    animation-name: pulse;
+    animation-iteration-count: infinite;
+    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .wave-static .wave rect {
+    animation: none;
+    transform: scaleY(0.82);
+  }
+  
+  /* Organic animation with different durations and delays for each bar */
+  .wave-normal .wave rect:nth-child(1) { animation-duration: 0.8s; animation-delay: 0.05s; }
+  .wave-normal .wave rect:nth-child(2) { animation-duration: 0.6s; animation-delay: 0.1s; }
+  .wave-normal .wave rect:nth-child(3) { animation-duration: 0.9s; animation-delay: 0.08s; }
+  .wave-normal .wave rect:nth-child(4) { animation-duration: 0.7s; animation-delay: 0.12s; }
+  .wave-normal .wave rect:nth-child(5) { animation-duration: 1s; animation-delay: 0.15s; }
+  .wave-normal .wave rect:nth-child(6) { animation-duration: 0.75s; animation-delay: 0.2s; }
+  .wave-normal .wave rect:nth-child(7) { animation-duration: 0.85s; animation-delay: 0.18s; }
+  .wave-normal .wave rect:nth-child(8) { animation-duration: 0.7s; animation-delay: 0.22s; }
+  .wave-normal .wave rect:nth-child(9) { animation-duration: 0.95s; animation-delay: 0.25s; }
+  
+  /* Faster animation speed */
+  .wave-fast .wave rect:nth-child(1) { animation-duration: 0.5s; animation-delay: 0.03s; }
+  .wave-fast .wave rect:nth-child(2) { animation-duration: 0.4s; animation-delay: 0.06s; }
+  .wave-fast .wave rect:nth-child(3) { animation-duration: 0.6s; animation-delay: 0.05s; }
+  .wave-fast .wave rect:nth-child(4) { animation-duration: 0.45s; animation-delay: 0.08s; }
+  .wave-fast .wave rect:nth-child(5) { animation-duration: 0.65s; animation-delay: 0.1s; }
+  .wave-fast .wave rect:nth-child(6) { animation-duration: 0.5s; animation-delay: 0.13s; }
+  .wave-fast .wave rect:nth-child(7) { animation-duration: 0.55s; animation-delay: 0.12s; }
+  .wave-fast .wave rect:nth-child(8) { animation-duration: 0.45s; animation-delay: 0.15s; }
+  .wave-fast .wave rect:nth-child(9) { animation-duration: 0.6s; animation-delay: 0.17s; }
+  
+  /* Slower animation speed */
+  .wave-slow .wave rect:nth-child(1) { animation-duration: 1.2s; animation-delay: 0.08s; }
+  .wave-slow .wave rect:nth-child(2) { animation-duration: 0.9s; animation-delay: 0.15s; }
+  .wave-slow .wave rect:nth-child(3) { animation-duration: 1.35s; animation-delay: 0.12s; }
+  .wave-slow .wave rect:nth-child(4) { animation-duration: 1.05s; animation-delay: 0.18s; }
+  .wave-slow .wave rect:nth-child(5) { animation-duration: 1.5s; animation-delay: 0.23s; }
+  .wave-slow .wave rect:nth-child(6) { animation-duration: 1.13s; animation-delay: 0.3s; }
+  .wave-slow .wave rect:nth-child(7) { animation-duration: 1.28s; animation-delay: 0.27s; }
+  .wave-slow .wave rect:nth-child(8) { animation-duration: 1.05s; animation-delay: 0.33s; }
+  .wave-slow .wave rect:nth-child(9) { animation-duration: 1.43s; animation-delay: 0.38s; }
+  
+  @keyframes pulse {
+    0% { transform: scaleY(0.6); }
+    50% { transform: scaleY(1.25); }
+    100% { transform: scaleY(0.6); }
+  }
+  
+  .wave-ring {
+    opacity: 0.9;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .wave-base {
+      width: 120px;
+    }
+    
+    .wave-lg {
+      width: 150px;
+    }
+    
+    .wave-xl {
+      width: 200px;
+    }
+  }
+  
+  /* Hover effect for future button use */
+  .wave-container:hover {
+    transform: scale(1.05);
+  }
+  
+  /* Prepare for button role */
+  .wave-container[role="button"] {
+    cursor: pointer;
+  }
+  
+  .wave-container[role="button"]:focus {
+    outline: 2px solid currentColor;
+    outline-offset: 4px;
+    border-radius: 50%;
+  }
+  
+  .wave-container[role="button"]:active {
+    transform: scale(0.95);
+  }
+  
+  /* Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    .wave rect {
+      animation: none;
+      transform: scaleY(0.8);
+    }
+    
+    .wave-container:hover {
+      transform: none;
+    }
+    
+    .wave-container[role="button"]:active {
+      transform: none;
+    }
+  }
+</style>

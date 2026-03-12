@@ -1,0 +1,119 @@
+---
+import { BOOKING_URL } from '../config/site';
+import { homepageContent } from '../config/homepage';
+
+interface Props {
+  variant?: 'full' | 'teaser';
+}
+
+const { variant = 'full' } = Astro.props;
+const isTeaser = variant === 'teaser';
+---
+
+<section class={isTeaser ? 'about-simone about-simone--teaser' : 'about-simone'} id="om-simone" aria-labelledby="om-simone-title">
+  {
+    isTeaser ? (
+      <div class="container">
+        <article class="about-simone__teaser-card">
+          <h2 id="om-simone-title" data-reveal style="--reveal-delay: 120ms;">{homepageContent.aboutSimone.title}</h2>
+          <p class="about-simone__identity" data-reveal style="--reveal-delay: 145ms;">{homepageContent.aboutSimone.name}</p>
+          <p class="about-simone__teaser-ingress" data-reveal style="--reveal-delay: 170ms;">
+            {homepageContent.aboutSimone.ingress}
+          </p>
+
+          <details class="about-simone__teaser-details" data-reveal style="--reveal-delay: 220ms;">
+            <summary>
+              <span class="about-simone__teaser-wave-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" focusable="false">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <g class="about-simone__teaser-wave-bars">
+                    <rect x="6.5" y="10.4" width="1.2" height="3.2" rx="0.6"></rect>
+                    <rect x="8.6" y="8.8" width="1.2" height="6.4" rx="0.6"></rect>
+                    <rect x="10.7" y="7.4" width="1.2" height="9.2" rx="0.6"></rect>
+                    <rect x="12.8" y="6.6" width="1.2" height="10.8" rx="0.6"></rect>
+                    <rect x="14.9" y="7.4" width="1.2" height="9.2" rx="0.6"></rect>
+                    <rect x="17.0" y="8.8" width="1.2" height="6.4" rx="0.6"></rect>
+                  </g>
+                </svg>
+              </span>
+              <span class="about-simone__teaser-summary-label about-simone__teaser-summary-label--closed">Les mer</span>
+              <span class="about-simone__teaser-summary-label about-simone__teaser-summary-label--open">Vis mindre</span>
+            </summary>
+            <div class="about-simone__teaser-content">
+              <h3 class="about-simone__section-title">Roller</h3>
+              <ul class="about-simone__detail-list">
+                {homepageContent.aboutSimone.roles.map((role) => <li>{role}</li>)}
+              </ul>
+
+              <p class="about-simone__contact-line">
+                Kontakt:
+                <a href={`mailto:${homepageContent.aboutSimone.contact.email}`}>{homepageContent.aboutSimone.contact.email}</a>
+                {' / '}
+                <a href={`tel:${homepageContent.aboutSimone.contact.phoneLink}`}>tlf: {homepageContent.aboutSimone.contact.phoneDisplay}</a>
+              </p>
+
+              <h3 class="about-simone__section-title">Min reise</h3>
+              {homepageContent.aboutSimone.journey.map((paragraph) => <p>{paragraph}</p>)}
+
+              <h3 class="about-simone__section-title">Utdanning</h3>
+              <ul class="about-simone__detail-list">
+                {homepageContent.aboutSimone.education.map((item) => <li>{item}</li>)}
+              </ul>
+
+              <h3 class="about-simone__section-title">Kurs</h3>
+              <ul class="about-simone__detail-list">
+                {homepageContent.aboutSimone.courses.map((item) => <li>{item}</li>)}
+              </ul>
+            </div>
+          </details>
+        </article>
+      </div>
+    ) : (
+      <div class="container about-simone__layout">
+        <div class="about-simone__copy">
+          <h2 id="om-simone-title" data-reveal style="--reveal-delay: 120ms;">{homepageContent.aboutSimone.title}</h2>
+          <p class="about-simone__identity" data-reveal style="--reveal-delay: 145ms;">{homepageContent.aboutSimone.name}</p>
+          <p data-reveal style="--reveal-delay: 170ms;">{homepageContent.aboutSimone.ingress}</p>
+          <h3 class="about-simone__section-title" data-reveal style="--reveal-delay: 200ms;">Min reise</h3>
+          {homepageContent.aboutSimone.journey.map((paragraph) => (
+            <p data-reveal style="--reveal-delay: 220ms;">{paragraph}</p>
+          ))}
+        </div>
+
+        <aside class="about-simone__panel" data-reveal style="--reveal-delay: 220ms;">
+          <p class="about-simone__panel-heading">Roller</p>
+          <ul>
+            {homepageContent.aboutSimone.roles.map((role) => <li>{role}</li>)}
+          </ul>
+          <p class="about-simone__contact-line">
+            Kontakt:
+            <a href={`mailto:${homepageContent.aboutSimone.contact.email}`}>{homepageContent.aboutSimone.contact.email}</a>
+            {' / '}
+            <a href={`tel:${homepageContent.aboutSimone.contact.phoneLink}`}>tlf: {homepageContent.aboutSimone.contact.phoneDisplay}</a>
+          </p>
+
+          <p class="about-simone__panel-heading">Utdanning</p>
+          <ul>
+            {homepageContent.aboutSimone.education.map((item) => <li>{item}</li>)}
+          </ul>
+
+          <p class="about-simone__panel-heading">Kurs</p>
+          <ul>
+            {homepageContent.aboutSimone.courses.map((item) => <li>{item}</li>)}
+          </ul>
+
+          <a href={BOOKING_URL} class="hero-btn hero-btn--primary">{homepageContent.aboutSimone.primaryCtaLabel}</a>
+        </aside>
+
+        <div class="about-simone__gallery" data-reveal style="--reveal-delay: 260ms;">
+          {homepageContent.aboutSimone.gallery.map((item) => (
+            <figure class={`about-simone__gallery-card about-simone__gallery-card--${item.kind}`}>
+              <img src={item.src} alt={item.alt} loading="lazy" decoding="async" />
+              <figcaption>{item.caption}</figcaption>
+            </figure>
+          ))}
+        </div>
+      </div>
+    )
+  }
+</section>

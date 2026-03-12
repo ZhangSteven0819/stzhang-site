@@ -1,0 +1,45 @@
+---
+/**
+ * Card Component
+ * 
+ * A flexible card component for content grouping.
+ * Uses design system tokens for consistent styling.
+ */
+
+interface Props {
+  class?: string;
+  padding?: 'sm' | 'base' | 'lg';
+  shadow?: 'none' | 'sm' | 'base' | 'md' | 'lg';
+}
+
+const { 
+  class: className = '',
+  padding = 'base',
+  shadow = 'sm',
+} = Astro.props;
+
+const paddingClasses = {
+  sm: 'p-4',
+  base: 'p-6',
+  lg: 'p-8',
+};
+
+const shadowClasses = {
+  none: 'shadow-none',
+  sm: 'shadow-sm',
+  base: 'shadow',
+  md: 'shadow-md',
+  lg: 'shadow-lg',
+};
+
+const classes = [
+  'card',
+  paddingClasses[padding],
+  shadowClasses[shadow],
+  className,
+].filter(Boolean).join(' ');
+---
+
+<div class={classes}>
+  <slot />
+</div>

@@ -1,0 +1,12 @@
+name = "decap-oauth-proxy"
+main = "src/index.ts"
+compatibility_date = "2025-01-01"
+
+[vars]
+# Shared worker allowlist for production domains + localhost.
+# DEV pages domains are matched by DEV_ORIGIN_REGEX.
+ALLOWED_ORIGINS = "https://soundofsimone.no,https://www.soundofsimone.no,http://localhost:4321,http://127.0.0.1:4321"
+DEV_ORIGIN_REGEX = "^https://([a-z0-9-]+\\.)?[a-z0-9-]+-dev\\.pages\\.dev$"
+
+# Add secrets via: npx wrangler secret put GITHUB_CLIENT_ID
+# Add secrets via: npx wrangler secret put GITHUB_CLIENT_SECRET

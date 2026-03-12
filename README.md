@@ -1,6 +1,115 @@
 # Astro + Decap CMS + Cloudflare Template
 
+> **🚀 READY TO DEPLOY!** All code complete with automated workflows.  
+> **👉 START HERE: [DEPLOYMENT-READY.md](docs/deployment/DEPLOYMENT-READY.md)** - Everything you need to deploy!  
+> **⚡ Quick Links:** [Setup Guide](docs/deployment/DEPLOYMENT-INSTRUCTIONS.md) | [Trigger Deploy](docs/deployment/HOW-TO-TRIGGER-DEPLOYMENT.md)
+
+## Template Factory v1 (Client Bootstrap)
+
+This repo now supports deterministic client setup with shared CMS + Cloudflare infrastructure.
+
+No-CLI onboarding is available via GitHub Actions:
+- Run workflow: `.github/workflows/client-onboard-form.yml`
+- `mode=onboard` for new client drafts (supports placeholder production domain)
+- `mode=domain_ready` to switch from placeholder to final domain/origin
+- See [No-CLI runbook](docs/client/NO-CLI-ONBOARDING.md)
+- Internal guide: [Bruksanvisning (Internt)](docs/client/BRUKSANVISNING-INTERNT.md)
+- Customer guide: [Bruksanvisning (Kunde)](docs/client/BRUKSANVISNING-KUNDE.md)
+
+```bash
+# Live onboarding wizard (recommended)
+npm run client:onboard
+
+# Validate current client configuration
+npm run client:validate
+
+# Re-render generated CMS/CSP files from config/client.config.json
+npm run client:render
+
+# Bootstrap a new client
+npm run client:bootstrap -- \
+  --client-id my-client \
+  --brand-name "My Client" \
+  --repo-owner your-org \
+  --repo-name my-client-site \
+  --prod-domain myclient.no \
+  --dev-domain my-client-dev.pages.dev \
+  --cms-proxy-domain decap.myclient.no \
+  --language-mode single \
+  --default-locale no \
+  --theme-preset wellness
+
+# Full onboarding smoke flow from saved intake
+npm run client:onboard:smoke -- config/intake/example.json
+
+# Internal helper used by GitHub onboarding form (build/update intake from inputs)
+npm run client:intake:dispatch -- --mode onboard --client-id my-client --brand-name "My Client"
+
+# Set CMS origin target in config/client.config.json
+npm run client:cms-origin -- --target dev
+```
+
+See [Template Factory docs](docs/client/TEMPLATE-FACTORY.md) and [Onboarding checklist](docs/client/onboarding-checklist.md).
+
 A starter template for building a static site with [Astro](https://astro.build) and managing its content with [Decap CMS](https://decapcms.org/), all deployed on [Cloudflare Pages](https://pages.cloudflare.com/). This setup includes a Cloudflare Worker acting as a custom GitHub OAuth proxy, allowing you to authenticate via GitHub without relying on Netlify Identity or Git Gateway. Additionally, you can use [Cloudflare Zero Trust (Access)](https://www.cloudflare.com/products/zero-trust/access/) to add an extra layer of security to your `/admin` page.
+
+## 🚀 Deployment Resources
+
+### 📖 Start Here!
+- **[DEPLOYMENT-READY.md](docs/deployment/DEPLOYMENT-READY.md)** - **⭐ START HERE!** Quick overview and links to everything
+
+### 📝 Deployment Guides
+- **[DEPLOYMENT-INSTRUCTIONS.md](docs/deployment/DEPLOYMENT-INSTRUCTIONS.md)** - Complete deployment setup guide (~40 min)
+- **[HOW-TO-TRIGGER-DEPLOYMENT.md](docs/deployment/HOW-TO-TRIGGER-DEPLOYMENT.md)** - How to deploy after initial setup
+- **[DEPLOYMENT-QUICKSTART.md](docs/deployment/DEPLOYMENT-QUICKSTART.md)** - Alternative step-by-step guide
+- **[CMS-DEV-FIRST-LAUNCH.md](docs/deployment/CMS-DEV-FIRST-LAUNCH.md)** - Prelaunch DEV-only CMS + launch cutover runbook
+
+### 📋 Reference Documentation
+- **[WHATS-READY.md](docs/WHATS-READY.md)** - Complete overview of what's been set up
+- **[PRE-DEPLOYMENT-CHECKLIST.md](docs/deployment/PRE-DEPLOYMENT-CHECKLIST.md)** - Prerequisites checklist
+- **[DEPLOYMENT-STATUS.md](docs/deployment/DEPLOYMENT-STATUS.md)** - Status tracking and architecture
+- **[DEPLOY.md](docs/deployment/DEPLOY.md)** - Quick reference for deployment
+- **[Verification Script](scripts/verify-deployment.sh)** - Test your deployment
+
+## 📚 Detailed Documentation
+
+- **🚀 [Deployment Quick Start](docs/deployment/DEPLOYMENT-QUICKSTART.md)** - Deploy in ~35 minutes (Step-by-step guide)
+- **✅ [Cloudflare Setup Complete](docs/deployment/CLOUDFLARE-SETUP-COMPLETE.md)** - Full status of completed tasks
+- **📖 [Setup History](docs/SETUP-COMPLETE.md)** - What was configured initially
+- **🔧 [Worker Setup](decap-proxy/README.md)** - OAuth proxy configuration
+- **🌐 [DNS Setup Guide](decap-proxy/DNS-SETUP.md)** - Custom domain configuration
+
+## 🎨 Design System
+
+- **[Design System Setup](docs/design/DESIGN-SYSTEM-SETUP.md)** - Complete design system documentation
+- **[Design Quick Reference](docs/design/DESIGN-QUICK-REFERENCE.md)** - Quick reference for design tokens and components
+
+## 📁 Project Structure
+
+```
+project-name/
+├── .github/              # GitHub Actions workflows
+├── archive/              # Archived/old files (not used in builds)
+│   ├── old-versions/     # Previous versions of files
+│   └── prototypes/       # Design prototypes and experiments
+├── decap-proxy/          # Cloudflare Worker for OAuth proxy
+├── docs/                 # 📚 All documentation
+│   ├── deployment/       # Deployment guides
+│   ├── design/          # Design system docs
+│   └── README.md        # Documentation index
+├── public/              # Static assets
+├── scripts/             # Build and deployment scripts
+├── src/                 # Source code
+│   ├── assets/          # Images, fonts, etc.
+│   ├── components/      # Reusable Astro components
+│   ├── layouts/         # Page layouts
+│   ├── pages/           # Page routes
+│   └── styles/          # Global styles and design tokens
+├── package.json
+└── README.md           # This file
+```
+
+See [docs/README.md](docs/README.md) for detailed documentation structure.
 
 ## Features
 

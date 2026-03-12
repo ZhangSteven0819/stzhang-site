@@ -1,0 +1,117 @@
+name: Client Go-live (Factory Lite)
+
+on:
+  workflow_dispatch:
+    inputs:
+      client_id:
+        description: "Client ID (must already be onboarded)"
+        required: true
+        type: string
+      production_domain:
+        description: "Final production domain hostname"
+        required: true
+        type: string
+      cms_proxy_domain:
+        description: "Shared CMS proxy hostname"
+        required: false
+        type: string
+        default: decap.soundofsimone.no
+      dev_domain:
+        description: "DEV domain hostname (optional if unchanged)"
+        required: false
+        type: string
+
+jobs:
+  go_live:
+    name: Prepare go-live config and redeploy DEV
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      deployments: write
+
+    steps:
+      - name: Checkout DEV branch
+        uses: actions/checkout@v4
+        with:
+          ref: dev
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Update intake technical domains
+        run: |
+          npm run client:intake:dispatch -- \
+            --mode go_live \
+            --client-id "${{ inputs.client_id }}" \
+            --production-domain "${{ inputs.production_domain }}" \
+            --cms-proxy-domain "${{ inputs.cms_proxy_domain }}" \
+            --dev-domain "${{ inputs.dev_domain }}"
+
+      - name: Apply intake domains to client config
+        run: |
+          npm run client:apply-intake-domains -- \
+            --client-id "${{ inputs.client_id }}"
+
+      - name: Set go-live CMS mode and render templates
+        run: |
+          npm run client:cms-origin -- --target production
+          npm run client:render
+
+      - name: Validate generated config
+        run: npm run client:validate
+
+      - name: Build site
+        run: npm run build
+
+      - name: Deploy DEV
+        run: ./scripts/deploy-dev.sh
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+      - name: Verify DEV URL and /admin
+        run: |
+          DEV_DOMAIN=$(node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const config = JSON.parse(fs.readFileSync('config/client.config.json', 'utf8'));
+          process.stdout.write(String(config?.domains?.dev ?? ''));
+          NODE
+          )
+
+          if [ -z "$DEV_DOMAIN" ]; then
+            echo "Missing domains.dev in config/client.config.json"
+            exit 1
+          fi
+
+          curl -fsS "https://${DEV_DOMAIN}/" > /dev/null
+          curl -fsS "https://${DEV_DOMAIN}/admin/" > /dev/null
+
+      - name: Commit and push go-live updates to dev
+        run: |
+          CLIENT_ID="${{ inputs.client_id }}"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add config/client.config.json
+          git add public/admin/config.yml
+          git add public/_headers
+
+          if [ -f "config/intake/${CLIENT_ID}.json" ]; then
+            git add "config/intake/${CLIENT_ID}.json"
+          fi
+
+          if git diff --cached --quiet; then
+            echo "No go-live file changes to commit."
+            exit 0
+          fi
+
+          git commit -m "chore(onboarding): go-live ${{ inputs.client_id }}"
+          git push origin HEAD:dev

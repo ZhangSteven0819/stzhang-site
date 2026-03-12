@@ -1,0 +1,53 @@
+---
+/**
+ * Button Component
+ * 
+ * A reusable button component with multiple variants and sizes.
+ * Uses design system tokens for consistent styling.
+ */
+
+interface Props {
+  variant?: 'primary' | 'secondary' | 'outline';
+  size?: 'sm' | 'base' | 'lg';
+  type?: 'button' | 'submit' | 'reset';
+  href?: string;
+  class?: string;
+}
+
+const { 
+  variant = 'primary', 
+  size = 'base',
+  type = 'button',
+  href,
+  class: className = '',
+} = Astro.props;
+
+const baseClasses = 'btn';
+const variantClasses = {
+  primary: 'btn-primary',
+  secondary: 'btn-secondary',
+  outline: 'btn-outline',
+};
+const sizeClasses = {
+  sm: 'btn-sm',
+  base: '',
+  lg: 'btn-lg',
+};
+
+const classes = [
+  baseClasses,
+  variantClasses[variant],
+  sizeClasses[size],
+  className,
+].filter(Boolean).join(' ');
+---
+
+{href ? (
+  <a href={href} class={classes}>
+    <slot />
+  </a>
+) : (
+  <button type={type} class={classes}>
+    <slot />
+  </button>
+)}

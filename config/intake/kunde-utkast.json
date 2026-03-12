@@ -1,0 +1,66 @@
+{
+  "version": "1.0",
+  "capturedAt": "2026-03-11T00:06:35+01:00",
+  "client": {
+    "id": "kunde-utkast",
+    "brandName": "Kunde Utkast",
+    "primaryContact": {
+      "name": "Kunde Kontakt",
+      "email": "kontakt@kunde-utkast.no",
+      "phone": "99 88 77 66",
+      "role": "Daglig leder"
+    }
+  },
+  "technical": {
+    "repoOwner": "allisson79",
+    "repoName": "kunde-utkast-site",
+    "productionDomain": "pending-domain.example",
+    "devDomain": "kunde-utkast-dev.pages.dev",
+    "cmsProxyDomain": "decap.soundofsimone.no",
+    "languageMode": "single",
+    "defaultLocale": "nb",
+    "secondaryLocale": "en",
+    "themePreset": "wellness"
+  },
+  "design": {
+    "styleDirection": "Editorial and clean",
+    "visualWeight": "balanced",
+    "notes": "Bruk tydelig typografi, varme toner og rolig uttrykk."
+  },
+  "timeline": {
+    "goLiveTarget": "DEV klart innen 24 timer fra onboarding",
+    "milestones": [
+      {
+        "label": "DEV preview",
+        "targetDate": "TBD"
+      },
+      {
+        "label": "Production launch",
+        "targetDate": "TBD"
+      }
+    ]
+  },
+  "modules": {
+    "selected": [
+      "hero",
+      "proof_strip",
+      "service_cards",
+      "rich_text",
+      "gallery",
+      "contact_block",
+      "cta_band"
+    ],
+    "ownEditingLevel": "medium"
+  },
+  "social": {
+    "taggbox": {
+      "enabled": false,
+      "provider": "taggbox",
+      "widgetId": "",
+      "profileSources": [],
+      "refreshCadence": "daily",
+      "title": "Folg oss i sosiale medier",
+      "lead": "Oppdatert feed fra sosiale plattformer."
+    }
+  }
+}

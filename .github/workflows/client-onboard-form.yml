@@ -1,0 +1,174 @@
+name: Onboard DEV (Factory Lite)
+
+on:
+  workflow_dispatch:
+    inputs:
+      client_id:
+        description: "Client ID (slug, e.g. acme-clinic)"
+        required: true
+        type: string
+      brand_name:
+        description: "Brand name"
+        required: true
+        type: string
+      dev_domain:
+        description: "DEV domain hostname (optional, defaults to <client-id>-dev.pages.dev)"
+        required: false
+        type: string
+      cms_proxy_domain:
+        description: "Shared CMS proxy hostname"
+        required: false
+        type: string
+        default: decap.soundofsimone.no
+      language_mode:
+        description: "Localization mode"
+        required: true
+        type: choice
+        options:
+          - single
+          - bilingual
+        default: single
+      default_locale:
+        description: "Default locale"
+        required: true
+        type: string
+        default: nb
+      secondary_locale:
+        description: "Secondary locale (bilingual mode)"
+        required: false
+        type: string
+        default: en
+      theme_preset:
+        description: "Theme preset"
+        required: true
+        type: choice
+        options:
+          - wellness
+          - ocean
+          - sunrise
+          - minimal
+        default: wellness
+      module_selection:
+        description: "CSV modules (hero,proof_strip,service_cards,rich_text,gallery,contact_block,cta_band,social_feed)"
+        required: false
+        type: string
+        default: hero,proof_strip,service_cards,rich_text,gallery,contact_block,cta_band
+      enable_taggbox:
+        description: "Enable Taggbox social feed"
+        required: true
+        type: boolean
+        default: false
+      taggbox_widget_id:
+        description: "Taggbox widget ID (required if enabled)"
+        required: false
+        type: string
+
+jobs:
+  onboard_dev:
+    name: Onboard client to DEV
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      deployments: write
+
+    steps:
+      - name: Checkout DEV branch
+        uses: actions/checkout@v4
+        with:
+          ref: dev
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build intake from dispatch inputs
+        run: |
+          npm run client:intake:dispatch -- \
+            --mode onboard \
+            --client-id "${{ inputs.client_id }}" \
+            --brand-name "${{ inputs.brand_name }}" \
+            --repo-owner "${{ github.repository_owner }}" \
+            --production-domain "pending-domain.example" \
+            --dev-domain "${{ inputs.dev_domain }}" \
+            --cms-proxy-domain "${{ inputs.cms_proxy_domain }}" \
+            --language-mode "${{ inputs.language_mode }}" \
+            --default-locale "${{ inputs.default_locale }}" \
+            --secondary-locale "${{ inputs.secondary_locale }}" \
+            --theme-preset "${{ inputs.theme_preset }}" \
+            --module-selection "${{ inputs.module_selection }}" \
+            --own-editing-level "medium" \
+            --enable-taggbox "${{ inputs.enable_taggbox }}" \
+            --taggbox-widget-id "${{ inputs.taggbox_widget_id }}"
+
+      - name: Run onboarding generation
+        run: npm run client:onboard -- --from-file "config/intake/${{ inputs.client_id }}.json" --force
+
+      - name: Enforce DEV CMS mode and render templates
+        run: |
+          npm run client:cms-origin -- --target dev
+          npm run client:render
+
+      - name: Validate generated config
+        run: npm run client:validate
+
+      - name: Build site
+        run: npm run build
+
+      - name: Deploy DEV
+        run: ./scripts/deploy-dev.sh
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+      - name: Verify DEV URL and /admin
+        run: |
+          DEV_DOMAIN=$(node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const config = JSON.parse(fs.readFileSync('config/client.config.json', 'utf8'));
+          process.stdout.write(String(config?.domains?.dev ?? ''));
+          NODE
+          )
+
+          if [ -z "$DEV_DOMAIN" ]; then
+            echo "Missing domains.dev in config/client.config.json"
+            exit 1
+          fi
+
+          curl -fsS "https://${DEV_DOMAIN}/" > /dev/null
+          curl -fsS "https://${DEV_DOMAIN}/admin/" > /dev/null
+
+      - name: Commit and push generated files to dev
+        run: |
+          CLIENT_ID="${{ inputs.client_id }}"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add config/client.config.json
+          git add src/data/site-settings.json
+          git add src/data/page-modules/home.json
+          git add docs/client/onboarding-checklist.md
+          git add public/admin/config.yml
+          git add public/_headers
+
+          if [ -f "config/intake/${CLIENT_ID}.json" ]; then
+            git add "config/intake/${CLIENT_ID}.json"
+          fi
+
+          if [ -f "docs/client/generated/${CLIENT_ID}-onboarding.md" ]; then
+            git add "docs/client/generated/${CLIENT_ID}-onboarding.md"
+          fi
+
+          if git diff --cached --quiet; then
+            echo "No onboarding file changes to commit."
+            exit 0
+          fi
+
+          git commit -m "chore(onboarding): onboard-dev ${{ inputs.client_id }}"
+          git push origin HEAD:dev

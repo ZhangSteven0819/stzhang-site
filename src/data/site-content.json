@@ -1,0 +1,203 @@
+{
+  "bottomQuickNav": [
+    {
+      "label": "Tjenester",
+      "href": "/tjenester",
+      "kind": "menu"
+    },
+    {
+      "label": "Book Time",
+      "href": "/booking",
+      "kind": "link"
+    },
+    {
+      "label": "Kontakt",
+      "href": "/kontakt",
+      "kind": "link"
+    }
+  ],
+  "menuGroups": [
+    {
+      "title": "Hoved",
+      "items": [
+        {
+          "label": "Tjenester",
+          "href": "/tjenester"
+        },
+        {
+          "label": "Book Time",
+          "href": "/booking"
+        },
+        {
+          "label": "Kontakt",
+          "href": "/kontakt"
+        }
+      ]
+    },
+    {
+      "title": "Mer",
+      "items": [
+        {
+          "label": "Hjem",
+          "href": "/"
+        },
+        {
+          "label": "Om",
+          "href": "/om"
+        }
+      ]
+    }
+  ],
+  "hero": {
+    "kicker": "Sound of Simone",
+    "title": "En ny standard for fysioterapi innen kvinnehelse",
+    "lead": "Trygg og tydelig oppfolging for underlivsplager, vaginisme, fertilitet og helhetlig kvinnehelse.",
+    "image": {
+      "src": "/images/simone-hero-portrait.jpg",
+      "webpSrc": "/images/simone-hero-portrait.webp",
+      "alt": "Portrett av Simone i treningsstudio"
+    },
+    "primaryCtaLabel": "Bestill time",
+    "secondaryCtaLabel": "Kontakt"
+  },
+  "booking": {
+    "title": "Bestill via kontakt i denne fasen",
+    "lead": "Physica-integrasjon planlegges i neste fase. Inntil da handteres bestilling raskt via kontaktseksjonen.",
+    "statusLabel": "Booking handteres manuelt via kontakt",
+    "ctaLabel": "Bestill time"
+  },
+  "contact": {
+    "title": "Kontakt Sound of Simone",
+    "lead": "Ta kontakt direkte pa e-post eller telefon for foresporsel, vurdering eller booking.",
+    "email": "Hei@soundofsimone.no",
+    "phoneDisplay": "911 70 100",
+    "phoneLink": "91170100"
+  },
+  "aboutSimone": {
+    "title": "Dette er Simone",
+    "name": "Simone Anzjøn Holbø",
+    "ingress": "15 års erfaring i kvinnehelsefysioterapi med spisskompetanse på bekkenbunn, bekken og mage, levert med trygg, tydelig og konkret oppfølging.",
+    "roles": [
+      "Fysioterapeut spesialisert på kvinnehelse",
+      "Gründer",
+      "Foredragsholder",
+      "Forfatter",
+      "Gruppeinstruktør",
+      "Mamma Bari og Bella"
+    ],
+    "contact": {
+      "email": "hei@soundofsimone.no",
+      "phoneDisplay": "911 70 100",
+      "phoneLink": "91170100"
+    },
+    "journey": [
+      "Det hele startet på fysioterapistudiet, da jeg oppdaget hvor lite vi faktisk kunne om kvinnehelse. En så viktig oppgave kan man ikke overlate til hvem som helst, og på dette tidspunktet var forskningen nærmest ikke-eksisterende.",
+      "I 2011 etablerte vi derfor drømmestedet for kvinnehelse, House of Femme, Norges første og største tverrfaglige klinikk og fullskala treningssenter for kvinner. I 2018 ga vi ut boken Frisk graviditet, en bestselger som også er utgitt på tysk.",
+      "Som eier og gründer er arbeidsoppgavene mange, men det jeg setter aller størst pris på, er å utvikle behandlings- og treningsprosedyrer med kvinnehelse i fokus. For meg er det dypt meningsfullt å hjelpe kvinner å oppdage hvor fantastiske de faktisk er. Det overrasker mange hvor raskt livet kan endre seg når man tar de gode stegene til rett tid.",
+      "Etter hvert som virksomheten vokste, endret også min rolle seg. Jeg er stolt over det vi bygget, men kjente samtidig et behov for å komme tettere på faget, menneskene og det som springer direkte ut fra meg. Alt jeg gjør videre vil derfor være et direkte uttrykk for meg, forankret i erfaringen, kunnskapen og vurderingene jeg selv står inne for.",
+      "Mine to nydelige barn har vært en sentral del av min reise i kvinnehelseuniverset. Gjennom dem ser jeg hvor avgjørende det er at vi bygger en trygg relasjon til egen kropp fra starten av. Bari spiller håndball, slik jeg også gjorde tidligere, og det har vært viktig for meg å legge til rette for at han ikke gjør de samme feilene som jeg gjorde. Mitt ønske for Bari er at han skal trene på sine premisser, oppleve lagånd, mestringsglede og styrke i egen kropp uten noen gang å hate det han driver med eller mislike seg selv.",
+      "Bella er en helt annen sjel. Hun har arvet mine kreative gener, og hver eneste dag minner hun meg på hvorfor arbeidet vi gjør for bedre kvinnehelse er så viktig.",
+      "Ingenting av dette hadde vært mulig uten min kjære lagspiller, verdens beste ektemann, Jørgen, og min kjære mor, som har jobbet i firmaet gjennom disse 15 årene.",
+      "Med en trygg grunnmur bygger jeg nå videre på mine premisser. Hvis du ønsker det samme, er du varmt velkommen."
+    ],
+    "education": [
+      "Fysioterapeut HIST, 2010",
+      "Idrett- og bevegelsesvitenskap, 2007"
+    ],
+    "courses": [
+      "Den kompliserte bekkenbunnen",
+      "Inkontinens og dysfunksjon i bekkenbunnen",
+      "Veier til intimitet, nærhet og seksualitet etter seksuelle overgrep (2025)",
+      "Et klinisk blikk på bekkenrelaterte plager",
+      "Kvinnehelsekonferansen 2022, 2023, 2024, 2025, 2026 (også foredragsholder)",
+      "Fysioterapi i svangerskap- og barselomsorgen. Forskning og klinikk hånd i hånd (2023)",
+      "Hormoner til glede og besvær",
+      "Nordic Women's Health Congress: Pelvis, diastasis and exercises (også foredragsholder)",
+      "Fysioterapi og trening i svangerskap og barselstid",
+      "Bekkenrelaterte plager 1 & 2 (også foredragsholder)",
+      "Fagseminar - Kvinnehelse gjennom livet",
+      "Årsmøteseminar - Kvinnehelse",
+      "Gravidtreningsinstruktør (også foredragsholder)",
+      "Slyngetrening",
+      "Medisinsk massasje",
+      "Idrettsmedisin"
+    ],
+    "gallery": [
+      {
+        "src": "/images/om-workshop-circle.jpg",
+        "alt": "Simone underviser en gruppe i kvinnehelse og bevegelse",
+        "caption": "Workshop med praktiske ovelser og felles refleksjon.",
+        "kind": "photo"
+      },
+      {
+        "src": "/images/om-treatment-clinic.jpg",
+        "alt": "Simone gir klinisk behandling i konsultasjon",
+        "caption": "Klinisk konsultasjon med manuell behandling.",
+        "kind": "photo"
+      },
+      {
+        "src": "/images/om-class-instruction.jpg",
+        "alt": "Simone instruerer deltakere i gruppetime",
+        "caption": "Instruksjon i studio med tydelig teknikkveiledning.",
+        "kind": "photo"
+      },
+      {
+        "src": "/images/om-book-frisk-graviditet.jpg",
+        "alt": "Boken Frisk Graviditet med Simone som medforfatter",
+        "caption": "Fagbok om graviditet, medforfattet av Simone.",
+        "kind": "book"
+      }
+    ]
+  },
+  "services": {
+    "physio": {
+      "title": "Sound of Physio",
+      "lead": "Visste du at kvinnekroppen er et av de mest komplekse systemene vi har? Gjennom 15 ar som privatpraktiserende fysioterapeut innen kvinnehelse har Simone utviklet seg til en av landets fremste eksperter pa feltet, med spesielt god erfaring knyttet til bekkenbunn, bekken og mage. Behandling tilbys bade fysisk ved Saksvik-klinikken og online.",
+      "moreTopics": [
+        "Bekkenbunn",
+        "Bekken",
+        "Mage",
+        "Graviditet og smabarnstid",
+        "Perimenopause og overgangsalder",
+        "Pris"
+      ]
+    },
+    "women": {
+      "title": "Sound of Women",
+      "lead": "Trenger du min kompetanse i din bedrift?",
+      "blocks": [
+        {
+          "title": "Core & Floor",
+          "body": "Norges hurtigvoksende onlineplattform for trening av gravide og smabarnsmodre bruker fast min fagkompetanse. Hedvig Bang-Forsund har gjennom de siste tre arene bygget opp en inspirerende og fullverdig treningsreise gjennom graviditet og smabarnstid, na stottet av enda mer fagkompetanse i hvert steg.",
+          "ctaLabel": "Besok Core & Floor",
+          "ctaHref": "#",
+          "ctaPending": true
+        },
+        {
+          "title": "Hemmelig",
+          "body": "Hemmelig vil vare en pioner innen kvinnehelse i arbeidslivet. Med kvinner som bade hovedarbeidsstyrke og kjerne i kundemassen tar de et tydelig ansvar gjennom forebyggende, kunnskapsbaserte tiltak. Hemmelig bruker meg som konsulent pa digitale og fysiske kurs, samlinger pa ulike nivaer og faglige videoer for videre oppfolging.",
+          "ctaLabel": "Besok Hemmelig",
+          "ctaHref": "#",
+          "ctaPending": true
+        },
+        {
+          "title": "Din bedrift / forbund / forening",
+          "body": "Ta kontakt for et uforpliktende mote, sa vi kan se pa gode muligheter for deres organisasjon.",
+          "ctaLabel": "Ta kontakt",
+          "ctaHref": "/kontakt",
+          "ctaPending": false
+        }
+      ]
+    },
+    "waves": {
+      "title": "Sound of Waves",
+      "lead": "Et nytt tilbud under utvikling.",
+      "launchLabel": "Kommer varen 2026"
+    }
+  },
+  "ctaBand": {
+    "title": "Klar for neste steg?",
+    "primaryLabel": "Bestill time",
+    "secondaryLabel": "Kontakt"
+  }
+}

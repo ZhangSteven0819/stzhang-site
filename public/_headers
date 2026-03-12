@@ -1,0 +1,2 @@
+/admin/*
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-eval' https://cdn.jsdelivr.net https://unpkg.com; connect-src 'self' https://api.github.com https://github.com https://decap.soundofsimone.no https://unpkg.com; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; frame-src https://github.com;

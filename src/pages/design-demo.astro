@@ -1,0 +1,150 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Button from '../components/ui/Button.astro';
+import Card from '../components/ui/Card.astro';
+import Container from '../components/ui/Container.astro';
+import Logo from '../components/ui/Logo.astro';
+import WaveAnimation from '../components/ui/WaveAnimation.astro';
+---
+
+<Layout>
+  <Container>
+    <div class="py-12">
+      <h1 class="text-4xl font-bold text-center mb-4">Design System Demo</h1>
+      <p class="text-lg text-secondary text-center mb-12">
+        Examples of the design system in action
+      </p>
+
+      <!-- Logo Section -->
+      <section class="mb-12">
+        <h2 class="text-3xl font-bold mb-6">Logo</h2>
+        <div class="flex flex-col gap-8 items-start">
+          <div>
+            <p class="text-sm text-secondary mb-2">Small</p>
+            <Logo size="sm" />
+          </div>
+          <div>
+            <p class="text-sm text-secondary mb-2">Base (default)</p>
+            <Logo size="base" />
+          </div>
+          <div>
+            <p class="text-sm text-secondary mb-2">Large</p>
+            <Logo size="lg" />
+          </div>
+          <div>
+            <p class="text-sm text-secondary mb-2">Extra Large</p>
+            <Logo size="xl" />
+          </div>
+        </div>
+      </section>
+
+      <!-- Wave Animation Section -->
+      <section class="mb-12">
+        <h2 class="text-3xl font-bold mb-6">Wave Animation</h2>
+        <div class="flex flex-wrap gap-8 items-center">
+          <div>
+            <p class="text-sm text-secondary mb-2">Small</p>
+            <WaveAnimation size="sm" />
+          </div>
+          <div>
+            <p class="text-sm text-secondary mb-2">Base (default)</p>
+            <WaveAnimation size="base" />
+          </div>
+          <div>
+            <p class="text-sm text-secondary mb-2">Large</p>
+            <WaveAnimation size="lg" />
+          </div>
+          <div>
+            <p class="text-sm text-secondary mb-2">Extra Large</p>
+            <WaveAnimation size="xl" />
+          </div>
+        </div>
+        <div class="mt-8">
+          <h3 class="text-xl font-bold mb-4">Animation Speeds</h3>
+          <div class="flex flex-wrap gap-8 items-center">
+            <div>
+              <p class="text-sm text-secondary mb-2">Slow</p>
+              <WaveAnimation animationSpeed="slow" />
+            </div>
+            <div>
+              <p class="text-sm text-secondary mb-2">Normal (default)</p>
+              <WaveAnimation animationSpeed="normal" />
+            </div>
+            <div>
+              <p class="text-sm text-secondary mb-2">Fast</p>
+              <WaveAnimation animationSpeed="fast" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Typography Section -->
+      <section class="mb-12">
+        <h2 class="text-3xl font-bold mb-6">Typography</h2>
+        <div class="flex flex-col gap-2">
+          <h1 class="text-4xl font-bold">Heading 1</h1>
+          <h2 class="text-3xl font-bold">Heading 2</h2>
+          <h3 class="text-2xl font-bold">Heading 3</h3>
+          <h4 class="text-xl font-bold">Heading 4</h4>
+          <h5 class="text-lg font-bold">Heading 5</h5>
+          <h6 class="text-base font-bold">Heading 6</h6>
+          <p class="text-lg">Large paragraph text</p>
+          <p class="text-base">Base paragraph text</p>
+          <p class="text-sm">Small paragraph text</p>
+        </div>
+      </section>
+
+      <!-- Colors Section -->
+      <section class="mb-12">
+        <h2 class="text-3xl font-bold mb-6">Colors</h2>
+        <div class="flex gap-4 flex-wrap">
+          <div class="w-20 h-20 rounded-lg" style="background-color: var(--color-primary)"></div>
+          <div class="w-20 h-20 rounded-lg" style="background-color: var(--color-success)"></div>
+          <div class="w-20 h-20 rounded-lg" style="background-color: var(--color-warning)"></div>
+          <div class="w-20 h-20 rounded-lg" style="background-color: var(--color-error)"></div>
+          <div class="w-20 h-20 rounded-lg" style="background-color: var(--color-info)"></div>
+        </div>
+      </section>
+
+      <!-- Buttons Section -->
+      <section class="mb-12">
+        <h2 class="text-3xl font-bold mb-6">Buttons</h2>
+        <div class="flex gap-4 flex-wrap items-center">
+          <Button variant="primary">Primary Button</Button>
+          <Button variant="secondary">Secondary Button</Button>
+          <Button variant="outline">Outline Button</Button>
+          <Button variant="primary" size="sm">Small Button</Button>
+          <Button variant="primary" size="lg">Large Button</Button>
+        </div>
+      </section>
+
+      <!-- Cards Section -->
+      <section class="mb-12">
+        <h2 class="text-3xl font-bold mb-6">Cards</h2>
+        <div class="grid gap-6" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
+          <Card>
+            <h3 class="text-xl font-bold mb-2">Card Title</h3>
+            <p class="text-secondary mb-4">This is a card with default padding and shadow.</p>
+            <Button variant="primary" size="sm">Learn More</Button>
+          </Card>
+          <Card padding="lg" shadow="md">
+            <h3 class="text-xl font-bold mb-2">Large Card</h3>
+            <p class="text-secondary mb-4">This card has larger padding and shadow.</p>
+            <Button variant="outline" size="sm">Read More</Button>
+          </Card>
+        </div>
+      </section>
+
+      <!-- Spacing Section -->
+      <section class="mb-12">
+        <h2 class="text-3xl font-bold mb-6">Spacing</h2>
+        <div class="flex flex-col gap-4">
+          <div class="p-2 bg-secondary rounded">Padding 2 (8px)</div>
+          <div class="p-4 bg-secondary rounded">Padding 4 (16px)</div>
+          <div class="p-6 bg-secondary rounded">Padding 6 (24px)</div>
+          <div class="p-8 bg-secondary rounded">Padding 8 (32px)</div>
+        </div>
+      </section>
+    </div>
+  </Container>
+</Layout>

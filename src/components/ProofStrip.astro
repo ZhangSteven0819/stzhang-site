@@ -1,0 +1,20 @@
+---
+import { homepageContent } from '../config/homepage';
+
+const verifiedItems = homepageContent.proofItems.filter((item) => item.verified);
+---
+
+<section class="proof-strip" aria-label="Verifiserbare fakta">
+  <div class="container">
+    <div class="proof-grid">
+      {
+        verifiedItems.map((item, index) => (
+          <article class="proof-item" data-reveal style={`--reveal-delay: ${80 + index * 60}ms;`}>
+            <p class="proof-label">{item.label}</p>
+            <p class="proof-value">{item.value}</p>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>

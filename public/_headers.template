@@ -1,0 +1,2 @@
+/admin/*
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-eval' https://cdn.jsdelivr.net https://unpkg.com__SCRIPT_SRC_EXTRA__; connect-src 'self' https://api.github.com https://github.com __CMS_PROXY_ORIGIN__ https://unpkg.com__CONNECT_SRC_EXTRA__; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; frame-src https://github.com__FRAME_SRC_EXTRA__;

@@ -1,0 +1,34 @@
+---
+/**
+ * Container Component
+ * 
+ * A responsive container component for content layout.
+ * Uses design system tokens for consistent sizing.
+ */
+
+interface Props {
+  size?: 'sm' | 'md' | 'lg';
+  class?: string;
+}
+
+const { 
+  size = 'lg',
+  class: className = '',
+} = Astro.props;
+
+const sizeClasses = {
+  sm: 'container-sm',
+  md: 'container-md',
+  lg: '',
+};
+
+const classes = [
+  'container',
+  sizeClasses[size],
+  className,
+].filter(Boolean).join(' ');
+---
+
+<div class={classes}>
+  <slot />
+</div>

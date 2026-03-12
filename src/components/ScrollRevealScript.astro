@@ -1,0 +1,72 @@
+---
+---
+
+<script is:inline>
+  (() => {
+    const root = document.documentElement;
+    const revealItems = Array.from(document.querySelectorAll('[data-reveal]'));
+    const brandBar = document.querySelector('[data-brand-bar]');
+    const brandRail = document.querySelector('.global-brand-rail');
+    const hero = document.querySelector('.hero');
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const updateBrandBar = () => {
+      if (!brandBar) return;
+      if (window.scrollY > 8) brandBar.classList.add('is-scrolled');
+      else brandBar.classList.remove('is-scrolled');
+    };
+
+    const updateBrandRail = () => {
+      if (!brandRail || !hero) return;
+      const heroRect = hero.getBoundingClientRect();
+      const heroInFocus = heroRect.bottom > 120;
+      brandRail.classList.toggle('is-minimal', !heroInFocus);
+    };
+
+    if (prefersReducedMotion) {
+      revealItems.forEach((item) => item.classList.add('is-visible'));
+      updateBrandBar();
+      updateBrandRail();
+      window.addEventListener('scroll', updateBrandBar, { passive: true });
+      window.addEventListener('scroll', updateBrandRail, { passive: true });
+      return;
+    }
+
+    root.classList.add('reveal-enabled');
+
+    requestAnimationFrame(() => {
+      revealItems.forEach((item) => {
+        const rect = item.getBoundingClientRect();
+        if (rect.top < window.innerHeight * 0.92) item.classList.add('is-visible');
+      });
+    });
+
+    if ('IntersectionObserver' in window) {
+      const observer = new IntersectionObserver(
+        (entries, obs) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            entry.target.classList.add('is-visible');
+            obs.unobserve(entry.target);
+          });
+        },
+        {
+          threshold: 0.18,
+          rootMargin: '0px 0px -10% 0px',
+        }
+      );
+
+      revealItems.forEach((item) => {
+        if (item.classList.contains('is-visible')) return;
+        observer.observe(item);
+      });
+    } else {
+      revealItems.forEach((item) => item.classList.add('is-visible'));
+    }
+
+    updateBrandBar();
+    updateBrandRail();
+    window.addEventListener('scroll', updateBrandBar, { passive: true });
+    window.addEventListener('scroll', updateBrandRail, { passive: true });
+  })();
+</script>

@@ -1,0 +1,44 @@
+---
+import { BOOKING_URL, BRAND_COLOR, DEV_MODE } from '../config/site';
+import { homepageContent } from '../config/homepage';
+import { siteSettings } from '../config/site-settings';
+import Logo from './ui/Logo.astro';
+---
+
+<section class="hero" aria-labelledby="hero-title" style={`--homepage-brand: ${BRAND_COLOR};`}>
+  <div class="hero-media">
+    <picture>
+      <source srcset={homepageContent.hero.image.webpSrc} type="image/webp" />
+      <img
+        src={homepageContent.hero.image.src}
+        alt={homepageContent.hero.image.alt}
+        loading="eager"
+        decoding="async"
+        fetchpriority="high"
+      />
+    </picture>
+  </div>
+  <div class="hero-bg" aria-hidden="true"></div>
+
+  <div class="hero-layout">
+    <div class="hero-content" data-reveal style="--reveal-delay: 90ms;">
+      {DEV_MODE && <p class="hero-preview" data-reveal style="--reveal-delay: 20ms;">Forhandsvisning</p>}
+      <div class="hero-brand-mark" data-reveal style="--reveal-delay: 120ms;" aria-hidden="true">
+        <Logo size="base" color={BRAND_COLOR} ariaLabel={siteSettings.brand.logoAriaLabel} />
+      </div>
+      <h1 id="hero-title" data-reveal style="--reveal-delay: 170ms;">
+        {homepageContent.hero.title}
+      </h1>
+      <p class="hero-lead" data-reveal style="--reveal-delay: 220ms;">
+        {homepageContent.hero.lead}
+      </p>
+
+      <div class="hero-actions" data-reveal style="--reveal-delay: 260ms;">
+        <a class="hero-btn hero-btn--primary" href={BOOKING_URL}>
+          {homepageContent.hero.primaryCtaLabel}
+        </a>
+        <a class="hero-btn hero-btn--light" href="/kontakt">{homepageContent.hero.secondaryCtaLabel}</a>
+      </div>
+    </div>
+  </div>
+</section>

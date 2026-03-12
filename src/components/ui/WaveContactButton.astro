@@ -1,0 +1,120 @@
+---
+import {
+  BRAND_COLOR,
+  WAVE_CONTACT_TARGET,
+  WAVE_EMBED_ANIMATED,
+  WAVE_EMBED_STATIC,
+} from '../../config/site';
+
+interface Props {
+  href?: string;
+  size?: 'sm' | 'md' | 'lg';
+  mode?: 'animated' | 'static';
+  label?: string;
+  class?: string;
+}
+
+const {
+  href = WAVE_CONTACT_TARGET,
+  size = 'md',
+  mode = 'animated',
+  label = 'Gå til kontakt',
+  class: className = '',
+} = Astro.props;
+
+const sizeClasses = {
+  sm: 'wave-contact-btn--sm',
+  md: 'wave-contact-btn--md',
+  lg: 'wave-contact-btn--lg',
+};
+
+const classes = ['wave-contact-btn', sizeClasses[size], className].filter(Boolean).join(' ');
+const embedSrc = mode === 'static' ? WAVE_EMBED_STATIC : WAVE_EMBED_ANIMATED;
+---
+
+<a
+  href={href}
+  class={classes}
+  aria-label={label}
+  style={`--wave-contact-brand: ${BRAND_COLOR};`}
+>
+  <span class="wave-contact-btn__visual" aria-hidden="true">
+    <iframe
+      src={embedSrc}
+      title="Wave contact symbol"
+      loading="lazy"
+      tabindex="-1"
+    ></iframe>
+  </span>
+</a>
+
+<style>
+  .wave-contact-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--wave-contact-brand);
+    border-radius: 999px;
+    background: #ffffff;
+    text-decoration: none !important;
+    transition: background-color 200ms var(--ease-out), border-color 200ms var(--ease-out);
+  }
+
+  .wave-contact-btn:hover,
+  .wave-contact-btn:focus-visible {
+    border-color: var(--wave-contact-brand);
+    background: #ffffff;
+  }
+
+  .wave-contact-btn:focus-visible {
+    outline: 2px solid var(--wave-contact-brand);
+    outline-offset: 3px;
+  }
+
+  .wave-contact-btn__visual {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 999px;
+    overflow: hidden;
+  }
+
+  .wave-contact-btn iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    display: block;
+    pointer-events: none;
+  }
+
+  .wave-contact-btn--sm {
+    width: 52px;
+    height: 52px;
+    padding: 3px;
+  }
+
+  .wave-contact-btn--md {
+    width: 62px;
+    height: 62px;
+    padding: 4px;
+  }
+
+  .wave-contact-btn--lg {
+    width: 72px;
+    height: 72px;
+    padding: 5px;
+  }
+
+  @media (max-width: 768px) {
+    .wave-contact-btn--md {
+      width: 58px;
+      height: 58px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .wave-contact-btn {
+      transition: none;
+    }
+  }
+</style>

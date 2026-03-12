@@ -1,0 +1,13 @@
+---
+import { LOGO_HOME_HREF } from '../config/site';
+import { siteSettings } from '../config/site-settings';
+import Logo from './ui/Logo.astro';
+---
+
+<header class="brand-bar" data-brand-bar>
+  <div class="brand-bar__inner">
+    <a href={LOGO_HOME_HREF} class="brand-home-link" aria-label={siteSettings.brand.homeLinkAriaLabel}>
+      <Logo class="brand-logo" size="base" color="var(--header-logo-color)" ariaLabel={siteSettings.brand.logoAriaLabel} />
+    </a>
+  </div>
+</header>

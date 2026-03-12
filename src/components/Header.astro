@@ -1,0 +1,85 @@
+---
+---
+
+<header class="header">
+  <div class="header-container">
+    <a href="/" class="logo">Sound of Simone</a>
+    <nav class="nav">
+      <a href="#about">Sound of Simone</a>
+      <a href="#physio">Sound of Physio</a>
+      <a href="#women">Sound of Women</a>
+      <a href="#contact">Kontakt</a>
+      <a href="#book" class="book-btn">Book time</a>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .header {
+    background-color: var(--color-burgundy);
+    color: var(--color-white);
+    padding: var(--space-4) 0;
+    position: sticky;
+    top: 0;
+    z-index: var(--z-index-sticky);
+  }
+
+  .header-container {
+    max-width: var(--max-width-7xl);
+    margin: 0 auto;
+    padding: 0 var(--space-6);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .logo {
+    font-family: var(--font-family-heading);
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-white);
+    text-decoration: none;
+  }
+
+  .nav {
+    display: flex;
+    gap: var(--space-8);
+    align-items: center;
+  }
+
+  .nav a {
+    color: var(--color-white);
+    text-decoration: none;
+    font-weight: var(--font-weight-medium);
+    transition: opacity var(--transition-base) var(--ease-out);
+  }
+
+  .nav a:hover {
+    opacity: 0.8;
+  }
+
+  .book-btn {
+    background-color: var(--color-white);
+    color: var(--color-burgundy);
+    padding: var(--space-2) var(--space-6);
+    border-radius: var(--border-radius-lg);
+    font-weight: var(--font-weight-semibold);
+  }
+
+  .book-btn:hover {
+    opacity: 1;
+    background-color: var(--color-neutral-100);
+  }
+
+  @media (max-width: 768px) {
+    .nav {
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+
+    .header-container {
+      flex-direction: column;
+      gap: var(--space-6);
+    }
+  }
+</style>

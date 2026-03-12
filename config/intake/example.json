@@ -1,0 +1,66 @@
+{
+  "version": "1.0",
+  "capturedAt": "2026-03-03T10:00:00.000Z",
+  "client": {
+    "id": "sample-client",
+    "brandName": "Sample Client",
+    "primaryContact": {
+      "name": "Sample Owner",
+      "email": "owner@sampleclient.no",
+      "phone": "99 88 77 66",
+      "role": "Owner"
+    }
+  },
+  "technical": {
+    "repoOwner": "allisson79",
+    "repoName": "sample-client-site",
+    "productionDomain": "sampleclient.no",
+    "devDomain": "sample-client-dev.pages.dev",
+    "cmsProxyDomain": "decap.sampleclient.no",
+    "languageMode": "single",
+    "defaultLocale": "no",
+    "secondaryLocale": "en",
+    "themePreset": "wellness"
+  },
+  "design": {
+    "styleDirection": "Editorial and clean",
+    "visualWeight": "balanced",
+    "notes": "Prefer strong typography and warm tone."
+  },
+  "timeline": {
+    "goLiveTarget": "DEV klar innen 24 timer fra onboarding",
+    "milestones": [
+      {
+        "label": "DEV preview",
+        "targetDate": "TBD"
+      },
+      {
+        "label": "Production launch",
+        "targetDate": "TBD"
+      }
+    ]
+  },
+  "modules": {
+    "selected": [
+      "hero",
+      "proof_strip",
+      "service_cards",
+      "rich_text",
+      "gallery",
+      "contact_block",
+      "cta_band"
+    ],
+    "ownEditingLevel": "medium"
+  },
+  "social": {
+    "taggbox": {
+      "enabled": false,
+      "provider": "taggbox",
+      "widgetId": "",
+      "profileSources": [],
+      "refreshCadence": "daily",
+      "title": "Folg oss i sosiale medier",
+      "lead": "Oppdatert feed fra sosiale plattformer."
+    }
+  }
+}

@@ -1,0 +1,124 @@
+---
+import { homepageContent } from '../config/homepage';
+import { WAVE_CONTACT_TARGET } from '../config/site';
+
+interface Props {
+  phoneLink?: string;
+  email?: string;
+  contactHref?: string;
+  class?: string;
+}
+
+const {
+  phoneLink = homepageContent.contact.phoneLink,
+  email = homepageContent.contact.email,
+  contactHref = WAVE_CONTACT_TARGET,
+  class: className = '',
+} = Astro.props;
+
+const panelId = `wave-contact-panel-${Math.random().toString(36).slice(2, 9)}`;
+const clipId = `${panelId}-clip`;
+const rootClass = ['wave-contact-dock', className].filter(Boolean).join(' ');
+---
+
+<div class={rootClass} data-wave-contact-root>
+  <button
+    type="button"
+    class="wave-contact-dock__toggle"
+    data-wave-contact-toggle
+    aria-label="Apne kontaktvalg"
+    aria-expanded="false"
+    aria-controls={panelId}
+  >
+    <span class="wave-contact-dock__label" aria-hidden="true">Kontakt</span>
+    <span class="wave-contact-dock__icon" aria-hidden="true">
+      <svg viewBox="88 88 424 424" focusable="false">
+        <defs>
+          <clipPath id={clipId}>
+            <circle cx="300" cy="300" r="210"></circle>
+          </clipPath>
+        </defs>
+        <circle class="wave-contact-dock__ring" cx="300" cy="300" r="210" fill="none" stroke-width="2"></circle>
+        <g class="wave-contact-dock__bars" clip-path={`url(#${clipId})`}>
+          <rect x="170" y="275" width="12" height="50" rx="6"></rect>
+          <rect x="200" y="250" width="12" height="100" rx="6"></rect>
+          <rect x="230" y="220" width="12" height="160" rx="6"></rect>
+          <rect x="260" y="190" width="12" height="220" rx="6"></rect>
+          <rect x="290" y="170" width="12" height="260" rx="6"></rect>
+          <rect x="320" y="190" width="12" height="220" rx="6"></rect>
+          <rect x="350" y="220" width="12" height="160" rx="6"></rect>
+          <rect x="380" y="250" width="12" height="100" rx="6"></rect>
+          <rect x="410" y="275" width="12" height="50" rx="6"></rect>
+        </g>
+      </svg>
+    </span>
+  </button>
+
+  <div
+    class="wave-contact-dock__panel"
+    id={panelId}
+    role="dialog"
+    aria-label="Kontaktvalg"
+    aria-hidden="true"
+    data-wave-contact-panel
+  >
+    <a href={`tel:${phoneLink}`} class="wave-contact-dock__action" data-wave-contact-action>Ring</a>
+    <a href={`mailto:${email}`} class="wave-contact-dock__action" data-wave-contact-action>E-post</a>
+    <a href={contactHref} class="wave-contact-dock__action" data-wave-contact-action>Kontakt-side</a>
+  </div>
+</div>
+
+<script is:inline>
+  (() => {
+    const roots = Array.from(document.querySelectorAll('[data-wave-contact-root]'));
+    if (roots.length === 0) return;
+
+    roots.forEach((root) => {
+      if (!(root instanceof HTMLElement)) return;
+
+      const toggle = root.querySelector('[data-wave-contact-toggle]');
+      const panel = root.querySelector('[data-wave-contact-panel]');
+      if (!(toggle instanceof HTMLButtonElement) || !(panel instanceof HTMLElement)) return;
+
+      const actions = Array.from(root.querySelectorAll('[data-wave-contact-action]'));
+      let isOpen = false;
+
+      const setOpen = (nextOpen, focusToggle = false) => {
+        isOpen = nextOpen;
+        root.classList.toggle('is-open', isOpen);
+        toggle.setAttribute('aria-expanded', String(isOpen));
+        panel.setAttribute('aria-hidden', isOpen ? 'false' : 'true');
+
+        if (!isOpen && focusToggle) {
+          toggle.focus();
+        }
+      };
+
+      toggle.addEventListener('click', () => {
+        setOpen(!isOpen);
+      });
+
+      actions.forEach((action) => {
+        action.addEventListener('click', () => {
+          setOpen(false);
+        });
+      });
+
+      document.addEventListener('pointerdown', (event) => {
+        if (!isOpen) return;
+        const target = event.target;
+        if (!(target instanceof Node)) return;
+        if (!root.contains(target)) {
+          setOpen(false);
+        }
+      });
+
+      document.addEventListener('keydown', (event) => {
+        if (!isOpen) return;
+        if (event.key === 'Escape') {
+          setOpen(false, true);
+        }
+      });
+    });
+  })();
+</script>

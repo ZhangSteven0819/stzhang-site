@@ -1,14 +1,21 @@
 {
-  "name": "astro-decap-cloudflare-starter",
+  "name": "simone-site",
   "type": "module",
-  "version": "0.0.1",
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "npm run client:render && astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "client:bootstrap": "node ./scripts/bootstrap-client.mjs",
+    "client:render": "node ./scripts/render-client-config.mjs",
+    "client:validate": "node ./scripts/render-client-config.mjs --validate",
+    "client:onboard": "node ./scripts/onboard-client.mjs",
+    "client:intake:dispatch": "node ./scripts/build-dispatch-intake.mjs",
+    "client:cms-origin": "node ./scripts/set-cms-origins.mjs",
+    "client:apply-intake-domains": "node ./scripts/apply-intake-domains.mjs",
+    "client:onboard:smoke": "bash ./scripts/onboard-smoke.sh",
+    "cms:diagnose-oauth": "bash ./scripts/diagnose-cms-oauth.sh"
   },
   "dependencies": {
-    "astro": "^5.0.9"
+    "astro": "5.15.9"
   }
 }

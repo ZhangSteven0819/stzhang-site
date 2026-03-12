@@ -1,17 +1,33 @@
 # build output
 dist/
+build/
+coverage/
 
 # generated types
 .astro/
+.cache/
+.next/
 
 # dependencies
 node_modules/
+decap-proxy/node_modules/
 
 # logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
+*.log
+*.zip
+*.mp4
+*.png
+*.jpg
+*.pdf
+!public/images/simone-hero-portrait.jpg
+!public/images/om-workshop-circle.jpg
+!public/images/om-treatment-clinic.jpg
+!public/images/om-class-instruction.jpg
+!public/images/om-book-frisk-graviditet.jpg
 
 # environment variables
 .env

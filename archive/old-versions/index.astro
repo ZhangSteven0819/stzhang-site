@@ -1,0 +1,25 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Hero from "../components/Hero.astro";
+import Section from "../components/Section.astro";
+import Card from "../components/Card.astro";
+import CTA from "../components/CTA.astro";
+---
+
+<Layout title="Sound of Simone">
+  <Hero />
+
+  <Section
+    id="tjenester"
+    title="Våre tjenester"
+    subtitle="Skreddersydd behandling tilpasset dine behov"
+  >
+    <div class="grid-3">
+      <Card title="Hormonell balanse" text="Individuell vurdering og behandling." />
+      <Card title="Fertilitet" text="Helhetlig støtte gjennom hele prosessen." />
+      <Card title="Livsstil & helse" text="Forebyggende og styrkende tiltak." />
+    </div>
+  </Section>
+
+  <CTA />
+</Layout>

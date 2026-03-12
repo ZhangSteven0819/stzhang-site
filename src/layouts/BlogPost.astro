@@ -1,0 +1,101 @@
+---
+/**
+ * BlogPost Layout
+ * 
+ * Example layout showing how to use the design system for blog posts.
+ * This demonstrates best practices for using design tokens and components.
+ */
+
+import Layout from './Layout.astro';
+import Container from '../components/ui/Container.astro';
+
+interface Props {
+  title: string;
+  date?: string;
+  author?: string;
+}
+
+const { title, date, author } = Astro.props;
+---
+
+<Layout>
+  <Container size="md">
+    <article class="py-12">
+      <!-- Article Header -->
+      <header class="mb-8 text-center">
+        <h1 class="text-4xl font-bold mb-4">{title}</h1>
+        {(date || author) && (
+          <div class="flex justify-center gap-4 text-sm text-muted">
+            {date && <time>{date}</time>}
+            {author && <span>By {author}</span>}
+          </div>
+        )}
+      </header>
+
+      <!-- Article Content -->
+      <div class="prose">
+        <slot />
+      </div>
+
+      <!-- Article Footer -->
+      <footer class="mt-12 pt-8 border-t">
+        <a href="/blog" class="text-primary">← Back to Blog</a>
+      </footer>
+    </article>
+  </Container>
+</Layout>
+
+<style>
+  /* Prose styles for markdown content */
+  .prose {
+    max-width: 65ch;
+    margin: 0 auto;
+  }
+
+  .prose :global(h2) {
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-4);
+  }
+
+  .prose :global(h3) {
+    margin-top: var(--space-6);
+    margin-bottom: var(--space-3);
+  }
+
+  .prose :global(p) {
+    margin-bottom: var(--space-4);
+    line-height: var(--line-height-relaxed);
+  }
+
+  .prose :global(ul),
+  .prose :global(ol) {
+    margin-bottom: var(--space-4);
+    padding-left: var(--space-6);
+  }
+
+  .prose :global(li) {
+    margin-bottom: var(--space-2);
+  }
+
+  .prose :global(img) {
+    margin: var(--space-8) auto;
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md);
+  }
+
+  .prose :global(code) {
+    font-size: var(--font-size-sm);
+  }
+
+  .prose :global(pre) {
+    margin-bottom: var(--space-6);
+  }
+
+  .prose :global(blockquote) {
+    margin: var(--space-6) 0;
+  }
+
+  .border-t {
+    border-top: var(--border-width-1) solid var(--color-border-light);
+  }
+</style>

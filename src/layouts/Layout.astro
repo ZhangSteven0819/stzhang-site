@@ -1,22 +1,47 @@
-<!doctype html>
-<html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
-	</head>
-	<body>
-		<slot />
-	</body>
-</html>
+---
+import BottomPillMenu from '../components/BottomPillMenu.astro';
+import GlobalBrandRail from '../components/GlobalBrandRail.astro';
+import ScrollRevealScript from '../components/ScrollRevealScript.astro';
+import WaveContactDock from '../components/WaveContactDock.astro';
+import { siteSettings } from '../config/site-settings';
+import '../styles/design-tokens.css';
+import '../styles/global.css';
+import '../styles/homepage.css';
+import '../styles/utilities.css';
 
-<style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-	}
-</style>
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title, description } = Astro.props;
+const resolvedTitle = title
+  ? `${title} | ${siteSettings.seo.titleSuffix}`
+  : siteSettings.seo.defaultTitle;
+const resolvedDescription = description ?? siteSettings.seo.description;
+---
+
+<!doctype html>
+<html lang={siteSettings.localization.defaultLocale}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="description" content={resolvedDescription} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Six+Caps&display=swap"
+      rel="stylesheet"
+    />
+    <title>{resolvedTitle}</title>
+  </head>
+  <body>
+    <GlobalBrandRail />
+    <slot />
+    <BottomPillMenu />
+    <WaveContactDock />
+    <ScrollRevealScript />
+  </body>
+</html>

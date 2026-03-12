@@ -1,0 +1,95 @@
+{
+  "brand": {
+    "name": "Kunde Utkast",
+    "tagline": "Design- og innholdssystem for raske leveranser",
+    "logoAriaLabel": "Kunde Utkast",
+    "homeLinkAriaLabel": "Ga til forsiden"
+  },
+  "seo": {
+    "defaultTitle": "Kunde Utkast - Design- og innholdssystem for raske leveranser",
+    "titleSuffix": "Kunde Utkast",
+    "description": "Bruk denne templaten til rask lansering med god struktur for innhold, design og konvertering."
+  },
+  "localization": {
+    "mode": "single",
+    "defaultLocale": "nb",
+    "locales": [
+      "nb"
+    ]
+  },
+  "theme": {
+    "preset": "wellness",
+    "tokens": {
+      "brandColor": "#411e25"
+    }
+  },
+  "navigation": {
+    "logoHomeHref": "/",
+    "bookingUrl": "/booking",
+    "waveContactTarget": "/kontakt",
+    "waveEmbedSrc": "/wave-simone.html",
+    "waveEmbedAnimated": "/wave-simone.html?mode=animated",
+    "waveEmbedStatic": "/wave-simone.html?mode=static",
+    "bottomQuickNav": [
+      {
+        "label": "Tjenester",
+        "href": "/tjenester",
+        "kind": "menu"
+      },
+      {
+        "label": "Book time",
+        "href": "/booking",
+        "kind": "link"
+      },
+      {
+        "label": "Kontakt",
+        "href": "/kontakt",
+        "kind": "link"
+      }
+    ],
+    "menuGroups": [
+      {
+        "title": "Hoved",
+        "items": [
+          {
+            "label": "Hjem",
+            "href": "/"
+          },
+          {
+            "label": "Om",
+            "href": "/om"
+          }
+        ]
+      }
+    ],
+    "servicesMenuLinks": [
+      {
+        "label": "Service A",
+        "href": "/tjenester/sound-of-physio"
+      },
+      {
+        "label": "Service B",
+        "href": "/tjenester/sound-of-women"
+      },
+      {
+        "label": "Service C",
+        "href": "/tjenester/sound-of-waves"
+      }
+    ]
+  },
+  "contact": {
+    "email": "kontakt@kunde-utkast.no",
+    "phoneDisplay": "99 88 77 66",
+    "phoneLink": "99887766",
+    "address": ""
+  },
+  "booking": {
+    "title": "Book via kontakt i denne fasen",
+    "lead": "Direkte bookingintegrasjon kan kobles pa i neste fase.",
+    "statusLabel": "Booking handteres manuelt via kontakt",
+    "ctaLabel": "Bestill time"
+  },
+  "footer": {
+    "legalText": "Alle rettigheter forbeholdt."
+  }
+}

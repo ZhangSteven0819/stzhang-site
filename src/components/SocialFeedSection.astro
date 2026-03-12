@@ -1,0 +1,85 @@
+---
+import type { SocialFeedModule } from '../config/homepage';
+
+interface Props {
+  module: SocialFeedModule;
+}
+
+const { module } = Astro.props;
+
+const hasValidWidgetId =
+  module.provider === 'taggbox' &&
+  typeof module.widgetId === 'string' &&
+  /^[A-Za-z0-9_-]{5,120}$/.test(module.widgetId);
+
+const title =
+  typeof module.title === 'string' && module.title.trim().length > 0
+    ? module.title
+    : 'Folg oss i sosiale medier';
+const lead =
+  typeof module.lead === 'string' && module.lead.trim().length > 0
+    ? module.lead
+    : 'Oppdatert feed fra sosiale plattformer.';
+
+const widgetUrl = hasValidWidgetId
+  ? `https://widget.taggbox.com/${encodeURIComponent(module.widgetId)}`
+  : '';
+---
+
+{
+  hasValidWidgetId && (
+    <section class="social-feed" aria-labelledby="social-feed-title">
+      <div class="container social-feed__shell">
+        <header class="social-feed__header">
+          <h2 id="social-feed-title">{title}</h2>
+          <p>{lead}</p>
+        </header>
+
+        <div class="social-feed__frame-wrap">
+          <iframe
+            src={widgetUrl}
+            title="Taggbox social feed"
+            loading="lazy"
+            referrerpolicy="strict-origin-when-cross-origin"
+            sandbox="allow-scripts allow-same-origin allow-popups"
+          ></iframe>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .social-feed {
+    padding: var(--space-16) 0;
+  }
+
+  .social-feed__shell {
+    display: grid;
+    gap: var(--space-6);
+  }
+
+  .social-feed__header h2 {
+    margin-bottom: var(--space-2);
+  }
+
+  .social-feed__header p {
+    margin: 0;
+    color: var(--color-text-secondary);
+  }
+
+  .social-feed__frame-wrap {
+    border-radius: var(--border-radius-xl);
+    overflow: hidden;
+    border: 1px solid var(--color-border-light);
+    background: var(--color-bg-primary);
+    min-height: 420px;
+  }
+
+  .social-feed__frame-wrap iframe {
+    width: 100%;
+    height: 620px;
+    border: 0;
+    display: block;
+  }
+</style>
