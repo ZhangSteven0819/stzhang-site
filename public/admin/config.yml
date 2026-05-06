@@ -6,6 +6,7 @@ backend:
   auth_endpoint: api/auth
 
 site_url: "https://stzhang-site.pages.dev"
+display_url: "https://stzhang-site.pages.dev"
 
 media_folder: "public/images/uploads"
 public_folder: "/images/uploads"
@@ -15,7 +16,12 @@ collections:
     label: "Pages"
     folder: "src/pages"
     create: true
+    extension: "md"
     slug: "{{slug}}"
     fields:
+      - { label: "Layout", name: "layout", widget: "hidden", default: "../layouts/PostLayout.astro" }
       - { label: "Title", name: "title", widget: "string" }
+      - { label: "Description", name: "description", widget: "text", required: false }
+      - { label: "Publish Date", name: "publishDate", widget: "datetime", format: "YYYY-MM-DD", required: false }
+      - { label: "Tags", name: "tags", widget: "list", required: false }
       - { label: "Body", name: "body", widget: "markdown" }
