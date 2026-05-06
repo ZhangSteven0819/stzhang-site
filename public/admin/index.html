@@ -1,14 +1,19 @@
-<!DOCTYPE html>
-<html>
-
-<head>
+<!doctype html>
+<html lang="en">
+  <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Content Manager</title>
-</head>
+    <meta name="color-scheme" content="dark light" />
+    <title>Content Manager · ST Zhang</title>
+    <link rel="stylesheet" href="/admin/admin.css" />
+  </head>
 
-<body>
+  <body>
     <script src="https://unpkg.com/decap-cms@latest/dist/decap-cms.js"></script>
-</body>
-
+    <script>
+      if (window.CMS) {
+        CMS.registerPreviewStyle("/admin/admin.css");
+      }
+    </script>
+  </body>
 </html>

@@ -1,0 +1,226 @@
+@import url("https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,500&family=Noto+Serif+SC:wght@300;400;500&display=swap");
+
+:root {
+  color-scheme: dark;
+  --color-bg: #0d0f0f;
+  --color-bg-secondary: #141615;
+  --color-bg-hover: #1b1e1d;
+  --color-border: #272a29;
+  --color-border-hover: #424846;
+  --color-text-primary: #f0eeeb;
+  --color-text-secondary: #8a8885;
+  --color-text-muted: #555350;
+  --font-serif: "Newsreader", "Noto Serif SC", Georgia, serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#nc-root {
+  min-height: 100%;
+  background: var(--color-bg) !important;
+  color: var(--color-text-primary) !important;
+  font-family: var(--font-serif) !important;
+  text-rendering: geometricPrecision;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  margin: 0;
+}
+
+body,
+button,
+input,
+select,
+textarea {
+  font-family: var(--font-serif) !important;
+  letter-spacing: 0 !important;
+}
+
+a {
+  color: var(--color-text-primary) !important;
+}
+
+::selection {
+  background: var(--color-text-primary);
+  color: var(--color-bg);
+}
+
+#nc-root header,
+#nc-root [class*="AppHeader"],
+#nc-root [class*="Toolbar"],
+#nc-root [class*="TopBar"] {
+  background: var(--color-bg) !important;
+  border-color: var(--color-border) !important;
+  box-shadow: none !important;
+}
+
+#nc-root aside,
+#nc-root nav,
+#nc-root [class*="Sidebar"],
+#nc-root [class*="CollectionContainer"],
+#nc-root [class*="SearchContainer"] {
+  background: var(--color-bg-secondary) !important;
+  border-color: var(--color-border) !important;
+  color: var(--color-text-secondary) !important;
+}
+
+#nc-root main,
+#nc-root [class*="AppMain"],
+#nc-root [class*="EditorContainer"],
+#nc-root [class*="PreviewPane"],
+#nc-root [class*="ControlPane"] {
+  background: var(--color-bg) !important;
+  color: var(--color-text-primary) !important;
+}
+
+#nc-root::before {
+  position: fixed;
+  z-index: 10;
+  top: 24px;
+  left: 40px;
+  color: var(--color-text-primary);
+  content: "ST Zhang";
+  font-size: 18px;
+  font-weight: 500;
+}
+
+#nc-root [class*="Card"],
+#nc-root [class*="EntryCard"],
+#nc-root [class*="ListCard"],
+#nc-root [class*="Pane"],
+#nc-root [class*="Widget"],
+#nc-root [class*="Dropdown"],
+#nc-root [class*="Modal"],
+#nc-root [class*="Popover"] {
+  background: var(--color-bg-secondary) !important;
+  border: 1px solid var(--color-border) !important;
+  border-radius: 8px !important;
+  box-shadow: none !important;
+  color: var(--color-text-primary) !important;
+}
+
+#nc-root h1,
+#nc-root h2,
+#nc-root h3,
+#nc-root h4,
+#nc-root label,
+#nc-root p,
+#nc-root span,
+#nc-root div {
+  color: inherit;
+}
+
+#nc-root h1,
+#nc-root h2,
+#nc-root h3 {
+  font-weight: 400 !important;
+  letter-spacing: 0 !important;
+}
+
+#nc-root p,
+#nc-root label,
+#nc-root small,
+#nc-root [class*="Help"],
+#nc-root [class*="Description"],
+#nc-root [class*="Meta"] {
+  color: var(--color-text-secondary) !important;
+}
+
+#nc-root input,
+#nc-root textarea,
+#nc-root select,
+#nc-root [contenteditable="true"],
+#nc-root [role="textbox"] {
+  background: var(--color-bg) !important;
+  border: 1px solid var(--color-border) !important;
+  border-radius: 8px !important;
+  color: var(--color-text-primary) !important;
+  box-shadow: none !important;
+}
+
+#nc-root input:focus,
+#nc-root textarea:focus,
+#nc-root select:focus,
+#nc-root [contenteditable="true"]:focus,
+#nc-root [role="textbox"]:focus {
+  border-color: var(--color-border-hover) !important;
+  outline: 2px solid rgba(240, 238, 235, 0.14) !important;
+  outline-offset: 2px !important;
+}
+
+#nc-root button,
+#nc-root [role="button"] {
+  border-radius: 999px !important;
+  border-color: var(--color-border) !important;
+  background: var(--color-bg-secondary) !important;
+  color: var(--color-text-primary) !important;
+  box-shadow: none !important;
+  text-transform: none !important;
+}
+
+#nc-root button:hover,
+#nc-root [role="button"]:hover {
+  border-color: var(--color-border-hover) !important;
+  background: var(--color-bg-hover) !important;
+}
+
+#nc-root [class*="PrimaryButton"],
+#nc-root button[type="submit"],
+#nc-root [data-testid*="publish"],
+#nc-root [data-testid*="save"] {
+  background: var(--color-text-primary) !important;
+  color: var(--color-bg) !important;
+  border-color: var(--color-text-primary) !important;
+}
+
+#nc-root svg,
+#nc-root svg * {
+  color: currentColor !important;
+  fill: currentColor !important;
+  stroke: currentColor !important;
+}
+
+#nc-root svg[width="335"] {
+  width: min(260px, 70vw) !important;
+  height: auto !important;
+  color: var(--color-text-primary) !important;
+  opacity: 0.92;
+}
+
+#nc-root hr {
+  border-color: var(--color-border) !important;
+}
+
+.frame-content {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 48px 32px;
+  background: var(--color-bg);
+  color: var(--color-text-primary);
+  font-family: var(--font-serif);
+}
+
+.frame-content h1,
+.frame-content h2,
+.frame-content h3 {
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
+.frame-content p,
+.frame-content li {
+  color: var(--color-text-secondary);
+  font-size: 18px;
+  line-height: 1.8;
+}
+
+.frame-content a {
+  color: var(--color-text-primary);
+  text-decoration-color: var(--color-border-hover);
+  text-underline-offset: 3px;
+}

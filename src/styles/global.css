@@ -432,7 +432,7 @@ a:focus-visible,
   min-height: 260px;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
+  justify-content: flex-start;
 }
 
 .topic-stack {
