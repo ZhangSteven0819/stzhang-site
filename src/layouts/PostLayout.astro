@@ -27,40 +27,58 @@ const displayDate = publishDate ? formatFullDate(String(publishDate)) : "";
   </head>
 
   <body>
+    <div class="reading-progress" data-no-translate>
+      <span id="reading-progress-bar"></span>
+    </div>
+
     <div class="site-shell">
       <Header current="writing" />
+    </div>
 
-      <main class="article-page">
-        <header class="article-header">
-          {
-            tagList.length > 0 && (
-              <div class="article-tags">
-                {tagList.map((tag) => <Tag label={tag} />)}
-              </div>
-            )
-          }
+    <main class="article-page">
+      <header class="article-header">
+        {
+          tagList.length > 0 && (
+            <div class="article-tags">
+              {tagList.map((tag) => <Tag label={tag} />)}
+            </div>
+          )
+        }
 
-          <h1>{title}</h1>
+        <h1>{title}</h1>
 
-          {displayDate && <p class="article-date">{displayDate}</p>}
+        <div class="article-meta">
+          {displayDate && <span>{displayDate}</span>}
+          <span id="reading-time">1 min read</span>
+        </div>
 
-          {
-            description && (
-              <p class="article-description">{description}</p>
-            )
-          }
+        {
+          description && (
+            <p class="article-description">{description}</p>
+          )
+        }
 
-          <div class="article-divider"></div>
-        </header>
+        <div class="article-divider"></div>
+      </header>
 
-        <article class="article-content">
+      <div class="article-layout">
+        <article class="article-content" id="article-content">
           <slot />
         </article>
 
-        <footer class="article-footer">
-          <a href="/writing">← Back to writing</a>
-        </footer>
-      </main>
-    </div>
+        <aside class="article-toc" id="article-toc" data-no-translate>
+          <div class="article-toc-inner">
+            <p class="article-toc-title">Contents</p>
+            <nav id="article-toc-list" aria-label="Table of contents"></nav>
+          </div>
+        </aside>
+      </div>
+
+      <footer class="article-footer">
+        <a href="/writing">← Back to writing</a>
+      </footer>
+    </main>
+
+    <script src="/scripts/article-tools.js" defer></script>
   </body>
 </html>

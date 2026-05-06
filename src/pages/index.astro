@@ -30,27 +30,22 @@ const showViewAll = posts.length > 6;
       <main class="page-main">
         <section class="hero">
           <div class="hero-copy">
-            <span class="pill">Personal blog</span>
-
-            <h1>ST Zhang</h1>
+            <h1 data-no-translate>ST Zhang</h1>
 
             <p class="hero-kicker">AI · Tech · Notes</p>
 
             <p class="hero-description">
               Writing, building, and thinking on the internet.
             </p>
-
-            <div class="hero-actions">
-              <a class="button button-primary" href="#writing">Read writing</a>
-              <a class="button button-secondary" href="/writing">Browse archive →</a>
-            </div>
           </div>
 
-          <aside class="hero-aside">
-            <span>Field notes</span>
-            <p>
-              A quiet place for essays, experiments, technical notes, product thoughts,
-              and the small observations that usually get lost in chat windows.
+          <aside class="hero-aside" data-no-translate>
+            <span class="quote-label" id="daily-quote-label">Daily quote</span>
+            <p class="quote-text" id="daily-quote-text">
+              The obstacle is the way.
+            </p>
+            <p class="quote-source" id="daily-quote-source">
+              Marcus Aurelius · Meditations
             </p>
           </aside>
         </section>
@@ -123,6 +118,7 @@ const showViewAll = posts.length > 6;
           target="_blank"
           rel="noreferrer"
           aria-label="GitHub profile"
+          data-no-translate
         >
           <svg
             class="github-icon"

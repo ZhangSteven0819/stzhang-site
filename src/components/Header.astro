@@ -3,9 +3,37 @@ const { current = "" } = Astro.props;
 ---
 
 <header class="site-header">
-  <a class="site-brand" href="/">ST Zhang</a>
+  <a class="site-brand" href="/" data-no-translate>ST Zhang</a>
 
   <nav class="site-nav" aria-label="Primary navigation">
+    <select
+      id="language-select"
+      class="language-select"
+      aria-label="Select language"
+      data-no-translate
+    >
+      <option value="en">English</option>
+      <option value="zh-CN">简体中文</option>
+      <option value="zh-TW">繁體中文</option>
+      <option value="ja">日本語</option>
+      <option value="ko">한국어</option>
+      <option value="es">Español</option>
+      <option value="fr">Français</option>
+      <option value="de">Deutsch</option>
+      <option value="pt">Português</option>
+      <option value="it">Italiano</option>
+      <option value="ru">Русский</option>
+      <option value="ar">العربية</option>
+      <option value="hi">हिन्दी</option>
+      <option value="bn">বাংলা</option>
+      <option value="ur">اردو</option>
+      <option value="id">Bahasa Indonesia</option>
+      <option value="vi">Tiếng Việt</option>
+      <option value="th">ไทย</option>
+      <option value="tr">Türkçe</option>
+      <option value="nl">Nederlands</option>
+    </select>
+
     <a class={current === "writing" ? "active" : ""} href="/writing">Writing</a>
 
     <a
@@ -13,6 +41,7 @@ const { current = "" } = Astro.props;
       target="_blank"
       rel="noreferrer"
       aria-label="GitHub profile"
+      data-no-translate
     >
       <svg
         class="github-icon"
@@ -28,3 +57,5 @@ const { current = "" } = Astro.props;
     </a>
   </nav>
 </header>
+
+<script src="/scripts/i18n.js" defer></script>
