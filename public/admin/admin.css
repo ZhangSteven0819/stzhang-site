@@ -4,6 +4,7 @@
   color-scheme: dark;
   --color-bg: #0d0f0f;
   --color-bg-secondary: #141615;
+  --color-bg-elevated: #181b1a;
   --color-bg-hover: #1b1e1d;
   --color-border: #272a29;
   --color-border-hover: #424846;
@@ -26,6 +27,12 @@ body,
   font-family: var(--font-serif) !important;
   text-rendering: geometricPrecision;
   -webkit-font-smoothing: antialiased;
+}
+
+#nc-root {
+  background:
+    radial-gradient(circle at 18% -12%, rgba(240, 238, 235, 0.055), transparent 32rem),
+    var(--color-bg) !important;
 }
 
 body {
@@ -54,9 +61,10 @@ a {
 #nc-root [class*="AppHeader"],
 #nc-root [class*="Toolbar"],
 #nc-root [class*="TopBar"] {
-  background: var(--color-bg) !important;
+  background: rgba(13, 15, 15, 0.94) !important;
   border-color: var(--color-border) !important;
-  box-shadow: none !important;
+  box-shadow: inset 0 -1px 0 var(--color-border) !important;
+  backdrop-filter: blur(14px);
 }
 
 #nc-root aside,
@@ -64,7 +72,7 @@ a {
 #nc-root [class*="Sidebar"],
 #nc-root [class*="CollectionContainer"],
 #nc-root [class*="SearchContainer"] {
-  background: var(--color-bg-secondary) !important;
+  background: rgba(20, 22, 21, 0.72) !important;
   border-color: var(--color-border) !important;
   color: var(--color-text-secondary) !important;
 }
@@ -81,7 +89,7 @@ a {
 #nc-root [class*="EntriesCollection"],
 #nc-root [class*="MediaLibrary"],
 #nc-root [class*="MediaLibraryModal"] {
-  background: var(--color-bg) !important;
+  background: transparent !important;
   color: var(--color-text-primary) !important;
 }
 
@@ -111,10 +119,10 @@ a {
 #nc-root [class*="MediaCard"],
 #nc-root [class*="Asset"],
 #nc-root [class*="EditorToolbar"] {
-  background: var(--color-bg-secondary) !important;
+  background: var(--color-bg-elevated) !important;
   border: 1px solid var(--color-border) !important;
   border-radius: 8px !important;
-  box-shadow: none !important;
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.18) !important;
   color: var(--color-text-primary) !important;
 }
 
@@ -145,6 +153,23 @@ a {
   color: var(--color-text-secondary) !important;
 }
 
+#nc-root div,
+#nc-root section,
+#nc-root article,
+#nc-root form,
+#nc-root fieldset,
+#nc-root ul,
+#nc-root ol,
+#nc-root li,
+#nc-root table,
+#nc-root thead,
+#nc-root tbody,
+#nc-root tr,
+#nc-root td,
+#nc-root th {
+  border-color: var(--color-border) !important;
+}
+
 #nc-root input,
 #nc-root textarea,
 #nc-root select,
@@ -161,6 +186,12 @@ a {
   border-radius: 8px !important;
   color: var(--color-text-primary) !important;
   box-shadow: none !important;
+}
+
+#nc-root input::placeholder,
+#nc-root textarea::placeholder {
+  color: var(--color-text-muted) !important;
+  opacity: 1 !important;
 }
 
 #nc-root input:focus,
@@ -189,13 +220,53 @@ a {
   border-color: var(--color-border) !important;
 }
 
+#nc-root [class*="Image"],
+#nc-root [class*="image"],
+#nc-root [class*="File"],
+#nc-root [class*="file"],
+#nc-root [class*="Upload"],
+#nc-root [class*="upload"],
+#nc-root [class*="Date"],
+#nc-root [class*="date"],
+#nc-root [class*="Media"] {
+  border-color: var(--color-border) !important;
+  color: var(--color-text-primary) !important;
+}
+
+#nc-root [class*="Image"] > div,
+#nc-root [class*="image"] > div,
+#nc-root [class*="File"] > div,
+#nc-root [class*="file"] > div,
+#nc-root [class*="Upload"] > div,
+#nc-root [class*="upload"] > div,
+#nc-root [class*="Date"] > div,
+#nc-root [class*="date"] > div,
+#nc-root [class*="Control"] > div,
+#nc-root [class*="Widget"] > div {
+  background-color: var(--color-bg) !important;
+  border-color: var(--color-border) !important;
+  color: var(--color-text-primary) !important;
+}
+
+#nc-root [class*="Image"] [style*="background"],
+#nc-root [class*="image"] [style*="background"],
+#nc-root [class*="File"] [style*="background"],
+#nc-root [class*="file"] [style*="background"],
+#nc-root [class*="Date"] [style*="background"],
+#nc-root [class*="date"] [style*="background"],
+#nc-root [class*="Control"] [style*="background"],
+#nc-root [class*="Widget"] [style*="background"] {
+  background: var(--color-bg) !important;
+  background-color: var(--color-bg) !important;
+}
+
 #nc-root button,
 #nc-root [role="button"] {
   border-radius: 999px !important;
   border-color: var(--color-border) !important;
-  background: var(--color-bg-secondary) !important;
+  background: var(--color-bg-elevated) !important;
   color: var(--color-text-primary) !important;
-  box-shadow: none !important;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.16) !important;
   text-transform: none !important;
 }
 
@@ -205,24 +276,14 @@ a {
   background: var(--color-bg-hover) !important;
 }
 
-#nc-root table,
-#nc-root thead,
-#nc-root tbody,
-#nc-root tr,
-#nc-root td,
-#nc-root th,
-#nc-root ul,
-#nc-root li,
-#nc-root form,
-#nc-root section,
-#nc-root article,
 #nc-root [style*="background: rgb(255"],
 #nc-root [style*="background-color: rgb(255"],
 #nc-root [style*="background: #fff"],
 #nc-root [style*="background-color: #fff"],
 #nc-root [style*="background: white"],
 #nc-root [style*="background-color: white"] {
-  background-color: var(--color-bg-secondary) !important;
+  background: var(--color-bg) !important;
+  background-color: var(--color-bg) !important;
   color: var(--color-text-primary) !important;
   border-color: var(--color-border) !important;
 }
