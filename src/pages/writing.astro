@@ -1,0 +1,61 @@
+---
+import Header from "../components/Header.astro";
+import PostRow from "../components/PostRow.astro";
+import { getPosts } from "../lib/posts";
+import "../styles/global.css";
+
+const posts = getPosts();
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Writing · ST Zhang</title>
+    <meta
+      name="description"
+      content="All writing from ST Zhang."
+    />
+  </head>
+
+  <body>
+    <div class="site-shell">
+      <Header current="writing" />
+
+      <main class="page-main">
+        <section class="archive-hero">
+          <span class="pill">Archive</span>
+
+          <h1>Notes and essays.</h1>
+
+          <p>
+            A running archive of writing about AI, technology, personal systems,
+            internet culture, and small things I am trying to understand.
+          </p>
+        </section>
+
+        <section class="archive-list">
+          <div class="section-heading">
+            <h2>All writing</h2>
+          </div>
+
+          {
+            posts.length > 0 ? (
+              <div class="post-list">
+                {posts.map((post) => <PostRow post={post} />)}
+              </div>
+            ) : (
+              <p class="empty-state">No posts yet.</p>
+            )
+          }
+        </section>
+      </main>
+
+      <footer class="site-footer">
+        <span>© {new Date().getFullYear()} ST Zhang</span>
+        <a href="/">Back home →</a>
+      </footer>
+    </div>
+  </body>
+</html>

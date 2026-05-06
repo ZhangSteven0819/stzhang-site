@@ -1,0 +1,26 @@
+---
+import Tag from "./Tag.astro";
+import { formatMonthYear } from "../lib/posts";
+
+const { post } = Astro.props;
+---
+
+<a class="featured-card" href={post.url}>
+  <div class="featured-meta">
+    <span>{formatMonthYear(post.publishDate)}</span>
+
+    {
+      post.tags.length > 0 && (
+        <div class="tag-list">
+          {post.tags.slice(0, 4).map((tag) => <Tag label={tag} />)}
+        </div>
+      )
+    }
+  </div>
+
+  <div class="featured-content">
+    <h3>{post.title}</h3>
+    <p>{post.description}</p>
+    <span class="read-link">Read essay →</span>
+  </div>
+</a>

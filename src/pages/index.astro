@@ -1,32 +1,14 @@
 ---
-const pageModules = import.meta.glob("./*.md", { eager: true });
+import Header from "../components/Header.astro";
+import FeaturedPost from "../components/FeaturedPost.astro";
+import PostRow from "../components/PostRow.astro";
+import { getPosts } from "../lib/posts";
+import "../styles/global.css";
 
-const posts = Object.values(pageModules)
-  .map((post: any) => {
-    const title = post.frontmatter?.title || "Untitled";
-    const description =
-      post.frontmatter?.description ||
-      post.frontmatter?.excerpt ||
-      "A short note from ST Zhang.";
-    const publishDate = post.frontmatter?.publishDate || "";
-    const tags = post.frontmatter?.tags || [];
-
-    return {
-      title,
-      description,
-      publishDate,
-      tags,
-      url: post.url,
-    };
-  })
-  .filter((post) => post.url)
-  .sort((a, b) => {
-    if (!a.publishDate || !b.publishDate) return 0;
-    return new Date(b.publishDate).getTime() - new Date(a.publishDate).getTime();
-  });
-
+const posts = getPosts();
 const featured = posts[0];
-const rest = posts.slice(1);
+const rest = posts.slice(1, 7);
+const showViewAll = posts.length > 6;
 ---
 
 <!doctype html>
@@ -37,425 +19,124 @@ const rest = posts.slice(1);
     <title>ST Zhang</title>
     <meta
       name="description"
-      content="ST Zhang's personal blog about AI, products, code, and internet culture."
+      content="ST Zhang's personal blog about AI, technology, notes, and building on the internet."
     />
   </head>
 
   <body>
     <div class="site-shell">
-      <header class="nav">
-        <a class="brand" href="/">ST Zhang</a>
-        <nav>
-          <a href="#writing">Writing</a>
-          <a href="/admin/">Write</a>
-          <a href="https://github.com/ZhangSteven0819" target="_blank">GitHub</a>
-        </nav>
-      </header>
+      <Header />
 
-      <main>
+      <main class="page-main">
         <section class="hero">
-          <div class="hero-left">
-            <p class="kicker">Personal blog · AI · Tech · Notes</p>
-            <h1>Writing, building, and thinking on the internet.</h1>
-          </div>
+          <div class="hero-copy">
+            <span class="pill">Personal blog</span>
 
-          <div class="hero-right">
-            <p>
-              I’m ST Zhang. This is my home for essays, notes, product thoughts,
-              AI experiments, and things I’m learning while building online.
+            <h1>ST Zhang</h1>
+
+            <p class="hero-kicker">AI · Tech · Notes</p>
+
+            <p class="hero-description">
+              Writing, building, and thinking on the internet.
             </p>
+
             <div class="hero-actions">
-              <a href="#writing">Read writing</a>
-              <a href="/admin/">New post</a>
+              <a class="button button-primary" href="#writing">Read writing</a>
+              <a class="button button-secondary" href="/writing">Browse archive →</a>
             </div>
           </div>
+
+          <aside class="hero-aside">
+            <span>Field notes</span>
+            <p>
+              A quiet place for essays, experiments, technical notes, product thoughts,
+              and the small observations that usually get lost in chat windows.
+            </p>
+          </aside>
         </section>
 
-        <section class="featured-section" id="writing">
-          <div class="section-label">
-            <span>Latest</span>
-            <span>{posts.length} posts</span>
+        <section id="writing" class="writing-section">
+          <div class="section-heading">
+            <h2>Writing</h2>
+            {showViewAll && <a href="/writing">View all →</a>}
           </div>
 
           {
             featured ? (
-              <a class="featured-card" href={featured.url}>
-                <div>
-                  <p class="card-kicker">Featured Essay</p>
-                  <h2>{featured.title}</h2>
-                  <p>{featured.description}</p>
+              <>
+                <FeaturedPost post={featured} />
 
-                  <div class="tags">
-                    {featured.publishDate && <span>{featured.publishDate}</span>}
-                    {featured.tags.map((tag) => <span>{tag}</span>)}
-                  </div>
-                </div>
-
-                <div class="arrow">↗</div>
-              </a>
+                {
+                  rest.length > 0 && (
+                    <div class="post-list">
+                      {rest.map((post) => <PostRow post={post} />)}
+                    </div>
+                  )
+                }
+              </>
             ) : (
-              <div class="empty">
-                <h2>No posts yet</h2>
-                <p>Go to /admin and publish your first article.</p>
-              </div>
+              <p class="empty-state">No posts yet.</p>
             )
           }
         </section>
 
-        {
-          rest.length > 0 && (
-            <section class="post-grid">
-              {rest.map((post) => (
-                <a class="post-card" href={post.url}>
-                  <div>
-                    <p class="card-kicker">Essay</p>
-                    <h3>{post.title}</h3>
-                    <p>{post.description}</p>
-                  </div>
+        <section class="topics-section">
+          <div class="section-heading">
+            <h2>Topics</h2>
+          </div>
 
-                  <div class="post-footer">
-                    <span>{post.publishDate || "Draft"}</span>
-                    <span>Read →</span>
-                  </div>
-                </a>
-              ))}
-            </section>
-          )
-        }
+          <div class="topic-layout">
+            <div class="topic-panel topic-panel-large">
+              <h3>AI</h3>
+              <p>
+                Notes on models, tools, workflows, automation, and how AI changes
+                the way people build and think.
+              </p>
+            </div>
+
+            <div class="topic-stack">
+              <div class="topic-panel">
+                <h3>Tech</h3>
+                <p>
+                  Practical writing about software, web infrastructure, domains,
+                  deployment, and the small systems behind personal projects.
+                </p>
+              </div>
+
+              <div class="topic-panel">
+                <h3>Notes</h3>
+                <p>
+                  Short observations, reading notes, decisions, and personal logs
+                  that do not need to become polished essays.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
       </main>
 
-      <footer>
+      <footer class="site-footer">
         <span>© {new Date().getFullYear()} ST Zhang</span>
-        <span>Built with Astro + Decap CMS</span>
+
+        <a
+          href="https://github.com/ZhangSteven0819"
+          target="_blank"
+          rel="noreferrer"
+          aria-label="GitHub profile"
+        >
+          <svg
+            class="github-icon"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+            fill="currentColor"
+          >
+            <path
+              d="M12 2C6.48 2 2 6.58 2 12.22c0 4.52 2.87 8.35 6.84 9.7.5.1.68-.22.68-.49v-1.88c-2.78.62-3.36-1.22-3.36-1.22-.45-1.18-1.11-1.49-1.11-1.49-.91-.64.07-.63.07-.63 1 .07 1.53 1.06 1.53 1.06.9 1.57 2.36 1.12 2.94.86.09-.67.35-1.12.63-1.38-2.22-.26-4.56-1.14-4.56-5.06 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.3.1-2.71 0 0 .84-.28 2.75 1.05A9.35 9.35 0 0 1 12 6.95c.85 0 1.7.12 2.5.34 1.9-1.33 2.74-1.05 2.74-1.05.55 1.41.2 2.45.1 2.71.64.72 1.03 1.63 1.03 2.75 0 3.94-2.34 4.8-4.57 5.05.36.32.68.95.68 1.92v2.84c0 .27.18.59.69.49A10.04 10.04 0 0 0 22 12.22C22 6.58 17.52 2 12 2Z"
+            />
+          </svg>
+          GitHub
+        </a>
       </footer>
     </div>
   </body>
 </html>
-
-<style>
-  :root {
-    color-scheme: light dark;
-    --bg: #fafafa;
-    --text: #171717;
-    --muted: #737373;
-    --soft: #a3a3a3;
-    --card: #ffffff;
-    --line: #e5e5e5;
-    --chip: #f5f5f5;
-    --accent: #111111;
-  }
-
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #09090b;
-      --text: #f5f5f5;
-      --muted: #a1a1aa;
-      --soft: #71717a;
-      --card: #111113;
-      --line: #27272a;
-      --chip: #18181b;
-      --accent: #ffffff;
-    }
-  }
-
-  * {
-    box-sizing: border-box;
-  }
-
-  html {
-    scroll-behavior: smooth;
-  }
-
-  body {
-    margin: 0;
-    background:
-      radial-gradient(circle at top right, rgba(255, 255, 255, 0.08), transparent 34rem),
-      var(--bg);
-    color: var(--text);
-    font-family:
-      Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
-      "Segoe UI", sans-serif;
-  }
-
-  .site-shell {
-    width: min(1120px, calc(100% - 32px));
-    margin: 0 auto;
-  }
-
-  .nav {
-    height: 76px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-bottom: 1px solid var(--line);
-  }
-
-  .brand {
-    color: var(--text);
-    text-decoration: none;
-    font-weight: 780;
-    letter-spacing: -0.045em;
-    font-size: 20px;
-  }
-
-  nav {
-    display: flex;
-    gap: 18px;
-  }
-
-  nav a {
-    color: var(--muted);
-    text-decoration: none;
-    font-size: 14px;
-  }
-
-  nav a:hover {
-    color: var(--text);
-  }
-
-  .hero {
-    min-height: 520px;
-    display: grid;
-    grid-template-columns: 1.25fr 0.75fr;
-    gap: 72px;
-    align-items: end;
-    padding: 96px 0 76px;
-    border-bottom: 1px solid var(--line);
-  }
-
-  .kicker,
-  .card-kicker {
-    margin: 0 0 18px;
-    color: var(--muted);
-    font-size: 13px;
-    font-weight: 680;
-    text-transform: uppercase;
-    letter-spacing: 0.13em;
-  }
-
-  h1 {
-    max-width: 820px;
-    margin: 0;
-    font-size: clamp(58px, 9vw, 118px);
-    line-height: 0.9;
-    letter-spacing: -0.09em;
-  }
-
-  .hero-right {
-    align-self: center;
-  }
-
-  .hero-right p {
-    margin: 0;
-    color: var(--muted);
-    font-size: 20px;
-    line-height: 1.65;
-  }
-
-  .hero-actions {
-    display: flex;
-    gap: 12px;
-    margin-top: 28px;
-    flex-wrap: wrap;
-  }
-
-  .hero-actions a {
-    color: var(--text);
-    text-decoration: none;
-    border: 1px solid var(--line);
-    background: var(--card);
-    border-radius: 999px;
-    padding: 11px 15px;
-    font-size: 14px;
-    font-weight: 650;
-  }
-
-  .hero-actions a:first-child {
-    background: var(--text);
-    color: var(--bg);
-  }
-
-  .featured-section {
-    padding: 56px 0 0;
-  }
-
-  .section-label {
-    display: flex;
-    justify-content: space-between;
-    color: var(--muted);
-    font-size: 14px;
-    margin-bottom: 18px;
-  }
-
-  .featured-card {
-    position: relative;
-    min-height: 360px;
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 32px;
-    padding: 40px;
-    color: var(--text);
-    text-decoration: none;
-    border: 1px solid var(--line);
-    border-radius: 34px;
-    background:
-      linear-gradient(135deg, rgba(255, 255, 255, 0.08), transparent),
-      var(--card);
-    transition:
-      transform 0.2s ease,
-      border-color 0.2s ease;
-  }
-
-  .featured-card:hover,
-  .post-card:hover {
-    transform: translateY(-4px);
-    border-color: var(--soft);
-  }
-
-  .featured-card h2 {
-    max-width: 780px;
-    margin: 0;
-    font-size: clamp(42px, 6vw, 76px);
-    line-height: 0.95;
-    letter-spacing: -0.075em;
-  }
-
-  .featured-card p:not(.card-kicker) {
-    max-width: 620px;
-    margin: 24px 0 0;
-    color: var(--muted);
-    font-size: 19px;
-    line-height: 1.65;
-  }
-
-  .arrow {
-    width: 52px;
-    height: 52px;
-    display: grid;
-    place-items: center;
-    border: 1px solid var(--line);
-    border-radius: 999px;
-    color: var(--muted);
-    font-size: 22px;
-  }
-
-  .tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 32px;
-  }
-
-  .tags span {
-    color: var(--muted);
-    background: var(--chip);
-    border: 1px solid var(--line);
-    border-radius: 999px;
-    padding: 7px 10px;
-    font-size: 13px;
-  }
-
-  .post-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 18px;
-    padding: 18px 0 80px;
-  }
-
-  .post-card {
-    min-height: 260px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    padding: 28px;
-    border: 1px solid var(--line);
-    border-radius: 28px;
-    background: var(--card);
-    color: var(--text);
-    text-decoration: none;
-    transition:
-      transform 0.2s ease,
-      border-color 0.2s ease;
-  }
-
-  .post-card h3 {
-    margin: 0;
-    font-size: 32px;
-    line-height: 1.04;
-    letter-spacing: -0.055em;
-  }
-
-  .post-card p {
-    margin: 16px 0 0;
-    color: var(--muted);
-    line-height: 1.6;
-  }
-
-  .post-footer {
-    display: flex;
-    justify-content: space-between;
-    gap: 12px;
-    margin-top: 32px;
-    color: var(--muted);
-    font-size: 14px;
-  }
-
-  .empty {
-    border: 1px dashed var(--line);
-    border-radius: 28px;
-    padding: 32px;
-  }
-
-  .empty h2 {
-    margin: 0 0 8px;
-  }
-
-  .empty p {
-    color: var(--muted);
-    margin: 0;
-  }
-
-  footer {
-    display: flex;
-    justify-content: space-between;
-    gap: 18px;
-    padding: 32px 0;
-    border-top: 1px solid var(--line);
-    color: var(--muted);
-    font-size: 14px;
-  }
-
-  @media (max-width: 820px) {
-    .nav {
-      height: auto;
-      padding: 22px 0;
-      align-items: flex-start;
-      flex-direction: column;
-      gap: 14px;
-    }
-
-    .hero {
-      min-height: auto;
-      grid-template-columns: 1fr;
-      gap: 36px;
-      padding: 64px 0 56px;
-    }
-
-    .featured-card {
-      grid-template-columns: 1fr;
-      padding: 28px;
-    }
-
-    .arrow {
-      display: none;
-    }
-
-    .post-grid {
-      grid-template-columns: 1fr;
-    }
-
-    footer {
-      flex-direction: column;
-    }
-  }
-</style>

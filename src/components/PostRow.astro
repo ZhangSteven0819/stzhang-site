@@ -1,0 +1,10 @@
+---
+import { formatMonthYear } from "../lib/posts";
+
+const { post } = Astro.props;
+---
+
+<a class="post-row" href={post.url}>
+  <span class="post-row-title">{post.title}</span>
+  <span class="post-row-date">{formatMonthYear(post.publishDate)}</span>
+</a>
