@@ -403,115 +403,25 @@ textarea {
     font-size: 16px !important;
   }
 
-  /* 整体布局 */
-  #nc-root,
-  body {
-    overflow-x: hidden !important;
-    position: relative !important;
-  }
-
-  /* 侧边栏 */
-  #nc-root aside,
-  #nc-root nav,
-  #nc-root [class*="Sidebar"],
-  #nc-root [class*="CollectionContainer"],
-  #nc-root [class*="SearchContainer"] {
-    width: 280px !important;
-    min-width: 280px !important;
-    height: 100% !important;
-    position: fixed !important;
-    left: -280px !important;
-    top: 0 !important;
-    z-index: 1000 !important;
-    overflow-y: auto !important;
-    overflow-x: hidden !important;
-    -webkit-overflow-scrolling: touch !important;
-    padding-top: 60px !important;
-    transition: left 0.3s ease !important;
-  }
-
-  #nc-root aside.open,
-  #nc-root nav.open,
-  #nc-root [class*="Sidebar"].open {
-    left: 0 !important;
-  }
-
-  /* 主内容区 */
-  #nc-root main,
-  #nc-root [class*="AppMain"],
-  #nc-root [class*="CollectionMain"],
-  #nc-root [class*="CollectionTop"] {
-    width: 100% !important;
-    padding: 16px !important;
-    overflow-x: hidden !important;
-  }
-
-  /* 编辑器容器 */
+  /* 编辑器容器改为垂直布局 */
   #nc-root [class*="EditorContainer"],
   #nc-root [class*="EditorWrapper"] {
     flex-direction: column !important;
-    width: 100% !important;
     gap: 16px !important;
   }
 
-  /* 控制面板（左侧编辑器） */
-  #nc-root [class*="ControlPane"] {
-    width: 100% !important;
-    min-width: 100% !important;
-    order: 1 !important;
-  }
-
-  /* 预览面板（右侧预览） */
+  /* 预览面板样式 */
   #nc-root [class*="PreviewPane"] {
-    width: 100% !important;
-    min-width: 100% !important;
-    order: 2 !important;
     background: var(--st-admin-panel) !important;
     border: 1px solid var(--st-admin-border) !important;
     border-radius: 8px !important;
   }
 
-  #nc-root [class*="PreviewPane"] * {
-    background: var(--st-admin-panel) !important;
-    color: var(--st-admin-text) !important;
-  }
-
-  /* 预览 iframe */
-  #nc-root [class*="PreviewPane"] iframe,
-  #nc-root iframe[class*="preview"],
-  .preview-frame {
-    background: var(--st-admin-panel) !important;
-    border: none !important;
-    border-radius: 8px !important;
-  }
-
-  .frame-content {
-    background: var(--st-admin-panel) !important;
-    color: var(--st-admin-text) !important;
-    padding: 24px 16px !important;
-  }
-
-  .frame-content * {
-    background: var(--st-admin-panel) !important;
-    color: var(--st-admin-text) !important;
-  }
-
-  .frame-content p,
-  .frame-content li {
-    color: var(--st-admin-secondary) !important;
-  }
-
-  .frame-content a {
-    color: var(--st-admin-text) !important;
-  }
-
   /* 卡片列表 */
-  #nc-root [class*="Card"],
+  #nc-root [class*="Card"]:not([class*="Control"]),
   #nc-root [class*="EntryCard"],
-  #nc-root [class*="ListCard"],
-  #nc-root [class*="EntryListing"] {
+  #nc-root [class*="ListCard"] {
     margin-bottom: 12px !important;
-    padding: 16px !important;
   }
 
   /* 按钮 */
@@ -527,18 +437,5 @@ textarea {
   #nc-root textarea {
     font-size: 16px !important;
     padding: 12px !important;
-  }
-
-  /* 编辑器工具栏 */
-  #nc-root .editor-toolbar {
-    flex-wrap: wrap !important;
-    gap: 8px !important;
-    padding: 12px !important;
-  }
-
-  /* 标签和分类 */
-  #nc-root [class*="Filter"] {
-    flex-direction: column !important;
-    gap: 12px !important;
   }
 }
