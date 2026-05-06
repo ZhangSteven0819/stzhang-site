@@ -2,10 +2,8 @@ backend:
   name: github
   repo: ZhangSteven0819/stzhang-site
   branch: main
-  base_url: https://stzhang-site.zhanglusilud.workers.dev
-  auth_endpoint: api/auth
-  # base_url and auth_endpoint will be set after you configure your OAuth proxy
-site_url: "https://your-site.com" # the URL of your site
+
+site_url: "https://stzhang-site.pages.dev"
 
 media_folder: "public/images/uploads"
 public_folder: "/images/uploads"
@@ -13,7 +11,7 @@ public_folder: "/images/uploads"
 collections:
   - name: "pages"
     label: "Pages"
-    folder: "src/pages" # the folder where your CMS managed Astro pages are located
+    folder: "src/pages"
     create: true
     slug: "{{slug}}"
     fields:
