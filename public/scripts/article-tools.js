@@ -20,7 +20,7 @@
     if (!readingTimeEl) return;
 
     const text = content.textContent || "";
-    const latinWords = text.match(/\b[\w’'-]+\b/g) || [];
+    const latinWords = text.match(/\b[A-Za-zÀ-ÖØ-öø-ÿ0-9]+(?:['-][A-Za-zÀ-ÖØ-öø-ÿ0-9]+)*\b/g) || [];
     const cjkChars = text.match(/[\u4e00-\u9fff\u3040-\u30ff\uac00-\ud7af]/g) || [];
 
     const estimatedWords = latinWords.length + Math.ceil(cjkChars.length / 2);

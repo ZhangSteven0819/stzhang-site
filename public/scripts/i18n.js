@@ -98,6 +98,18 @@
     });
   }
 
+  function restoreOriginalText() {
+    const nodes = getTextNodes();
+
+    nodes.forEach((node) => {
+      const original = originalTextMap.get(node);
+
+      if (typeof original === "string") {
+        node.nodeValue = original;
+      }
+    });
+  }
+
   function preserveWhitespace(original, translated) {
     const start = original.match(/^\s*/)?.[0] || "";
     const end = original.match(/\s*$/)?.[0] || "";
@@ -133,6 +145,11 @@
 
     const nodes = getTextNodes();
     rememberOriginalText(nodes);
+
+    if (language === DEFAULT_LANGUAGE) {
+      restoreOriginalText();
+      return;
+    }
 
     const entries = nodes.map((node) => {
       const original = originalTextMap.get(node) || "";
@@ -197,11 +214,15 @@
     const cached = localStorage.getItem(cacheKey);
 
     if (cached) {
-      const quote = JSON.parse(cached);
-      labelEl.textContent = quote.label || "Daily quote";
-      textEl.textContent = quote.quote;
-      sourceEl.textContent = `${quote.author} · ${quote.source}`;
-      return;
+      try {
+        const quote = JSON.parse(cached);
+        labelEl.textContent = quote.label || "Daily quote";
+        textEl.textContent = quote.quote;
+        sourceEl.textContent = `${quote.author} · ${quote.source}`;
+        return;
+      } catch (error) {
+        localStorage.removeItem(cacheKey);
+      }
     }
 
     try {
