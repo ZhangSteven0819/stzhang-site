@@ -1,7 +1,9 @@
 backend:
   name: github
-  repo: "your-username/your-repo"
+  repo: ZhangSteven0819/stzhang-site
   branch: main
+  base_url: https://stzhang-site.zhanglusilud.workers.dev
+  auth_endpoint: api/auth
   # base_url and auth_endpoint will be set after you configure your OAuth proxy
 site_url: "https://your-site.com" # the URL of your site
 
