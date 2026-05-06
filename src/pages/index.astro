@@ -1,11 +1,461 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
+const pageModules = import.meta.glob("./*.md", { eager: true });
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+const posts = Object.values(pageModules)
+  .map((post: any) => {
+    const title = post.frontmatter?.title || "Untitled";
+    const description =
+      post.frontmatter?.description ||
+      post.frontmatter?.excerpt ||
+      "A short note from ST Zhang.";
+    const publishDate = post.frontmatter?.publishDate || "";
+    const tags = post.frontmatter?.tags || [];
+
+    return {
+      title,
+      description,
+      publishDate,
+      tags,
+      url: post.url,
+    };
+  })
+  .filter((post) => post.url)
+  .sort((a, b) => {
+    if (!a.publishDate || !b.publishDate) return 0;
+    return new Date(b.publishDate).getTime() - new Date(a.publishDate).getTime();
+  });
+
+const featured = posts[0];
+const rest = posts.slice(1);
 ---
 
-<Layout>
-	<Welcome />
-</Layout>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ST Zhang</title>
+    <meta
+      name="description"
+      content="ST Zhang's personal blog about AI, products, code, and internet culture."
+    />
+  </head>
+
+  <body>
+    <div class="site-shell">
+      <header class="nav">
+        <a class="brand" href="/">ST Zhang</a>
+        <nav>
+          <a href="#writing">Writing</a>
+          <a href="/admin/">Write</a>
+          <a href="https://github.com/ZhangSteven0819" target="_blank">GitHub</a>
+        </nav>
+      </header>
+
+      <main>
+        <section class="hero">
+          <div class="hero-left">
+            <p class="kicker">Personal blog · AI · Tech · Notes</p>
+            <h1>Writing, building, and thinking on the internet.</h1>
+          </div>
+
+          <div class="hero-right">
+            <p>
+              I’m ST Zhang. This is my home for essays, notes, product thoughts,
+              AI experiments, and things I’m learning while building online.
+            </p>
+            <div class="hero-actions">
+              <a href="#writing">Read writing</a>
+              <a href="/admin/">New post</a>
+            </div>
+          </div>
+        </section>
+
+        <section class="featured-section" id="writing">
+          <div class="section-label">
+            <span>Latest</span>
+            <span>{posts.length} posts</span>
+          </div>
+
+          {
+            featured ? (
+              <a class="featured-card" href={featured.url}>
+                <div>
+                  <p class="card-kicker">Featured Essay</p>
+                  <h2>{featured.title}</h2>
+                  <p>{featured.description}</p>
+
+                  <div class="tags">
+                    {featured.publishDate && <span>{featured.publishDate}</span>}
+                    {featured.tags.map((tag) => <span>{tag}</span>)}
+                  </div>
+                </div>
+
+                <div class="arrow">↗</div>
+              </a>
+            ) : (
+              <div class="empty">
+                <h2>No posts yet</h2>
+                <p>Go to /admin and publish your first article.</p>
+              </div>
+            )
+          }
+        </section>
+
+        {
+          rest.length > 0 && (
+            <section class="post-grid">
+              {rest.map((post) => (
+                <a class="post-card" href={post.url}>
+                  <div>
+                    <p class="card-kicker">Essay</p>
+                    <h3>{post.title}</h3>
+                    <p>{post.description}</p>
+                  </div>
+
+                  <div class="post-footer">
+                    <span>{post.publishDate || "Draft"}</span>
+                    <span>Read →</span>
+                  </div>
+                </a>
+              ))}
+            </section>
+          )
+        }
+      </main>
+
+      <footer>
+        <span>© {new Date().getFullYear()} ST Zhang</span>
+        <span>Built with Astro + Decap CMS</span>
+      </footer>
+    </div>
+  </body>
+</html>
+
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #fafafa;
+    --text: #171717;
+    --muted: #737373;
+    --soft: #a3a3a3;
+    --card: #ffffff;
+    --line: #e5e5e5;
+    --chip: #f5f5f5;
+    --accent: #111111;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #09090b;
+      --text: #f5f5f5;
+      --muted: #a1a1aa;
+      --soft: #71717a;
+      --card: #111113;
+      --line: #27272a;
+      --chip: #18181b;
+      --accent: #ffffff;
+    }
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    margin: 0;
+    background:
+      radial-gradient(circle at top right, rgba(255, 255, 255, 0.08), transparent 34rem),
+      var(--bg);
+    color: var(--text);
+    font-family:
+      Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+      "Segoe UI", sans-serif;
+  }
+
+  .site-shell {
+    width: min(1120px, calc(100% - 32px));
+    margin: 0 auto;
+  }
+
+  .nav {
+    height: 76px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .brand {
+    color: var(--text);
+    text-decoration: none;
+    font-weight: 780;
+    letter-spacing: -0.045em;
+    font-size: 20px;
+  }
+
+  nav {
+    display: flex;
+    gap: 18px;
+  }
+
+  nav a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 14px;
+  }
+
+  nav a:hover {
+    color: var(--text);
+  }
+
+  .hero {
+    min-height: 520px;
+    display: grid;
+    grid-template-columns: 1.25fr 0.75fr;
+    gap: 72px;
+    align-items: end;
+    padding: 96px 0 76px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .kicker,
+  .card-kicker {
+    margin: 0 0 18px;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 680;
+    text-transform: uppercase;
+    letter-spacing: 0.13em;
+  }
+
+  h1 {
+    max-width: 820px;
+    margin: 0;
+    font-size: clamp(58px, 9vw, 118px);
+    line-height: 0.9;
+    letter-spacing: -0.09em;
+  }
+
+  .hero-right {
+    align-self: center;
+  }
+
+  .hero-right p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 20px;
+    line-height: 1.65;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 28px;
+    flex-wrap: wrap;
+  }
+
+  .hero-actions a {
+    color: var(--text);
+    text-decoration: none;
+    border: 1px solid var(--line);
+    background: var(--card);
+    border-radius: 999px;
+    padding: 11px 15px;
+    font-size: 14px;
+    font-weight: 650;
+  }
+
+  .hero-actions a:first-child {
+    background: var(--text);
+    color: var(--bg);
+  }
+
+  .featured-section {
+    padding: 56px 0 0;
+  }
+
+  .section-label {
+    display: flex;
+    justify-content: space-between;
+    color: var(--muted);
+    font-size: 14px;
+    margin-bottom: 18px;
+  }
+
+  .featured-card {
+    position: relative;
+    min-height: 360px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 32px;
+    padding: 40px;
+    color: var(--text);
+    text-decoration: none;
+    border: 1px solid var(--line);
+    border-radius: 34px;
+    background:
+      linear-gradient(135deg, rgba(255, 255, 255, 0.08), transparent),
+      var(--card);
+    transition:
+      transform 0.2s ease,
+      border-color 0.2s ease;
+  }
+
+  .featured-card:hover,
+  .post-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--soft);
+  }
+
+  .featured-card h2 {
+    max-width: 780px;
+    margin: 0;
+    font-size: clamp(42px, 6vw, 76px);
+    line-height: 0.95;
+    letter-spacing: -0.075em;
+  }
+
+  .featured-card p:not(.card-kicker) {
+    max-width: 620px;
+    margin: 24px 0 0;
+    color: var(--muted);
+    font-size: 19px;
+    line-height: 1.65;
+  }
+
+  .arrow {
+    width: 52px;
+    height: 52px;
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    color: var(--muted);
+    font-size: 22px;
+  }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 32px;
+  }
+
+  .tags span {
+    color: var(--muted);
+    background: var(--chip);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 7px 10px;
+    font-size: 13px;
+  }
+
+  .post-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+    padding: 18px 0 80px;
+  }
+
+  .post-card {
+    min-height: 260px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 28px;
+    border: 1px solid var(--line);
+    border-radius: 28px;
+    background: var(--card);
+    color: var(--text);
+    text-decoration: none;
+    transition:
+      transform 0.2s ease,
+      border-color 0.2s ease;
+  }
+
+  .post-card h3 {
+    margin: 0;
+    font-size: 32px;
+    line-height: 1.04;
+    letter-spacing: -0.055em;
+  }
+
+  .post-card p {
+    margin: 16px 0 0;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  .post-footer {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 32px;
+    color: var(--muted);
+    font-size: 14px;
+  }
+
+  .empty {
+    border: 1px dashed var(--line);
+    border-radius: 28px;
+    padding: 32px;
+  }
+
+  .empty h2 {
+    margin: 0 0 8px;
+  }
+
+  .empty p {
+    color: var(--muted);
+    margin: 0;
+  }
+
+  footer {
+    display: flex;
+    justify-content: space-between;
+    gap: 18px;
+    padding: 32px 0;
+    border-top: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 14px;
+  }
+
+  @media (max-width: 820px) {
+    .nav {
+      height: auto;
+      padding: 22px 0;
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .hero {
+      min-height: auto;
+      grid-template-columns: 1fr;
+      gap: 36px;
+      padding: 64px 0 56px;
+    }
+
+    .featured-card {
+      grid-template-columns: 1fr;
+      padding: 28px;
+    }
+
+    .arrow {
+      display: none;
+    }
+
+    .post-grid {
+      grid-template-columns: 1fr;
+    }
+
+    footer {
+      flex-direction: column;
+    }
+  }
+</style>
