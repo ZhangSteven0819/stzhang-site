@@ -2,6 +2,8 @@ backend:
   name: github
   repo: ZhangSteven0819/stzhang-site
   branch: main
+  base_url: https://stzhang-site.pages.dev
+  auth_endpoint: api/auth
 
 site_url: "https://stzhang-site.pages.dev"
 
