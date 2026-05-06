@@ -609,6 +609,9 @@ a:focus-visible,
   position: relative;
   width: min(var(--layout-width), calc(100% - var(--page-padding) * 2));
   margin: 0 auto;
+  padding-left: var(--page-padding);
+  padding-right: var(--page-padding);
+  box-sizing: content-box;
 }
 
 .article-content {
@@ -902,10 +905,22 @@ a:focus-visible,
 
   .article-header {
     padding-top: 48px;
+    padding-left: var(--page-padding);
+    padding-right: var(--page-padding);
+  }
+
+  .article-content {
+    padding-left: var(--page-padding);
+    padding-right: var(--page-padding);
   }
 
   .article-content p,
   .article-content li {
     font-size: 17px;
+  }
+
+  .article-footer {
+    padding-left: var(--page-padding);
+    padding-right: var(--page-padding);
   }
 }
