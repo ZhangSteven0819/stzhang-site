@@ -73,7 +73,14 @@ a {
 #nc-root [class*="AppMain"],
 #nc-root [class*="EditorContainer"],
 #nc-root [class*="PreviewPane"],
-#nc-root [class*="ControlPane"] {
+#nc-root [class*="ControlPane"],
+#nc-root [class*="EditorWrapper"],
+#nc-root [class*="EditorControl"],
+#nc-root [class*="CollectionMain"],
+#nc-root [class*="CollectionTop"],
+#nc-root [class*="EntriesCollection"],
+#nc-root [class*="MediaLibrary"],
+#nc-root [class*="MediaLibraryModal"] {
   background: var(--color-bg) !important;
   color: var(--color-text-primary) !important;
 }
@@ -96,7 +103,14 @@ a {
 #nc-root [class*="Widget"],
 #nc-root [class*="Dropdown"],
 #nc-root [class*="Modal"],
-#nc-root [class*="Popover"] {
+#nc-root [class*="Popover"],
+#nc-root [class*="ControlContainer"],
+#nc-root [class*="Field"],
+#nc-root [class*="ListItem"],
+#nc-root [class*="EntryListing"],
+#nc-root [class*="MediaCard"],
+#nc-root [class*="Asset"],
+#nc-root [class*="EditorToolbar"] {
   background: var(--color-bg-secondary) !important;
   border: 1px solid var(--color-border) !important;
   border-radius: 8px !important;
@@ -135,7 +149,13 @@ a {
 #nc-root textarea,
 #nc-root select,
 #nc-root [contenteditable="true"],
-#nc-root [role="textbox"] {
+#nc-root [role="textbox"],
+#nc-root .CodeMirror,
+#nc-root .CodeMirror-scroll,
+#nc-root .cm-s-default,
+#nc-root .editor-preview,
+#nc-root .editor-toolbar,
+#nc-root .editor-statusbar {
   background: var(--color-bg) !important;
   border: 1px solid var(--color-border) !important;
   border-radius: 8px !important;
@@ -153,6 +173,22 @@ a {
   outline-offset: 2px !important;
 }
 
+#nc-root .CodeMirror-gutters,
+#nc-root .CodeMirror-linenumber,
+#nc-root .CodeMirror-cursor,
+#nc-root .cm-header,
+#nc-root .cm-variable-2,
+#nc-root .cm-link,
+#nc-root .cm-url,
+#nc-root .cm-string,
+#nc-root .cm-quote,
+#nc-root [data-slate-editor="true"],
+#nc-root [data-slate-editor="true"] * {
+  background: transparent !important;
+  color: var(--color-text-primary) !important;
+  border-color: var(--color-border) !important;
+}
+
 #nc-root button,
 #nc-root [role="button"] {
   border-radius: 999px !important;
@@ -167,6 +203,32 @@ a {
 #nc-root [role="button"]:hover {
   border-color: var(--color-border-hover) !important;
   background: var(--color-bg-hover) !important;
+}
+
+#nc-root table,
+#nc-root thead,
+#nc-root tbody,
+#nc-root tr,
+#nc-root td,
+#nc-root th,
+#nc-root ul,
+#nc-root li,
+#nc-root form,
+#nc-root section,
+#nc-root article,
+#nc-root [style*="background: rgb(255"],
+#nc-root [style*="background-color: rgb(255"],
+#nc-root [style*="background: #fff"],
+#nc-root [style*="background-color: #fff"],
+#nc-root [style*="background: white"],
+#nc-root [style*="background-color: white"] {
+  background-color: var(--color-bg-secondary) !important;
+  color: var(--color-text-primary) !important;
+  border-color: var(--color-border) !important;
+}
+
+#nc-root iframe {
+  background: var(--color-bg) !important;
 }
 
 #nc-root [class*="PrimaryButton"],

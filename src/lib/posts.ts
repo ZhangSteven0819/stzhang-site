@@ -1,6 +1,8 @@
 type Frontmatter = {
   title?: string;
   description?: string;
+  coverImage?: string;
+  thumbnail?: string;
   publishDate?: string | Date;
   tags?: string[] | string;
   draft?: boolean;
@@ -14,6 +16,7 @@ type MarkdownPage = {
 export type Post = {
   title: string;
   description: string;
+  coverImage: string;
   publishDate: string;
   tags: string[];
   url: string;
@@ -48,6 +51,10 @@ function normalizeTags(value: string[] | string | undefined) {
   return [];
 }
 
+function normalizeImage(value: string | undefined) {
+  return typeof value === "string" ? value.trim() : "";
+}
+
 function fallbackTitleFromPath(path: string) {
   const fileName = path.split("/").pop()?.replace(/\.md$/, "") || "Untitled";
 
@@ -69,6 +76,7 @@ export function getPosts(): Post[] {
         description:
           frontmatter.description ||
           "A short note on AI, technology, products, or building on the internet.",
+        coverImage: normalizeImage(frontmatter.coverImage || frontmatter.thumbnail),
         publishDate,
         tags: normalizeTags(frontmatter.tags),
         url: page.url || `/${path.split("/").pop()?.replace(/\.md$/, "")}`,

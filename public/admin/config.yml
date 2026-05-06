@@ -5,6 +5,7 @@ backend:
   base_url: https://stzhang-site.pages.dev
   auth_endpoint: api/auth
 
+locale: "zh_Hans"
 site_url: "https://stzhang-site.pages.dev"
 display_url: "https://stzhang-site.pages.dev"
 
@@ -13,15 +14,28 @@ public_folder: "/images/uploads"
 
 collections:
   - name: "pages"
-    label: "Pages"
+    label: "文章"
+    label_singular: "文章"
+    description: "创建、编辑和发布网站文章。"
     folder: "src/pages"
     create: true
     extension: "md"
     slug: "{{slug}}"
+    summary: "{{title}}"
     fields:
       - { label: "Layout", name: "layout", widget: "hidden", default: "../layouts/PostLayout.astro" }
-      - { label: "Title", name: "title", widget: "string" }
-      - { label: "Description", name: "description", widget: "text", required: false }
-      - { label: "Publish Date", name: "publishDate", widget: "datetime", format: "YYYY-MM-DD", required: false }
-      - { label: "Tags", name: "tags", widget: "list", required: false }
-      - { label: "Body", name: "body", widget: "markdown" }
+      - { label: "标题", name: "title", widget: "string" }
+      - { label: "摘要", name: "description", widget: "text", required: false }
+      - label: "封面图"
+        name: "coverImage"
+        widget: "image"
+        required: false
+        allow_multiple: false
+        choose_url: true
+        hint: "可选。设置后会显示在首页文章卡片右侧；不设置则保持原本纯文字卡片。"
+      - { label: "发布日期", name: "publishDate", widget: "datetime", format: "YYYY-MM-DD", required: false }
+      - { label: "标签", name: "tags", widget: "list", required: false }
+      - label: "正文"
+        name: "body"
+        widget: "markdown"
+        hint: "正文编辑器支持上传并插入图片，也可以直接写 Markdown 图片语法。"
