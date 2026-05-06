@@ -3,7 +3,7 @@ backend:
   repo: ZhangSteven0819/stzhang-site
   branch: main
   site_domain: stzhang.qzz.io
-  base_url: https://stzhang-site.pages.dev
+  base_url: https://stzhang.qzz.io
   auth_endpoint: api/auth
 
 locale: "zh_Hans"
