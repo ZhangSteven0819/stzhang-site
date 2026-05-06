@@ -391,43 +391,154 @@ textarea {
   text-underline-offset: 3px;
 }
 
-@media (max-width: 640px) {
-  #nc-root aside,
-  #nc-root nav,
-  #nc-root [class*="Sidebar"],
-  #nc-root [class*="CollectionContainer"] {
-    overflow-y: auto !important;
+@media (max-width: 768px) {
+  /* 基础移动端优化 */
+  #nc-root {
+    font-size: 15px !important;
+  }
+
+  #nc-root::before {
+    top: 12px !important;
+    left: 16px !important;
+    font-size: 16px !important;
+  }
+
+  /* 整体布局 */
+  #nc-root,
+  body {
     overflow-x: hidden !important;
-    -webkit-overflow-scrolling: touch !important;
-    touch-action: pan-y !important;
-    overscroll-behavior: contain !important;
-    max-height: 100vh !important;
-    max-height: 100dvh !important;
     position: relative !important;
   }
 
+  /* 侧边栏 */
+  #nc-root aside,
+  #nc-root nav,
+  #nc-root [class*="Sidebar"],
+  #nc-root [class*="CollectionContainer"],
+  #nc-root [class*="SearchContainer"] {
+    width: 280px !important;
+    min-width: 280px !important;
+    height: 100% !important;
+    position: fixed !important;
+    left: -280px !important;
+    top: 0 !important;
+    z-index: 1000 !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    -webkit-overflow-scrolling: touch !important;
+    padding-top: 60px !important;
+    transition: left 0.3s ease !important;
+  }
+
+  #nc-root aside.open,
+  #nc-root nav.open,
+  #nc-root [class*="Sidebar"].open {
+    left: 0 !important;
+  }
+
+  /* 主内容区 */
   #nc-root main,
   #nc-root [class*="AppMain"],
-  #nc-root [class*="CollectionMain"] {
-    overflow-x: hidden !important;
+  #nc-root [class*="CollectionMain"],
+  #nc-root [class*="CollectionTop"] {
     width: 100% !important;
-    touch-action: pan-y !important;
-    overscroll-behavior: contain !important;
+    padding: 16px !important;
+    overflow-x: hidden !important;
   }
 
+  /* 编辑器容器 */
+  #nc-root [class*="EditorContainer"],
+  #nc-root [class*="EditorWrapper"] {
+    flex-direction: column !important;
+    width: 100% !important;
+    gap: 16px !important;
+  }
+
+  /* 控制面板（左侧编辑器） */
+  #nc-root [class*="ControlPane"] {
+    width: 100% !important;
+    min-width: 100% !important;
+    order: 1 !important;
+  }
+
+  /* 预览面板（右侧预览） */
+  #nc-root [class*="PreviewPane"] {
+    width: 100% !important;
+    min-width: 100% !important;
+    order: 2 !important;
+    background: var(--st-admin-panel) !important;
+    border: 1px solid var(--st-admin-border) !important;
+    border-radius: 8px !important;
+  }
+
+  #nc-root [class*="PreviewPane"] * {
+    background: var(--st-admin-panel) !important;
+    color: var(--st-admin-text) !important;
+  }
+
+  /* 预览 iframe */
+  #nc-root [class*="PreviewPane"] iframe,
+  #nc-root iframe[class*="preview"],
+  .preview-frame {
+    background: var(--st-admin-panel) !important;
+    border: none !important;
+    border-radius: 8px !important;
+  }
+
+  .frame-content {
+    background: var(--st-admin-panel) !important;
+    color: var(--st-admin-text) !important;
+    padding: 24px 16px !important;
+  }
+
+  .frame-content * {
+    background: var(--st-admin-panel) !important;
+    color: var(--st-admin-text) !important;
+  }
+
+  .frame-content p,
+  .frame-content li {
+    color: var(--st-admin-secondary) !important;
+  }
+
+  .frame-content a {
+    color: var(--st-admin-text) !important;
+  }
+
+  /* 卡片列表 */
   #nc-root [class*="Card"],
   #nc-root [class*="EntryCard"],
-  #nc-root [class*="ListCard"] {
+  #nc-root [class*="ListCard"],
+  #nc-root [class*="EntryListing"] {
     margin-bottom: 12px !important;
-    touch-action: manipulation !important;
+    padding: 16px !important;
   }
 
-  body {
-    overflow-x: hidden !important;
-    touch-action: pan-y !important;
+  /* 按钮 */
+  #nc-root button,
+  #nc-root [role="button"] {
+    min-height: 44px !important;
+    padding: 10px 20px !important;
+    font-size: 15px !important;
   }
 
-  #nc-root {
-    overflow-x: hidden !important;
+  /* 输入框 */
+  #nc-root input,
+  #nc-root textarea {
+    font-size: 16px !important;
+    padding: 12px !important;
+  }
+
+  /* 编辑器工具栏 */
+  #nc-root .editor-toolbar {
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+    padding: 12px !important;
+  }
+
+  /* 标签和分类 */
+  #nc-root [class*="Filter"] {
+    flex-direction: column !important;
+    gap: 12px !important;
   }
 }
