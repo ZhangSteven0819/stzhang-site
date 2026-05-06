@@ -6,8 +6,8 @@ backend:
   auth_endpoint: api/auth
 
 locale: "zh_Hans"
-site_url: "https://stzhang-site.pages.dev"
-display_url: "https://stzhang-site.pages.dev"
+site_url: "https://stzhang.qzz.io"
+display_url: "https://stzhang.qzz.io"
 
 media_folder: "public/images/uploads"
 public_folder: "/images/uploads"
