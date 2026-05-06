@@ -390,3 +390,44 @@ textarea {
   text-decoration-color: var(--st-admin-border-strong);
   text-underline-offset: 3px;
 }
+
+@media (max-width: 640px) {
+  #nc-root aside,
+  #nc-root nav,
+  #nc-root [class*="Sidebar"],
+  #nc-root [class*="CollectionContainer"] {
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    -webkit-overflow-scrolling: touch !important;
+    touch-action: pan-y !important;
+    overscroll-behavior: contain !important;
+    max-height: 100vh !important;
+    max-height: 100dvh !important;
+    position: relative !important;
+  }
+
+  #nc-root main,
+  #nc-root [class*="AppMain"],
+  #nc-root [class*="CollectionMain"] {
+    overflow-x: hidden !important;
+    width: 100% !important;
+    touch-action: pan-y !important;
+    overscroll-behavior: contain !important;
+  }
+
+  #nc-root [class*="Card"],
+  #nc-root [class*="EntryCard"],
+  #nc-root [class*="ListCard"] {
+    margin-bottom: 12px !important;
+    touch-action: manipulation !important;
+  }
+
+  body {
+    overflow-x: hidden !important;
+    touch-action: pan-y !important;
+  }
+
+  #nc-root {
+    overflow-x: hidden !important;
+  }
+}
