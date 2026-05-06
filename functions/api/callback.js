@@ -1,56 +1,4 @@
-function getCookie(request, name) {
-  const cookie = request.headers.get("Cookie") || "";
-  const match = cookie.match(new RegExp(`(?:^|; )${name}=([^;]*)`));
-  return match ? decodeURIComponent(match[1]) : "";
-}
-
-function htmlResponse(body, status = 200) {
-  return new Response(body, {
-    status,
-    headers: {
-      "Content-Type": "text/html; charset=utf-8",
-      "Set-Cookie": "oauth_state=; HttpOnly; Secure; SameSite=Lax; Path=/; Max-Age=0",
-    },
-  });
-}
-
-function errorPage(message) {
-  const safeMessage = JSON.stringify(message);
-
-  return `<!doctype html>
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <title>Authentication failed</title>
-  </head>
-  <body style="font-family: system-ui, sans-serif; padding: 32px;">
-    <h1>Authentication failed</h1>
-    <p>${message}</p>
-
-    <script>
-      (function () {
-        var message = ${safeMessage};
-
-        if (window.opener) {
-          window.opener.postMessage(
-            "authorization:github:error:" + JSON.stringify({ message: message }),
-            "*"
-          );
-        }
-      })();
-    </script>
-  </body>
-</html>`;
-}
-
-function successPage(token) {
-  const payload = JSON.stringify({
-    token,
-    provider: "github",
-  });
-
-  const message = "authorization:github:success:" + payload;
-
+function renderCallbackPage(status, content) {
   return `<!doctype html>
 <html>
   <head>
@@ -62,30 +10,24 @@ function successPage(token) {
 
     <script>
       (function () {
-        var message = ${JSON.stringify(message)};
+        var content = ${JSON.stringify(content)};
+        var status = ${JSON.stringify(status)};
 
-        function sendMessage(origin) {
-          if (!window.opener) {
-            document.body.innerHTML = "<p>Authentication complete. Please close this window and return to the CMS.</p>";
-            return;
-          }
+        function receiveMessage(message) {
+          window.opener.postMessage(
+            "authorization:github:" + status + ":" + JSON.stringify(content),
+            message.origin
+          );
 
-          window.opener.postMessage(message, origin || "*");
-
-          setTimeout(function () {
-            window.close();
-          }, 300);
+          window.removeEventListener("message", receiveMessage, false);
         }
 
-        window.addEventListener("message", function (event) {
-          sendMessage(event.origin);
-        });
-
-        window.opener && window.opener.postMessage("authorizing:github", "*");
-
-        setTimeout(function () {
-          sendMessage("*");
-        }, 500);
+        if (window.opener) {
+          window.addEventListener("message", receiveMessage, false);
+          window.opener.postMessage("authorizing:github", "*");
+        } else {
+          document.body.innerHTML = "<p>Authentication finished, but this window lost connection to the CMS window. Close this window and try again from /admin.</p>";
+        }
       })();
     </script>
   </body>
@@ -97,51 +39,78 @@ export async function onRequestGet(context) {
   const url = new URL(request.url);
 
   const code = url.searchParams.get("code");
-  const returnedState = url.searchParams.get("state");
-  const savedState = getCookie(request, "oauth_state");
 
   if (!code) {
-    return htmlResponse(errorPage("Missing GitHub authorization code."), 400);
-  }
-
-  if (savedState && returnedState && savedState !== returnedState) {
-    return htmlResponse(errorPage("Invalid OAuth state. Please try logging in again."), 400);
+    return new Response(
+      renderCallbackPage("error", {
+        message: "Missing GitHub authorization code.",
+      }),
+      {
+        status: 400,
+        headers: {
+          "Content-Type": "text/html; charset=utf-8",
+        },
+      }
+    );
   }
 
   const clientId = env.GITHUB_CLIENT_ID;
   const clientSecret = env.GITHUB_CLIENT_SECRET;
 
   if (!clientId || !clientSecret) {
-    return htmlResponse(
-      errorPage("Missing GITHUB_CLIENT_ID or GITHUB_CLIENT_SECRET in Cloudflare environment variables."),
-      500
+    return new Response(
+      renderCallbackPage("error", {
+        message: "Missing GITHUB_CLIENT_ID or GITHUB_CLIENT_SECRET.",
+      }),
+      {
+        status: 500,
+        headers: {
+          "Content-Type": "text/html; charset=utf-8",
+        },
+      }
     );
   }
 
-  const siteUrl = env.SITE_URL || "https://stzhang.qzz.io";
-  const redirectUri = `${siteUrl}/api/callback`;
-
-  const tokenResponse = await fetch("https://github.com/login/oauth/access_token", {
+  const response = await fetch("https://github.com/login/oauth/access_token", {
     method: "POST",
     headers: {
-      Accept: "application/json",
       "Content-Type": "application/json",
+      "Accept": "application/json",
       "User-Agent": "stzhang-decap-cms",
     },
     body: JSON.stringify({
       client_id: clientId,
       client_secret: clientSecret,
       code,
-      redirect_uri: redirectUri,
     }),
   });
 
-  const tokenData = await tokenResponse.json();
+  const result = await response.json();
 
-  if (!tokenResponse.ok || tokenData.error || !tokenData.access_token) {
-    const detail = tokenData.error_description || tokenData.error || "GitHub token exchange failed.";
-    return htmlResponse(errorPage(detail), 500);
+  if (!response.ok || result.error || !result.access_token) {
+    return new Response(
+      renderCallbackPage("error", {
+        message: result.error_description || result.error || "GitHub token exchange failed.",
+      }),
+      {
+        status: 401,
+        headers: {
+          "Content-Type": "text/html; charset=utf-8",
+        },
+      }
+    );
   }
 
-  return htmlResponse(successPage(tokenData.access_token));
+  return new Response(
+    renderCallbackPage("success", {
+      token: result.access_token,
+      provider: "github",
+    }),
+    {
+      status: 200,
+      headers: {
+        "Content-Type": "text/html; charset=utf-8",
+      },
+    }
+  );
 }
