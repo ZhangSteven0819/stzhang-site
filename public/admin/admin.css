@@ -2,16 +2,19 @@
 
 :root {
   color-scheme: dark;
-  --color-bg: #0d0f0f;
-  --color-bg-secondary: #141615;
-  --color-bg-elevated: #181b1a;
-  --color-bg-hover: #1b1e1d;
-  --color-border: #272a29;
-  --color-border-hover: #424846;
-  --color-text-primary: #f0eeeb;
-  --color-text-secondary: #8a8885;
-  --color-text-muted: #555350;
-  --font-serif: "Newsreader", "Noto Serif SC", Georgia, serif;
+  --st-admin-bg: #0d0f0f;
+  --st-admin-panel: #141615;
+  --st-admin-panel-2: #191c1b;
+  --st-admin-panel-soft: rgba(20, 22, 21, 0.72);
+  --st-admin-hover: #202422;
+  --st-admin-border: #2b302e;
+  --st-admin-border-strong: #444b48;
+  --st-admin-text: #f0eeeb;
+  --st-admin-secondary: #aaa6a1;
+  --st-admin-muted: #696660;
+  --st-admin-focus: rgba(240, 238, 235, 0.16);
+  --st-admin-shadow: 0 18px 60px rgba(0, 0, 0, 0.22);
+  --st-admin-font: "Newsreader", "Noto Serif SC", Georgia, serif;
 }
 
 * {
@@ -22,21 +25,15 @@ html,
 body,
 #nc-root {
   min-height: 100%;
-  background: var(--color-bg) !important;
-  color: var(--color-text-primary) !important;
-  font-family: var(--font-serif) !important;
+  margin: 0;
+  background:
+    radial-gradient(circle at 20% -16%, rgba(240, 238, 235, 0.055), transparent 34rem),
+    var(--st-admin-bg) !important;
+  color: var(--st-admin-text) !important;
+  font-family: var(--st-admin-font) !important;
+  letter-spacing: 0 !important;
   text-rendering: geometricPrecision;
   -webkit-font-smoothing: antialiased;
-}
-
-#nc-root {
-  background:
-    radial-gradient(circle at 18% -12%, rgba(240, 238, 235, 0.055), transparent 32rem),
-    var(--color-bg) !important;
-}
-
-body {
-  margin: 0;
 }
 
 body,
@@ -44,26 +41,37 @@ button,
 input,
 select,
 textarea {
-  font-family: var(--font-serif) !important;
-  letter-spacing: 0 !important;
-}
-
-a {
-  color: var(--color-text-primary) !important;
+  font-family: var(--st-admin-font) !important;
 }
 
 ::selection {
-  background: var(--color-text-primary);
-  color: var(--color-bg);
+  background: var(--st-admin-text);
+  color: var(--st-admin-bg);
+}
+
+#nc-root::before {
+  position: fixed;
+  z-index: 10;
+  top: 24px;
+  left: 40px;
+  color: var(--st-admin-text);
+  content: "ST Zhang";
+  font-size: 18px;
+  font-weight: 500;
+}
+
+#nc-root,
+#nc-root * {
+  scrollbar-color: #8a8885 var(--st-admin-bg);
 }
 
 #nc-root header,
 #nc-root [class*="AppHeader"],
-#nc-root [class*="Toolbar"],
-#nc-root [class*="TopBar"] {
+#nc-root [class*="TopBar"],
+#nc-root [class*="Toolbar"] {
   background: rgba(13, 15, 15, 0.94) !important;
-  border-color: var(--color-border) !important;
-  box-shadow: inset 0 -1px 0 var(--color-border) !important;
+  border-color: var(--st-admin-border) !important;
+  box-shadow: inset 0 -1px 0 var(--st-admin-border) !important;
   backdrop-filter: blur(14px);
 }
 
@@ -72,36 +80,24 @@ a {
 #nc-root [class*="Sidebar"],
 #nc-root [class*="CollectionContainer"],
 #nc-root [class*="SearchContainer"] {
-  background: rgba(20, 22, 21, 0.72) !important;
-  border-color: var(--color-border) !important;
-  color: var(--color-text-secondary) !important;
+  background: var(--st-admin-panel-soft) !important;
+  border-color: var(--st-admin-border) !important;
+  color: var(--st-admin-secondary) !important;
 }
 
 #nc-root main,
 #nc-root [class*="AppMain"],
-#nc-root [class*="EditorContainer"],
-#nc-root [class*="PreviewPane"],
-#nc-root [class*="ControlPane"],
-#nc-root [class*="EditorWrapper"],
-#nc-root [class*="EditorControl"],
 #nc-root [class*="CollectionMain"],
 #nc-root [class*="CollectionTop"],
 #nc-root [class*="EntriesCollection"],
+#nc-root [class*="EditorContainer"],
+#nc-root [class*="EditorWrapper"],
+#nc-root [class*="ControlPane"],
+#nc-root [class*="PreviewPane"],
 #nc-root [class*="MediaLibrary"],
 #nc-root [class*="MediaLibraryModal"] {
   background: transparent !important;
-  color: var(--color-text-primary) !important;
-}
-
-#nc-root::before {
-  position: fixed;
-  z-index: 10;
-  top: 24px;
-  left: 40px;
-  color: var(--color-text-primary);
-  content: "ST Zhang";
-  font-size: 18px;
-  font-weight: 500;
+  color: var(--st-admin-text) !important;
 }
 
 #nc-root [class*="Card"],
@@ -118,28 +114,20 @@ a {
 #nc-root [class*="EntryListing"],
 #nc-root [class*="MediaCard"],
 #nc-root [class*="Asset"],
-#nc-root [class*="EditorToolbar"] {
-  background: var(--color-bg-elevated) !important;
-  border: 1px solid var(--color-border) !important;
+#nc-root [class*="EditorToolbar"],
+#nc-root .st-admin-panel {
+  background: var(--st-admin-panel) !important;
+  border: 1px solid var(--st-admin-border) !important;
   border-radius: 8px !important;
-  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.18) !important;
-  color: var(--color-text-primary) !important;
+  box-shadow: var(--st-admin-shadow) !important;
+  color: var(--st-admin-text) !important;
 }
 
 #nc-root h1,
 #nc-root h2,
 #nc-root h3,
-#nc-root h4,
-#nc-root label,
-#nc-root p,
-#nc-root span,
-#nc-root div {
-  color: inherit;
-}
-
-#nc-root h1,
-#nc-root h2,
-#nc-root h3 {
+#nc-root h4 {
+  color: var(--st-admin-text) !important;
   font-weight: 400 !important;
   letter-spacing: 0 !important;
 }
@@ -150,7 +138,11 @@ a {
 #nc-root [class*="Help"],
 #nc-root [class*="Description"],
 #nc-root [class*="Meta"] {
-  color: var(--color-text-secondary) !important;
+  color: var(--st-admin-secondary) !important;
+}
+
+#nc-root a {
+  color: var(--st-admin-text) !important;
 }
 
 #nc-root div,
@@ -166,8 +158,35 @@ a {
 #nc-root tbody,
 #nc-root tr,
 #nc-root td,
-#nc-root th {
-  border-color: var(--color-border) !important;
+#nc-root th,
+#nc-root hr {
+  border-color: var(--st-admin-border) !important;
+}
+
+#nc-root button,
+#nc-root [role="button"] {
+  min-height: 34px;
+  border: 1px solid var(--st-admin-border) !important;
+  border-radius: 999px !important;
+  background: var(--st-admin-panel-2) !important;
+  color: var(--st-admin-text) !important;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.16) !important;
+  text-transform: none !important;
+}
+
+#nc-root button:hover,
+#nc-root [role="button"]:hover {
+  border-color: var(--st-admin-border-strong) !important;
+  background: var(--st-admin-hover) !important;
+}
+
+#nc-root [class*="PrimaryButton"],
+#nc-root button[type="submit"],
+#nc-root [data-testid*="publish"],
+#nc-root [data-testid*="save"] {
+  background: var(--st-admin-text) !important;
+  color: var(--st-admin-bg) !important;
+  border-color: var(--st-admin-text) !important;
 }
 
 #nc-root input,
@@ -175,22 +194,18 @@ a {
 #nc-root select,
 #nc-root [contenteditable="true"],
 #nc-root [role="textbox"],
-#nc-root .CodeMirror,
-#nc-root .CodeMirror-scroll,
-#nc-root .cm-s-default,
-#nc-root .editor-preview,
-#nc-root .editor-toolbar,
-#nc-root .editor-statusbar {
-  background: var(--color-bg) !important;
-  border: 1px solid var(--color-border) !important;
+#nc-root .st-admin-control,
+#nc-root .st-admin-light-surface {
+  background: var(--st-admin-bg) !important;
+  border: 1px solid var(--st-admin-border) !important;
   border-radius: 8px !important;
-  color: var(--color-text-primary) !important;
+  color: var(--st-admin-text) !important;
   box-shadow: none !important;
 }
 
 #nc-root input::placeholder,
 #nc-root textarea::placeholder {
-  color: var(--color-text-muted) !important;
+  color: var(--st-admin-muted) !important;
   opacity: 1 !important;
 }
 
@@ -199,81 +214,97 @@ a {
 #nc-root select:focus,
 #nc-root [contenteditable="true"]:focus,
 #nc-root [role="textbox"]:focus {
-  border-color: var(--color-border-hover) !important;
-  outline: 2px solid rgba(240, 238, 235, 0.14) !important;
+  border-color: var(--st-admin-border-strong) !important;
+  outline: 2px solid var(--st-admin-focus) !important;
   outline-offset: 2px !important;
+}
+
+#nc-root .CodeMirror,
+#nc-root .CodeMirror-scroll,
+#nc-root .CodeMirror-sizer,
+#nc-root .CodeMirror-lines,
+#nc-root .CodeMirror-code,
+#nc-root .CodeMirror pre,
+#nc-root .cm-s-default,
+#nc-root .cm-editor,
+#nc-root .cm-scroller,
+#nc-root .cm-content,
+#nc-root .editor-preview,
+#nc-root .editor-toolbar,
+#nc-root .editor-statusbar,
+#nc-root [data-slate-editor="true"],
+#nc-root [data-slate-editor="true"] * {
+  background: var(--st-admin-bg) !important;
+  color: var(--st-admin-text) !important;
+  border-color: var(--st-admin-border) !important;
 }
 
 #nc-root .CodeMirror-gutters,
 #nc-root .CodeMirror-linenumber,
-#nc-root .CodeMirror-cursor,
+#nc-root .cm-gutters,
 #nc-root .cm-header,
 #nc-root .cm-variable-2,
 #nc-root .cm-link,
 #nc-root .cm-url,
 #nc-root .cm-string,
-#nc-root .cm-quote,
-#nc-root [data-slate-editor="true"],
-#nc-root [data-slate-editor="true"] * {
+#nc-root .cm-quote {
   background: transparent !important;
-  color: var(--color-text-primary) !important;
-  border-color: var(--color-border) !important;
+  color: var(--st-admin-secondary) !important;
 }
 
-#nc-root [class*="Image"],
-#nc-root [class*="image"],
-#nc-root [class*="File"],
-#nc-root [class*="file"],
-#nc-root [class*="Upload"],
-#nc-root [class*="upload"],
-#nc-root [class*="Date"],
-#nc-root [class*="date"],
-#nc-root [class*="Media"] {
-  border-color: var(--color-border) !important;
-  color: var(--color-text-primary) !important;
+#nc-root .editor-toolbar,
+#nc-root .st-admin-editor-toolbar {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  border-radius: 8px 8px 0 0 !important;
+  background: var(--st-admin-panel-2) !important;
+  padding: 10px 12px !important;
 }
 
-#nc-root [class*="Image"] > div,
-#nc-root [class*="image"] > div,
-#nc-root [class*="File"] > div,
-#nc-root [class*="file"] > div,
-#nc-root [class*="Upload"] > div,
-#nc-root [class*="upload"] > div,
-#nc-root [class*="Date"] > div,
-#nc-root [class*="date"] > div,
-#nc-root [class*="Control"] > div,
-#nc-root [class*="Widget"] > div {
-  background-color: var(--color-bg) !important;
-  border-color: var(--color-border) !important;
-  color: var(--color-text-primary) !important;
-}
-
-#nc-root [class*="Image"] [style*="background"],
-#nc-root [class*="image"] [style*="background"],
-#nc-root [class*="File"] [style*="background"],
-#nc-root [class*="file"] [style*="background"],
-#nc-root [class*="Date"] [style*="background"],
-#nc-root [class*="date"] [style*="background"],
-#nc-root [class*="Control"] [style*="background"],
-#nc-root [class*="Widget"] [style*="background"] {
-  background: var(--color-bg) !important;
-  background-color: var(--color-bg) !important;
-}
-
-#nc-root button,
-#nc-root [role="button"] {
+#nc-root .editor-toolbar button,
+#nc-root .editor-toolbar a,
+#nc-root .st-admin-editor-toolbar button,
+#nc-root .st-admin-editor-toolbar [role="button"] {
+  width: 34px !important;
+  min-width: 34px !important;
+  height: 34px !important;
+  min-height: 34px !important;
   border-radius: 999px !important;
-  border-color: var(--color-border) !important;
-  background: var(--color-bg-elevated) !important;
-  color: var(--color-text-primary) !important;
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.16) !important;
-  text-transform: none !important;
+  background: var(--st-admin-panel) !important;
 }
 
-#nc-root button:hover,
-#nc-root [role="button"]:hover {
-  border-color: var(--color-border-hover) !important;
-  background: var(--color-bg-hover) !important;
+#nc-root .st-admin-markdown-mode,
+#nc-root .st-admin-markdown-mode * {
+  background: var(--st-admin-panel-2) !important;
+  color: var(--st-admin-text) !important;
+}
+
+#nc-root .st-admin-date,
+#nc-root .st-admin-date *,
+#nc-root .rdt,
+#nc-root .rdt *,
+#nc-root .rdtPicker,
+#nc-root .rdtPicker * {
+  background: var(--st-admin-bg) !important;
+  color: var(--st-admin-text) !important;
+  border-color: var(--st-admin-border) !important;
+}
+
+#nc-root .st-admin-date input,
+#nc-root input[type="date"],
+#nc-root input[type="datetime-local"],
+#nc-root input[type="time"] {
+  color-scheme: dark;
+}
+
+#nc-root .st-admin-image,
+#nc-root .st-admin-image *,
+#nc-root .st-admin-upload,
+#nc-root .st-admin-upload * {
+  background: var(--st-admin-bg) !important;
+  color: var(--st-admin-text) !important;
+  border-color: var(--st-admin-border) !important;
 }
 
 #nc-root [style*="background: rgb(255"],
@@ -282,28 +313,17 @@ a {
 #nc-root [style*="background-color: #fff"],
 #nc-root [style*="background: white"],
 #nc-root [style*="background-color: white"] {
-  background: var(--color-bg) !important;
-  background-color: var(--color-bg) !important;
-  color: var(--color-text-primary) !important;
-  border-color: var(--color-border) !important;
+  background: var(--st-admin-bg) !important;
+  background-color: var(--st-admin-bg) !important;
+  color: var(--st-admin-text) !important;
+  border-color: var(--st-admin-border) !important;
 }
 
-#nc-root iframe {
-  background: var(--color-bg) !important;
-}
-
-#nc-root [class*="PrimaryButton"],
-#nc-root button[type="submit"],
-#nc-root [data-testid*="publish"],
-#nc-root [data-testid*="save"] {
-  background: var(--color-text-primary) !important;
-  color: var(--color-bg) !important;
-  border-color: var(--color-text-primary) !important;
-}
-
-#nc-root svg,
-#nc-root svg * {
+#nc-root svg {
   color: currentColor !important;
+}
+
+#nc-root svg * {
   fill: currentColor !important;
   stroke: currentColor !important;
 }
@@ -311,21 +331,21 @@ a {
 #nc-root svg[width="335"] {
   width: min(260px, 70vw) !important;
   height: auto !important;
-  color: var(--color-text-primary) !important;
+  color: var(--st-admin-text) !important;
   opacity: 0.92;
 }
 
-#nc-root hr {
-  border-color: var(--color-border) !important;
+#nc-root iframe {
+  background: var(--st-admin-bg) !important;
 }
 
 .frame-content {
   max-width: 760px;
   margin: 0 auto;
   padding: 48px 32px;
-  background: var(--color-bg);
-  color: var(--color-text-primary);
-  font-family: var(--font-serif);
+  background: var(--st-admin-bg);
+  color: var(--st-admin-text);
+  font-family: var(--st-admin-font);
 }
 
 .frame-content h1,
@@ -337,13 +357,13 @@ a {
 
 .frame-content p,
 .frame-content li {
-  color: var(--color-text-secondary);
+  color: var(--st-admin-secondary);
   font-size: 18px;
   line-height: 1.8;
 }
 
 .frame-content a {
-  color: var(--color-text-primary);
-  text-decoration-color: var(--color-border-hover);
+  color: var(--st-admin-text);
+  text-decoration-color: var(--st-admin-border-strong);
   text-underline-offset: 3px;
 }

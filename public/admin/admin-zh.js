@@ -68,9 +68,81 @@
     }
   }
 
+  function parseColor(value) {
+    const match = value.match(/rgba?\(([^)]+)\)/);
+
+    if (!match) return null;
+
+    const [r, g, b, a = "1"] = match[1]
+      .split(",")
+      .map((part) => Number(part.trim()));
+
+    return { r, g, b, a };
+  }
+
+  function isLightBackground(value) {
+    const color = parseColor(value);
+
+    if (!color || color.a === 0) return false;
+
+    return (color.r + color.g + color.b) / 3 > 180;
+  }
+
+  function markAdminSurfaces() {
+    const root = document.getElementById("nc-root");
+
+    if (!root) return;
+
+    root
+      .querySelectorAll(
+        "input, textarea, select, [contenteditable='true'], [role='textbox'], .CodeMirror, .cm-editor, .editor-toolbar, .editor-preview, [data-slate-editor='true']"
+      )
+      .forEach((element) => {
+        element.classList.add("st-admin-control");
+      });
+
+    root.querySelectorAll("*").forEach((element) => {
+      const style = window.getComputedStyle(element);
+
+      if (isLightBackground(style.backgroundColor)) {
+        element.classList.add("st-admin-light-surface");
+      }
+
+      const text = (element.textContent || "").replace(/\s+/g, " ").trim();
+
+      if (text.length > 120) return;
+
+      if (/封面图|选择图片|URL|上传/.test(text)) {
+        element.classList.add("st-admin-image");
+        element.parentElement?.classList.add("st-admin-image");
+      }
+
+      if (/发布日期|现在|清除|\d{4}\/\d{2}\/\d{2}/.test(text)) {
+        element.classList.add("st-admin-date");
+        element.parentElement?.classList.add("st-admin-date");
+      }
+
+      if (/富文本|Markdown|正文/.test(text)) {
+        element.classList.add("st-admin-markdown-mode");
+        element.parentElement?.classList.add("st-admin-markdown-mode");
+      }
+    });
+
+    root
+      .querySelectorAll(".editor-toolbar, [class*='Toolbar']")
+      .forEach((element) => {
+        const text = element.textContent || "";
+
+        if (/富文本|Markdown|正文|B|I/.test(text)) {
+          element.classList.add("st-admin-editor-toolbar");
+        }
+      });
+  }
+
   function translatePage() {
     document.documentElement.lang = "zh-CN";
     document.querySelectorAll(selector).forEach(translateElement);
+    markAdminSurfaces();
   }
 
   const observer = new MutationObserver(() => {
