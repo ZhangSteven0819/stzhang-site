@@ -523,7 +523,7 @@ If you encounter any issues during setup, consider the following troubleshooting
 - **Symptoms:**
 
   - Popup does not close automatically.
-  - Unable to access CMS after login.
+  - Unable to access CMS after login..
 
 - **Solutions:**
 
