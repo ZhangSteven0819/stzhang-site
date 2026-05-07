@@ -1,7 +1,7 @@
 (() => {
   const STORAGE_KEY = "stzhang-language";
   const DEFAULT_LANGUAGE = "en";
-  const TRANSLATION_CACHE_VERSION = "v11";
+  const TRANSLATION_CACHE_VERSION = "v12";
   const CACHE_MIGRATION_KEY = "stzhang-translation-cache-version";
   const MAX_CONTEXT_CHARS = 2200;
   const MAX_CHUNK_CHARS = 3200;
@@ -305,22 +305,35 @@
     return false;
   }
 
-  function getTextNodes() {
-    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
-      acceptNode(node) {
-        return shouldSkipNode(node)
-          ? NodeFilter.FILTER_REJECT
-          : NodeFilter.FILTER_ACCEPT;
-      },
-    });
+  function getTranslationRoots() {
+    const articlePage = document.querySelector(".article-page");
 
-    const nodes = [];
-    let current = walker.nextNode();
-
-    while (current) {
-      nodes.push(current);
-      current = walker.nextNode();
+    if (articlePage) {
+      return [articlePage];
     }
+
+    return [document.body];
+  }
+
+  function getTextNodes() {
+    const nodes = [];
+
+    getTranslationRoots().forEach((root) => {
+      const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+        acceptNode(node) {
+          return shouldSkipNode(node)
+            ? NodeFilter.FILTER_REJECT
+            : NodeFilter.FILTER_ACCEPT;
+        },
+      });
+
+      let current = walker.nextNode();
+
+      while (current) {
+        nodes.push(current);
+        current = walker.nextNode();
+      }
+    });
 
     return nodes;
   }
@@ -486,11 +499,15 @@
     const chunks = [];
     let current = [];
     let currentChars = 0;
+    const maxItems = document.querySelector(".article-page") ? 3 : 40;
 
     entries.forEach((entry) => {
       const nextChars = entry.trimmed.length;
 
-      if (current.length && currentChars + nextChars > MAX_CHUNK_CHARS) {
+      if (
+        current.length &&
+        (currentChars + nextChars > MAX_CHUNK_CHARS || current.length >= maxItems)
+      ) {
         chunks.push(current);
         current = [];
         currentChars = 0;
