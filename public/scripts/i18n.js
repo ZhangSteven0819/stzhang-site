@@ -136,6 +136,14 @@
   }
 
   function applyNode(n, orig, trans) {
+    // Ensure trans is always a string
+    if (typeof trans !== 'string') {
+      if (trans && typeof trans === 'object') {
+        trans = JSON.stringify(trans);
+      } else {
+        trans = String(trans);
+      }
+    }
     // Preserve whitespace: replace trimmed text while keeping leading/trailing whitespace
     var lead = (orig.match(/^\s*/) || [''])[0];
     var trail = (orig.match(/\s*$/) || [''])[0];
@@ -213,7 +221,11 @@
         var trans = d.translations || texts;
         
         batch.forEach(function(item, i) {
-          var translated = trans[i] || item.trim;
+          var translated = trans[i];
+          // Ensure translated is always a string
+          if (typeof translated !== 'string') {
+            translated = item.trim; // Fall back to original if translation is invalid
+          }
           sc(item.trim, lang, translated);
           applyNode(item.node, item.orig, translated);
         });
