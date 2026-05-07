@@ -1,8 +1,12 @@
 (() => {
   const STORAGE_KEY = "stzhang-language";
   const DEFAULT_LANGUAGE = "en";
-  const TRANSLATION_CACHE_VERSION = "v6";
+  const TRANSLATION_CACHE_VERSION = "v7";
   const CACHE_MIGRATION_KEY = "stzhang-translation-cache-version";
+
+  // Translation state
+  let isTranslating = false;
+  let translationProgress = null;
 
   const phraseOverrides = {
     "zh-CN": {
@@ -126,9 +130,10 @@
 
     if (!parent) return true;
 
+    // Skip these elements entirely
     if (
       parent.closest(
-        "script, style, svg, code, pre, textarea, input, select, [data-no-translate]"
+        "script, style, svg, textarea, input, select, [data-no-translate]"
       )
     ) {
       return true;
@@ -136,8 +141,11 @@
 
     const text = node.nodeValue || "";
 
+    // Skip empty text
     if (!text.trim()) return true;
-    if (/^[\s\d.,:;!?()[\]{}'"`~@#$%^&*_+=/\\|-]+$/.test(text)) return true;
+    
+    // Skip pure punctuation/symbols (but NOT code blocks - handled separately)
+    if (/^[\s\d.,:;!?()[]{}\'"`~@#$%^&*_+=/\\|-]+$/.test(text)) return true;
 
     return false;
   }
@@ -193,6 +201,39 @@
     return `${start}${translated}${end}`;
   }
 
+  function showTranslationProgress(text) {
+    if (!translationProgress) {
+      translationProgress = document.createElement('div');
+      translationProgress.id = 'translation-progress';
+      translationProgress.style.cssText = `
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: var(--color-bg-secondary, #141615);
+        border: 1px solid var(--color-border, #2b302e);
+        border-radius: 8px;
+        padding: 12px 16px;
+        color: var(--color-text-secondary, #aaa6a1);
+        font-family: system-ui, sans-serif;
+        font-size: 13px;
+        z-index: 9999;
+        opacity: 0;
+        transition: opacity 0.2s ease;
+      `;
+      document.body.appendChild(translationProgress);
+    }
+    translationProgress.textContent = text;
+    translationProgress.style.opacity = '1';
+  }
+
+  function hideTranslationProgress() {
+    if (translationProgress) {
+      translationProgress.style.opacity = '0';
+      setTimeout(() => translationProgress.remove(), 200);
+      translationProgress = null;
+    }
+  }
+
   function polishTranslation(language, source, translated) {
     return phraseOverrides[language]?.[source.trim()] || translated;
   }
@@ -233,6 +274,9 @@
   }
 
   async function translatePage(language) {
+    if (isTranslating) return;
+    isTranslating = true;
+
     document.documentElement.lang = language;
     document.documentElement.dataset.language = language;
 
@@ -241,6 +285,7 @@
 
     if (language === DEFAULT_LANGUAGE) {
       restoreOriginalText();
+      isTranslating = false;
       return;
     }
 
@@ -258,6 +303,11 @@
       };
     }).filter((entry) => entry.trimmed.length > 0);
 
+    if (entries.length === 0) {
+      isTranslating = false;
+      return;
+    }
+
     const missing = [];
     const cached = new Map();
 
@@ -271,6 +321,11 @@
       }
     });
 
+    // Show progress for articles
+    if (missing.length > 10) {
+      showTranslationProgress(`Translating... (0/${missing.length})`);
+    }
+
     const contextItems = entries.map((entry) => entry.trimmed);
 
     // Process in smaller batches for more reliable translation
@@ -278,6 +333,11 @@
     for (let i = 0; i < missing.length; i += BATCH_SIZE) {
       const chunk = missing.slice(i, i + BATCH_SIZE);
       const items = chunk.map((entry) => entry.trimmed);
+
+      // Update progress
+      if (missing.length > 10) {
+        showTranslationProgress(`Translating... (${Math.min(i + BATCH_SIZE, missing.length)}/${missing.length})`);
+      }
 
       let translations = null;
       let retries = 0;
@@ -313,6 +373,9 @@
       const translated = cached.get(entry.cacheKey) || entry.trimmed;
       entry.node.nodeValue = preserveWhitespace(entry.original, translated);
     });
+
+    hideTranslationProgress();
+    isTranslating = false;
   }
 
   function getLanguageSelects() {
