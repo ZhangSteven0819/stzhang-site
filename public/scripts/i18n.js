@@ -2,12 +2,12 @@
 (function() {
   'use strict';
   
-  const STORAGE_KEY = 'stzhang-language';
-  const DEFAULT_LANGUAGE = 'en';
-  const TRANSLATION_VERSION = 'v9';
-  const API_ENDPOINT = '/api/translate';
+  var STORAGE_KEY = 'stzhang-language';
+  var DEFAULT_LANGUAGE = 'en';
+  var TRANSLATION_VERSION = 'v10';
+  var API_ENDPOINT = '/api/translate';
   
-  const phraseOverrides = {
+  var phraseOverrides = {
     'zh-CN': {
       'The Blog': '博客',
       'Writing': '写作',
@@ -24,6 +24,16 @@
       'Notes on models, tools, workflows, automation, and how AI changes the way people build and think.': '关于模型、工具、工作流、自动化，以及 AI 如何改变人们构建与思考方式的笔记。',
       'Practical writing about software, web infrastructure, domains, deployment, and the small systems behind personal projects.': '关于软件、网络基础设施、域名、部署，以及个人项目背后那些小系统的实践记录。',
       'Short observations, reading notes, decisions, and personal logs that do not need to become polished essays.': '一些短观察、阅读笔记、决策记录和个人日志，不必都写成完整文章。',
+      'Personal blog': '个人博客',
+      'AI · Tech · Notes': 'AI · 科技 · 笔记',
+      'Translate page': '翻译页面',
+      'Translating...': '翻译中...',
+      'Translation complete': '翻译完成',
+      '1 min read': '1 分钟阅读',
+      'Contents': '目录',
+      'Daily quote': '每日名言',
+      'The obstacle is the way.': '障碍是道路。',
+      'Marcus Aurelius · Meditations': '马可·奥勒留 · 沉思录',
     },
     'zh-TW': {
       'The Blog': '部落格',
@@ -36,15 +46,18 @@
       'Back home →': '返回首頁 →',
       '← Back to writing': '← 返回寫作',
       'No posts yet.': '還沒有文章。',
-      'Writing, building, and thinking on the internet.': '在網路上寫作、構建與思考。',
-      'A running archive of writing about AI, technology, personal systems, internet culture, and small things I am trying to understand.': '這裡收著一些關於 AI、技術、個人系統、網路文化，以及那些我正在慢慢理解的小事的文字。',
-      'Notes on models, tools, workflows, automation, and how AI changes the way people build and think.': '關於模型、工具、工作流、自動化，以及 AI 如何改變人們構建與思考方式的筆記。',
-      'Practical writing about software, web infrastructure, domains, deployment, and the small systems behind personal projects.': '關於軟體、網路基礎設施、網域、部署，以及個人專案背後那些小系統的實作記錄。',
-      'Short observations, reading notes, decisions, and personal logs that do not need to become polished essays.': '一些短觀察、閱讀筆記、決策記錄和個人日誌，不必都寫成完整文章。',
+      'Personal blog': '個人部落格',
+      'AI · Tech · Notes': 'AI · 科技 · 筆記',
+      'Translate page': '翻譯頁面',
+      'Translating...': '翻譯中...',
+      'Translation complete': '翻譯完成',
+      '1 min read': '1 分鐘閱讀',
+      'Contents': '目錄',
+      'Daily quote': '每日名言',
     },
   };
 
-  const languageNames = {
+  var languageNames = {
     en: 'English',
     'zh-CN': '简体中文',
     'zh-TW': '繁體中文',
@@ -67,7 +80,7 @@
     nl: 'Nederlands',
   };
 
-  const languageLabelTranslations = {
+  var languageLabelTranslations = {
     en: 'Language',
     'zh-CN': '语言',
     'zh-TW': '語言',
@@ -90,11 +103,11 @@
     nl: 'Taal',
   };
 
-  const originalTexts = new Map();
+  var originalTexts = {};
   
   function hashText(str) {
-    let hash = 5381;
-    for (let i = 0; i < str.length; i++) {
+    var hash = 5381;
+    for (var i = 0; i < str.length; i++) {
       hash = ((hash << 5) + hash) ^ str.charCodeAt(i);
     }
     return (hash >>> 0).toString(36);
@@ -115,21 +128,21 @@
   }
 
   function getTextNodes() {
-    const nodes = [];
-    const walker = document.createTreeWalker(
+    var nodes = [];
+    var walker = document.createTreeWalker(
       document.body,
       NodeFilter.SHOW_TEXT,
       {
         acceptNode: function(node) {
-          const parent = node.parentElement;
+          var parent = node.parentElement;
           if (!parent) return NodeFilter.FILTER_REJECT;
           
           // Skip certain elements
-          const skipTags = ['SCRIPT', 'STYLE', 'SVG', 'TEXTAREA', 'INPUT', 'SELECT', 'CODE', 'PRE'];
-          if (skipTags.includes(parent.tagName)) return NodeFilter.FILTER_REJECT;
+          var skipTags = ['SCRIPT', 'STYLE', 'SVG', 'TEXTAREA', 'INPUT', 'SELECT'];
+          if (skipTags.indexOf(parent.tagName) !== -1) return NodeFilter.FILTER_REJECT;
           if (parent.closest('[data-no-translate]')) return NodeFilter.FILTER_REJECT;
           
-          const text = node.nodeValue || '';
+          var text = node.nodeValue || '';
           if (!text.trim()) return NodeFilter.FILTER_REJECT;
           
           return NodeFilter.FILTER_ACCEPT;
@@ -137,43 +150,47 @@
       }
     );
     
-    let node;
+    var node;
     while (node = walker.nextNode()) {
       nodes.push(node);
     }
     return nodes;
   }
 
-  function rememberOriginals(nodes) {
+  function getAllTextContent() {
+    var nodes = getTextNodes();
+    var result = [];
+    
     nodes.forEach(function(node) {
-      const key = hashText(node.nodeValue || '');
-      if (!originalTexts.has(key)) {
-        originalTexts.set(key, node.nodeValue || '');
+      var text = (node.nodeValue || '').trim();
+      if (text && text.length > 0) {
+        // Create unique key based on text content
+        var key = 'orig_' + hashText(text);
+        if (!originalTexts[key]) {
+          originalTexts[key] = text;
+        }
+        result.push({
+          node: node,
+          original: node.nodeValue,
+          trimmed: text,
+          key: key
+        });
       }
     });
-  }
-
-  function restoreOriginals() {
-    const nodes = getTextNodes();
-    nodes.forEach(function(node) {
-      const key = hashText(node.nodeValue || '');
-      const original = originalTexts.get(key);
-      if (original) {
-        node.nodeValue = original;
-      }
-    });
+    
+    return result;
   }
 
   function applyTranslation(node, translated, original) {
     // Preserve whitespace
-    const leading = original.match(/^\s*/)[0];
-    const trailing = original.match(/\s*$/)[0];
+    var leading = (original.match(/^\s*/) || [''])[0];
+    var trailing = (original.match(/\s*$/) || [''])[0];
     node.nodeValue = leading + translated + trailing;
   }
 
   async function translateAPI(language, items) {
     try {
-      const response = await fetch(API_ENDPOINT, {
+      var response = await fetch(API_ENDPOINT, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -188,7 +205,7 @@
       
       if (!response.ok) throw new Error('API error: ' + response.status);
       
-      const data = await response.json();
+      var data = await response.json();
       return Array.isArray(data.translations) ? data.translations : items;
     } catch(e) {
       console.error('[i18n] Translation API error:', e);
@@ -197,7 +214,7 @@
   }
 
   function applyOverrides(language, source, translated) {
-    const overrides = phraseOverrides[language];
+    var overrides = phraseOverrides[language];
     if (overrides && overrides[source.trim()]) {
       return overrides[source.trim()];
     }
@@ -205,62 +222,88 @@
   }
 
   async function translatePage(language) {
-    // Skip English
+    // Skip English - restore originals
     if (language === DEFAULT_LANGUAGE) {
-      restoreOriginals();
+      var entries = getAllTextContent();
+      entries.forEach(function(entry) {
+        applyTranslation(entry.node, entry.trimmed, entry.original);
+      });
       return;
     }
 
-    const nodes = getTextNodes();
-    if (nodes.length === 0) return;
-    
-    rememberOriginals(nodes);
+    var entries = getAllTextContent();
+    if (entries.length === 0) return;
 
-    // Group by cache key
-    const entries = [];
-    const cache = new Map();
+    // Get cached translations
+    var toTranslate = [];
+    var cached = {};
     
-    nodes.forEach(function(node) {
-      const original = node.nodeValue || '';
-      const trimmed = original.trim();
-      if (!trimmed) return;
+    entries.forEach(function(entry) {
+      var cacheKey = 'i18n:' + TRANSLATION_VERSION + ':' + language + ':' + hashText(entry.trimmed);
+      var cachedVal = localStorage.getItem(cacheKey);
       
-      const cacheKey = 'i18n:' + TRANSLATION_VERSION + ':' + language + ':' + hashText(trimmed);
-      const cached = localStorage.getItem(cacheKey);
-      
-      if (cached) {
-        cache.set(cacheKey, { node: node, original: original, translated: cached });
+      if (cachedVal) {
+        cached[entry.key] = {
+          node: entry.node,
+          original: entry.original,
+          translated: cachedVal
+        };
       } else {
-        entries.push({ node: node, original: original, trimmed: trimmed, cacheKey: cacheKey });
+        toTranslate.push(entry);
       }
     });
 
-    // Apply cached translations immediately
-    cache.forEach(function(item) {
-      applyTranslation(item.node, applyOverrides(language, item.trimmed || item.original.trim(), item.translated), item.original);
+    // Apply cached translations
+    Object.keys(cached).forEach(function(key) {
+      var item = cached[key];
+      var translated = applyOverrides(language, item.translated, item.translated);
+      applyTranslation(item.node, translated, item.original);
     });
 
-    // Translate missing items in batches
-    if (entries.length > 0) {
-      const BATCH_SIZE = 25;
-      for (let i = 0; i < entries.length; i += BATCH_SIZE) {
-        const batch = entries.slice(i, i + BATCH_SIZE);
-        const items = batch.map(function(e) { return e.trimmed; });
+    // Translate new items
+    if (toTranslate.length > 0) {
+      var BATCH_SIZE = 30;
+      var progressEl = null;
+      
+      // Show progress
+      if (toTranslate.length > 5) {
+        progressEl = document.createElement('div');
+        progressEl.style.cssText = 'position:fixed;bottom:20px;right:20px;background:#141615;border:1px solid #2b302e;border-radius:8px;padding:12px 16px;color:#aaa6a1;font-family:system-ui,sans-serif;font-size:13px;z-index:9999;';
+        progressEl.textContent = 'Translating... (0/' + toTranslate.length + ')';
+        document.body.appendChild(progressEl);
+      }
+      
+      for (var i = 0; i < toTranslate.length; i += BATCH_SIZE) {
+        var batch = toTranslate.slice(i, i + BATCH_SIZE);
+        var items = batch.map(function(e) { return e.trimmed; });
         
-        const translations = await translateAPI(language, items);
+        if (progressEl) {
+          progressEl.textContent = 'Translating... (' + Math.min(i + BATCH_SIZE, toTranslate.length) + '/' + toTranslate.length + ')';
+        }
+        
+        var translations = await translateAPI(language, items);
         
         batch.forEach(function(entry, idx) {
-          let translated = translations[idx] || entry.trimmed;
+          var translated = translations[idx] || entry.trimmed;
           translated = applyOverrides(language, entry.trimmed, translated);
           
           // Save to cache
           try {
-            localStorage.setItem(entry.cacheKey, translated);
+            var cacheKey = 'i18n:' + TRANSLATION_VERSION + ':' + language + ':' + hashText(entry.trimmed);
+            localStorage.setItem(cacheKey, translated);
           } catch(e) {}
           
           // Apply
           applyTranslation(entry.node, translated, entry.original);
         });
+      }
+      
+      if (progressEl) {
+        progressEl.textContent = 'Translation complete';
+        setTimeout(function() {
+          progressEl.style.opacity = '0';
+          setTimeout(function() { progressEl.remove(); }, 200);
+        }, 1500);
       }
     }
   }
@@ -272,7 +315,7 @@
   }
 
   function syncLabel(language) {
-    const label = document.getElementById('language-label');
+    var label = document.getElementById('language-label');
     if (label) {
       label.textContent = languageLabelTranslations[language] || 'Language';
     }
@@ -287,7 +330,7 @@
 
   // Initialize
   function init() {
-    const language = getSavedLanguage();
+    var language = getSavedLanguage();
     syncSelects(language);
     syncLabel(language);
     
