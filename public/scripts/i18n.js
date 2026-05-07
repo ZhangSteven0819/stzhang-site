@@ -4,25 +4,48 @@
 
   const languageNames = {
     en: "English",
-    "zh-CN": "Simplified Chinese",
-    "zh-TW": "Traditional Chinese",
-    ja: "Japanese",
-    ko: "Korean",
-    es: "Spanish",
-    fr: "French",
-    de: "German",
-    pt: "Portuguese",
-    it: "Italian",
-    ru: "Russian",
-    ar: "Arabic",
-    hi: "Hindi",
-    bn: "Bengali",
-    ur: "Urdu",
-    id: "Indonesian",
-    vi: "Vietnamese",
-    th: "Thai",
-    tr: "Turkish",
-    nl: "Dutch",
+    "zh-CN": "简体中文",
+    "zh-TW": "繁體中文",
+    ja: "日本語",
+    ko: "한국어",
+    es: "Español",
+    fr: "Français",
+    de: "Deutsch",
+    pt: "Português",
+    it: "Italiano",
+    ru: "Русский",
+    ar: "العربية",
+    hi: "हिन्दी",
+    bn: "বাংলা",
+    ur: "اردو",
+    id: "Bahasa Indonesia",
+    vi: "Tiếng Việt",
+    th: "ไทย",
+    tr: "Türkçe",
+    nl: "Nederlands",
+  };
+
+  const languageLabelTranslations = {
+    en: "Language",
+    "zh-CN": "语言",
+    "zh-TW": "語言",
+    ja: "言語",
+    ko: "언어",
+    es: "Idioma",
+    fr: "Langue",
+    de: "Sprache",
+    pt: "Idioma",
+    it: "Lingua",
+    ru: "Язык",
+    ar: "اللغة",
+    hi: "भाषा",
+    bn: "ভাষা",
+    ur: "زبان",
+    id: "Bahasa",
+    vi: "Ngôn ngữ",
+    th: "ภาษา",
+    tr: "Dil",
+    nl: "Taal",
   };
 
   const originalTextMap = new WeakMap();
@@ -214,6 +237,20 @@
     });
   }
 
+  function syncLanguageLabel(language) {
+    const label = document.getElementById("language-label");
+    const select = document.getElementById("language-select");
+    const translatedLabel = languageLabelTranslations[language] || languageLabelTranslations.en;
+
+    if (label) {
+      label.textContent = translatedLabel;
+    }
+
+    if (select) {
+      select.setAttribute("aria-label", translatedLabel);
+    }
+  }
+
   async function loadDailyQuote(language) {
     const textEl = document.getElementById("daily-quote-text");
     const sourceEl = document.getElementById("daily-quote-source");
@@ -260,6 +297,7 @@
 
   async function applyLanguage(language) {
     syncLanguageSelects(language);
+    syncLanguageLabel(language);
 
     setSavedLanguage(language);
     await loadDailyQuote(language);
@@ -271,6 +309,7 @@
     const selects = getLanguageSelects();
 
     syncLanguageSelects(language);
+    syncLanguageLabel(language);
 
     selects.forEach((select) => {
       select.addEventListener("change", async (event) => {
