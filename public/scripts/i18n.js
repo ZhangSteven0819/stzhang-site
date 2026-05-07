@@ -4,7 +4,7 @@
   
   var STORAGE_KEY = 'stzhang-language';
   var DEFAULT_LANG = 'en';
-  var CACHE_VER = 'v12';
+  var CACHE_VER = 'v13';
   var API = '/api/translate';
   
   // Fixed phrase overrides
@@ -96,7 +96,9 @@
   function isSkip(el) {
     if (!el) return true;
     var t = el.tagName;
+    // Skip these tags entirely
     if (t === 'SCRIPT' || t === 'STYLE' || t === 'SVG' || t === 'TEXTAREA' || t === 'INPUT' || t === 'SELECT') return true;
+    // Skip elements marked with data-no-translate
     if (el.closest && el.closest('[data-no-translate]')) return true;
     return false;
   }
@@ -106,7 +108,8 @@
     var w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
       acceptNode: function(n) {
         if (isSkip(n.parentElement)) return NodeFilter.FILTER_REJECT;
-        if (!(n.nodeValue || '').trim()) return NodeFilter.FILTER_REJECT;
+        var txt = (n.nodeValue || '').trim();
+        if (!txt) return NodeFilter.FILTER_REJECT;
         return NodeFilter.FILTER_ACCEPT;
       }
     });
@@ -120,70 +123,96 @@
     return null;
   }
 
-  function translateNode(n, lang) {
-    var orig = n.nodeValue || '';
-    var trim = orig.trim();
-    if (!trim) return;
-    
-    // Check fixed phrase
-    var fixed = getFixed(lang, trim);
-    if (fixed) {
-      n.nodeValue = orig.replace(trim, fixed);
-      return;
-    }
-    
-    // Check cache
-    var cached = gc(trim, lang);
-    if (cached) {
-      n.nodeValue = orig.replace(trim, cached);
-      return;
-    }
-    
-    // Mark for API
-    n._orig = trim;
-    n._lead = (orig.match(/^\s*/) || [''])[0];
-    n._trail = (orig.match(/\s*$/) || [''])[0];
+  function applyNode(n, orig, trans) {
+    // Preserve whitespace: replace trimmed text while keeping leading/trailing whitespace
+    var lead = (orig.match(/^\s*/) || [''])[0];
+    var trail = (orig.match(/\s*$/) || [''])[0];
+    n.nodeValue = lead + trans + trail;
   }
 
-  async function doTranslate(nodes, lang) {
+  function doTranslate() {
+    var lang = getLang();
+    if (lang === DEFAULT_LANG) {
+      // Restore all original text
+      var nodes = getTextNodes();
+      nodes.forEach(function(n) {
+        var txt = (n.nodeValue || '').trim();
+        var cached = gc(txt, DEFAULT_LANG);
+        if (cached) {
+          applyNode(n, n.nodeValue, cached);
+        }
+      });
+      return;
+    }
+
+    var nodes = getTextNodes();
+    var needApi = [];
+
     // First pass: apply fixed phrases and cached translations
-    nodes.forEach(function(n) { translateNode(n, lang); });
-    
-    // Collect nodes needing API translation
-    var need = nodes.filter(function(n) { return n._orig && !gc(n._orig, lang) && !getFixed(lang, n._orig); });
-    if (!need.length) return;
-    
-    var BATCH = 25;
-    for (var i = 0; i < need.length; i += BATCH) {
-      var batch = need.slice(i, i + BATCH);
-      var texts = batch.map(function(n) { return n._orig; });
+    nodes.forEach(function(n) {
+      var orig = n.nodeValue || '';
+      var trim = orig.trim();
+      if (!trim) return;
       
-      try {
-        var r = await fetch(API, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            targetLanguage: lang,
-            targetLanguageName: LANG_NAMES[lang] || lang,
-            pagePath: location.pathname,
-            items: texts
-          })
+      // Check fixed phrase override first
+      var fixed = getFixed(lang, trim);
+      if (fixed) {
+        applyNode(n, orig, fixed);
+        return;
+      }
+      
+      // Check cache
+      var cached = gc(trim, lang);
+      if (cached) {
+        applyNode(n, orig, cached);
+        return;
+      }
+      
+      // Mark for API translation
+      needApi.push({ node: n, orig: orig, trim: trim });
+    });
+
+    // Second pass: translate uncached items via API
+    if (needApi.length === 0) return;
+
+    var BATCH = 30;
+    
+    (function translateBatch(startIdx) {
+      if (startIdx >= needApi.length) return;
+
+      var endIdx = Math.min(startIdx + BATCH, needApi.length);
+      var batch = needApi.slice(startIdx, endIdx);
+      var texts = batch.map(function(item) { return item.trim; });
+
+      fetch(API, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          targetLanguage: lang,
+          targetLanguageName: LANG_NAMES[lang] || lang,
+          pagePath: location.pathname,
+          items: texts
+        })
+      }).then(function(r) {
+        if (!r.ok) return translateBatch(endIdx);
+        return r.json();
+      }).then(function(d) {
+        if (!d) return translateBatch(endIdx);
+        var trans = d.translations || texts;
+        
+        batch.forEach(function(item, i) {
+          var translated = trans[i] || item.trim;
+          sc(item.trim, lang, translated);
+          applyNode(item.node, item.orig, translated);
         });
         
-        if (r.ok) {
-          var d = await r.json();
-          var trans = d.translations || texts;
-          
-          batch.forEach(function(n, j) {
-            var t = trans[j] || n._orig;
-            sc(n._orig, lang, t);
-            n.nodeValue = n._lead + t + n._trail;
-          });
-        }
-      } catch(e) {
+        // Continue with next batch
+        translateBatch(endIdx);
+      }).catch(function(e) {
         console.error('[i18n] Error:', e);
-      }
-    }
+        translateBatch(endIdx);
+      });
+    })(0);
   }
 
   function syncUI(lang) {
@@ -197,15 +226,17 @@
     var lang = getLang();
     syncUI(lang);
     
+    // Listen for language select changes
     document.querySelectorAll('#language-select, #language-select-mobile').forEach(function(s) {
       s.addEventListener('change', function(e) {
         setLang(e.target.value);
         syncUI(e.target.value);
-        doTranslate(getTextNodes(), e.target.value);
+        doTranslate();
       });
     });
     
-    doTranslate(getTextNodes(), lang);
+    // Initial translation
+    doTranslate();
   }
 
   if (document.readyState === 'loading') {
