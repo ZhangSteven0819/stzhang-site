@@ -1109,6 +1109,10 @@ a:focus-visible,
   border-color: var(--color-border-hover);
 }
 
+.mobile-only {
+  display: none;
+}
+
 /* Mobile styles */
 @media (max-width: 820px) {
   .hamburger {
@@ -1133,6 +1137,20 @@ a:focus-visible,
   .header-right {
     display: flex;
     align-items: center;
+  }
+
+  .desktop-only {
+    display: none !important;
+  }
+
+  .mobile-only {
+    display: block !important;
+  }
+}
+
+@media (min-width: 821px) {
+  .mobile-only {
+    display: none !important;
   }
 }
 
