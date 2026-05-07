@@ -2,9 +2,10 @@ const jsonHeaders = {
   "Content-Type": "application/json; charset=utf-8",
 };
 
-const MODEL_FALLBACKS = [
-  "openai/gpt-oss-120b",
-  "llama-3.3-70b-versatile",
+// Use faster 8B model as primary, with larger models as fallback
+const MODEL_ORDER = [
+  "llama-3.1-8b-instant",  // Fastest, good for translation
+  "llama-3.3-70b-versatile",  // More accurate but slower
 ];
 
 const TARGET_LOCALES = {
@@ -30,6 +31,32 @@ const TARGET_LOCALES = {
   nl: "Dutch",
 };
 
+// Server-side translation cache (persists during worker lifetime)
+const translationCache = new Map();
+const CACHE_TTL_MS = 1000 * 60 * 60 * 24; // 24 hours
+
+function getCacheKey(items, targetLanguage) {
+  const str = JSON.stringify({ items, targetLanguage });
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = ((hash << 5) - hash) + str.charCodeAt(i);
+    hash |= 0;
+  }
+  return `${targetLanguage}_${Math.abs(hash).toString(36)}`;
+}
+
+function getCached(key) {
+  const entry = translationCache.get(key);
+  if (entry && Date.now() - entry.ts < CACHE_TTL_MS) {
+    return entry.data;
+  }
+  return null;
+}
+
+function setCached(key, data) {
+  translationCache.set(key, { data, ts: Date.now() });
+}
+
 function getJsonFromText(text) {
   const trimmed = text.trim();
 
@@ -49,42 +76,29 @@ function getJsonFromText(text) {
 
 async function requestTranslation(apiKey, models, systemPrompt, payload) {
   for (const model of models) {
-    const requestBody = {
-      model,
-      temperature: 0.1,
-      messages: [
-        {
-          role: "system",
-          content: systemPrompt,
-        },
-        {
-          role: "user",
-          content: JSON.stringify(payload),
-        },
-      ],
-    };
-
-    if (model.startsWith("openai/gpt-oss")) {
-      requestBody.reasoning_effort = "high";
-    }
-
     const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${apiKey}`,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(requestBody),
+      body: JSON.stringify({
+        model,
+        temperature: 0.1,
+        max_tokens: 4096,  // Limit output for faster response
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: JSON.stringify(payload) },
+        ],
+      }),
     });
 
     if (!response.ok) {
       const errorText = await response.text();
       console.log("Groq API error:", model, response.status, errorText);
-
       if (response.status === 400 || response.status === 404 || response.status === 403) {
         continue;
       }
-
       return { ok: false, error: `Groq API error on ${model}: ${response.status}` };
     }
 
@@ -109,10 +123,18 @@ export async function onRequestPost(context) {
     const targetLanguageName = TARGET_LOCALES[targetLanguage] || body.targetLanguageName || targetLanguage;
     const pageTitle = typeof body.pageTitle === "string" ? body.pageTitle : "";
     const pagePath = typeof body.pagePath === "string" ? body.pagePath : "";
-    const contextItems = Array.isArray(body.contextItems) ? body.contextItems : items;
 
     if (!items.length) {
       return new Response(JSON.stringify({ translations: [] }), {
+        headers: jsonHeaders,
+      });
+    }
+
+    // Check server-side cache first (huge speedup for repeated requests)
+    const cacheKey = getCacheKey(items, targetLanguage);
+    const cached = getCached(cacheKey);
+    if (cached) {
+      return new Response(JSON.stringify({ translations: cached, cached: true }), {
         headers: jsonHeaders,
       });
     }
@@ -126,55 +148,17 @@ export async function onRequestPost(context) {
       });
     }
 
-    const models = [
-      env.TRANSLATE_MODEL,
-      ...MODEL_FALLBACKS,
-      env.GROQ_MODEL,
-    ].filter(Boolean);
+    // Use fast model first, fall back to slower one
+    const models = [env.TRANSLATE_MODEL || MODEL_ORDER[0], ...MODEL_ORDER.slice(1), env.GROQ_MODEL].filter(Boolean);
 
+    // Simplified prompt for faster processing
     const systemPrompt = `
-You are an elite native-speaking website localizer and literary editor.
-
-You are localizing a quiet personal blog called ST Zhang.
-Page path: ${pagePath || "/"}
-Page title: ${pageTitle || "ST Zhang"}
-
-Translate every item into ${targetLanguageName}.
-Each item is a DOM text node from the same web page. Use the full page context from the user message.
-The result must read as if originally written by a fluent native editor, never like machine translation.
-Prefer idiomatic, polished website copy over literal word-by-word mapping.
-Preserve meaning, tone, punctuation, and line-level structure unless a native phrasing needs a small adjustment.
-Do not summarize.
-Do not add commentary.
-
-Preserve these exact terms when appropriate:
-ST Zhang, ZhangSteven0819, GitHub, Astro, Decap CMS, Cloudflare Pages, Groq, AI, Tech, Notes, JavaScript, TypeScript, HTML, CSS, API, URL.
-
-For mixed Chinese/English or English/Chinese text:
-- translate the natural-language parts,
-- keep names, product names, project names, code terms, URLs, and acronyms unchanged,
-- avoid over-translating technical terms.
-
-For all languages:
-- use natural menu labels, headings, card copy, and article microcopy,
-- avoid literal calques,
-- keep rhythm concise and readable,
-- translate as a native publication editor, not as a bilingual dictionary.
-
-For Chinese output specifically:
-- write smooth, publication-quality Chinese,
-- avoid stiff calques and textbook phrasing,
-- prefer concise, natural wording with rhythm,
-- if a phrase has a widely used polished Chinese rendering, use it.
-- for personal blog copy, sound human and lightly editorial, not corporate.
-
-Return only valid JSON:
-{
-  "translations": ["..."]
-}
-
-The translations array must have exactly the same length and order as the input array.
-`;
+You are a professional website translator localizing a personal blog called ST Zhang.
+Page: ${pagePath || "/"} | Title: ${pageTitle || "ST Zhang"}
+Translate to ${targetLanguageName}. Sound natural, like originally written.
+Keep unchanged: ST Zhang, GitHub, Astro, AI, Tech, Notes, URL, API, JavaScript, TypeScript.
+Return only: {"translations":["item1","item2",...]}
+`.trim();
 
     const result = await requestTranslation(apiKey, models, systemPrompt, {
       items,
@@ -182,7 +166,6 @@ The translations array must have exactly the same length and order as the input 
       pagePath,
       targetLanguage,
       targetLanguageName,
-      contextItems,
     });
 
     if (!result.ok) {
@@ -190,6 +173,9 @@ The translations array must have exactly the same length and order as the input 
         headers: jsonHeaders,
       });
     }
+
+    // Cache successful translation for 24 hours
+    setCached(cacheKey, result.translations);
 
     return new Response(JSON.stringify({ translations: result.translations }), {
       headers: jsonHeaders,
@@ -228,7 +214,7 @@ export async function onRequestGet(context) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "openai/gpt-oss-120b",
+        model: "llama-3.1-8b-instant",
         messages: [
           { role: "user", content: "Translate 'Hello World' to Chinese. Return JSON: {\"translation\": \"...\"}" }
         ],
