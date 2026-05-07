@@ -1073,41 +1073,19 @@ a:focus-visible,
   position: relative;
 }
 
-.language-trigger {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 16px;
-  color: var(--color-text-primary);
-  text-decoration: none;
-  font-family: system-ui, -apple-system, sans-serif;
-  font-size: 15px;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: background 0.2s ease, transform 0.1s ease;
+.language-dropdown {
+  padding: 4px 0;
 }
 
-.language-trigger:hover {
-  background: var(--color-bg-hover);
-}
-
-.language-trigger:active {
-  transform: scale(0.95);
-}
-
-.language-trigger svg {
-  width: 20px;
-  height: 20px;
-  flex-shrink: 0;
-}
-
-.language-options {
-  padding: 0 16px 8px;
-  display: none;
-}
-
-.language-options.show {
+.language-label {
   display: block;
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 11px;
+  color: var(--color-text-muted);
+  margin-bottom: 6px;
+  padding: 0 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .language-select-mobile {
@@ -1129,16 +1107,6 @@ a:focus-visible,
 .language-select-mobile:focus {
   outline: none;
   border-color: var(--color-border-hover);
-}
-
-.language-label {
-  display: block;
-  font-family: system-ui, -apple-system, sans-serif;
-  font-size: 12px;
-  color: var(--color-text-muted);
-  margin-bottom: 8px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
 }
 
 /* Mobile styles */

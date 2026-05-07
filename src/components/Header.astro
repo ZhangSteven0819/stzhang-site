@@ -27,39 +27,34 @@ const { current = "" } = Astro.props;
         <div class="dropdown-divider"></div>
         
         <div class="language-dropdown">
-          <a href="#" class="language-trigger" id="language-trigger">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
-            Language
-          </a>
-          <div class="language-options" id="language-options">
-            <select
-              id="language-select-mobile"
-              class="language-select-mobile"
-              aria-label="Select language"
-              data-no-translate
-            >
-              <option value="en">English</option>
-              <option value="zh-CN">简体中文</option>
-              <option value="zh-TW">繁體中文</option>
-              <option value="ja">日本語</option>
-              <option value="ko">한국어</option>
-              <option value="es">Español</option>
-              <option value="fr">Français</option>
-              <option value="de">Deutsch</option>
-              <option value="pt">Português</option>
-              <option value="it">Italiano</option>
-              <option value="ru">Русский</option>
-              <option value="ar">العربية</option>
-              <option value="hi">हिन्दी</option>
-              <option value="bn">বাংলা</option>
-              <option value="ur">اردو</option>
-              <option value="id">Bahasa Indonesia</option>
-              <option value="vi">Tiếng Việt</option>
-              <option value="th">ไทย</option>
-              <option value="tr">Türkçe</option>
-              <option value="nl">Nederlands</option>
-            </select>
-          </div>
+          <span class="language-label">Language</span>
+          <select
+            id="language-select-mobile"
+            class="language-select-mobile"
+            aria-label="Select language"
+            data-no-translate
+          >
+            <option value="en">English</option>
+            <option value="zh-CN">简体中文</option>
+            <option value="zh-TW">繁體中文</option>
+            <option value="ja">日本語</option>
+            <option value="ko">한국어</option>
+            <option value="es">Español</option>
+            <option value="fr">Français</option>
+            <option value="de">Deutsch</option>
+            <option value="pt">Português</option>
+            <option value="it">Italiano</option>
+            <option value="ru">Русский</option>
+            <option value="ar">العربية</option>
+            <option value="hi">हिन्दी</option>
+            <option value="bn">বাংলা</option>
+            <option value="ur">اردو</option>
+            <option value="id">Bahasa Indonesia</option>
+            <option value="vi">Tiếng Việt</option>
+            <option value="th">ไทย</option>
+            <option value="tr">Türkçe</option>
+            <option value="nl">Nederlands</option>
+          </select>
         </div>
       </div>
     </div>
@@ -75,8 +70,6 @@ const { current = "" } = Astro.props;
     const overlay = document.getElementById('menu-overlay');
     const langMobile = document.getElementById('language-select-mobile');
     const langDesktop = document.getElementById('language-select');
-    const langTrigger = document.getElementById('language-trigger');
-    const langOptions = document.getElementById('language-options');
     
     function closeMenu() {
       menu.classList.remove('open');
@@ -112,24 +105,21 @@ const { current = "" } = Astro.props;
       });
     }
     
-    // Language toggle
-    if (langTrigger && langOptions) {
-      langTrigger.addEventListener('click', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        langOptions.classList.toggle('show');
-      });
-    }
-    
-    // Sync language selection
+    // Sync language selection between mobile and desktop selects
     if (langMobile && langDesktop) {
+      // Sync from mobile to desktop
       langMobile.addEventListener('change', () => {
         langDesktop.value = langMobile.value;
+        // Trigger change event on desktop select
         langDesktop.dispatchEvent(new Event('change'));
       });
+      // Sync from desktop to mobile
       langDesktop.addEventListener('change', () => {
         langMobile.value = langDesktop.value;
       });
+      // Initialize mobile select with saved language
+      const savedLang = langDesktop.value || 'en';
+      langMobile.value = savedLang;
     }
   });
 </script>
