@@ -104,6 +104,54 @@ function hasMeaningfulTranslation(items, translations, targetLanguage) {
   return true;
 }
 
+function getGoogleTargetLanguage(targetLanguage) {
+  return String(targetLanguage || "en").trim() || "en";
+}
+
+async function requestGoogleTranslation(items, targetLanguage) {
+  const language = getGoogleTargetLanguage(targetLanguage);
+
+  const translations = await Promise.all(items.map(async (item) => {
+    const text = String(item || "");
+
+    if (!text.trim()) {
+      return text;
+    }
+
+    const url = new URL("https://translate.googleapis.com/translate_a/single");
+    url.searchParams.set("client", "gtx");
+    url.searchParams.set("sl", "auto");
+    url.searchParams.set("tl", language);
+    url.searchParams.set("dt", "t");
+    url.searchParams.set("q", text);
+
+    const response = await fetch(url.toString(), {
+      headers: {
+        "User-Agent": "Mozilla/5.0",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Google fallback error: ${response.status}`);
+    }
+
+    const data = await response.json();
+    const parts = Array.isArray(data?.[0]) ? data[0] : [];
+    const translated = parts
+      .map((part) => (Array.isArray(part) ? part[0] : ""))
+      .join("")
+      .trim();
+
+    return translated || text;
+  }));
+
+  if (!hasMeaningfulTranslation(items, translations, targetLanguage)) {
+    throw new Error("Google fallback returned unchanged text");
+  }
+
+  return translations;
+}
+
 async function requestTranslation(apiKey, models, systemPrompt, payload) {
   let lastUnchangedTranslations = null;
 
@@ -298,9 +346,20 @@ The translations array must have exactly the same length and order as the input 
     });
 
     if (!result.ok) {
-      return new Response(JSON.stringify({ translations: items, error: result.error }), {
-        headers: jsonHeaders,
-      });
+      try {
+        const fallbackTranslations = await requestGoogleTranslation(items, targetLanguage);
+
+        return new Response(JSON.stringify({
+          translations: fallbackTranslations,
+          fallback: "google",
+        }), {
+          headers: jsonHeaders,
+        });
+      } catch (fallbackError) {
+        return new Response(JSON.stringify({ translations: items, error: result.error }), {
+          headers: jsonHeaders,
+        });
+      }
     }
 
     return new Response(JSON.stringify({ translations: result.translations }), {
