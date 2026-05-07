@@ -938,9 +938,9 @@ a:focus-visible,
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 44px;
+  width: auto;
   height: 44px;
-  padding: 10px;
+  padding: 8px 0;
   background: transparent;
   border: none;
   cursor: pointer;
@@ -949,7 +949,7 @@ a:focus-visible,
 
 .hamburger-line {
   display: block;
-  width: 22px;
+  width: 18px;
   height: 2px;
   background: var(--color-text-primary);
   transition: all 0.3s ease-in-out;
@@ -1069,6 +1069,7 @@ a:focus-visible,
 @media (max-width: 820px) {
   .hamburger {
     display: flex;
+    margin-left: auto;
   }
 
   .site-nav {
