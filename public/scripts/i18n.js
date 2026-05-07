@@ -26,7 +26,9 @@
       '1 min read': '1 分钟阅读',
       'Contents': '目录',
       'Daily quote': '每日名言',
-      'The obstacle is the way.': '障碍是道路。'
+      'The obstacle is the way.': '障碍是道路。',
+      'Marcus Aurelius · Meditations': '马可·奥勒留 · 沉思录',
+      'View all →': '查看全部 →'
     },
     'zh-TW': {
       'The Blog': '部落格',
@@ -43,7 +45,9 @@
       'AI · Tech · Notes': 'AI · 科技 · 筆記',
       '1 min read': '1 分鐘閱讀',
       'Contents': '目錄',
-      'Daily quote': '每日名言'
+      'Daily quote': '每日名言',
+      'The obstacle is the way.': '阻礙是道路。',
+      'Marcus Aurelius · Meditations': '馬可·奧勒留 · 沉思錄'
     }
   };
 
