@@ -136,7 +136,7 @@ async function requestTranslation(apiKey, models, systemPrompt, payload) {
       const errorText = await response.text();
       console.log("Groq API error:", model, response.status, errorText);
 
-      if (response.status === 400 || response.status === 404 || response.status === 403) {
+      if (response.status !== 401) {
         continue;
       }
 
