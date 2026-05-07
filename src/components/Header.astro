@@ -96,8 +96,6 @@ const { current = "" } = Astro.props;
     const btn = document.getElementById('hamburger-btn');
     const menu = document.getElementById('dropdown-menu');
     const overlay = document.getElementById('menu-overlay');
-    const langMobile = document.getElementById('language-select-mobile');
-    const langDesktop = document.getElementById('language-select');
     
     function closeMenu() {
       menu.classList.remove('open');
@@ -131,23 +129,6 @@ const { current = "" } = Astro.props;
           closeMenu();
         }
       });
-    }
-    
-    // Sync language selection between mobile and desktop selects
-    if (langMobile && langDesktop) {
-      // Sync from mobile to desktop
-      langMobile.addEventListener('change', () => {
-        langDesktop.value = langMobile.value;
-        // Trigger change event on desktop select
-        langDesktop.dispatchEvent(new Event('change'));
-      });
-      // Sync from desktop to mobile
-      langDesktop.addEventListener('change', () => {
-        langMobile.value = langDesktop.value;
-      });
-      // Initialize mobile select with saved language
-      const savedLang = langDesktop.value || 'en';
-      langMobile.value = savedLang;
     }
   });
 </script>

@@ -8,7 +8,7 @@ export async function onRequestGet(context) {
   }
 
   const url = new URL(request.url);
-  const siteUrl = env.SITE_URL || "https://stzhang.qzz.io";
+  const siteUrl = url.origin;
   const redirectUri = `${siteUrl}/api/callback`;
   const state = crypto.randomUUID();
 

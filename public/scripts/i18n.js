@@ -202,6 +202,18 @@
     });
   }
 
+  function getLanguageSelects() {
+    return Array.from(
+      document.querySelectorAll("#language-select, #language-select-mobile, [data-language-select]")
+    );
+  }
+
+  function syncLanguageSelects(language) {
+    getLanguageSelects().forEach((select) => {
+      select.value = language;
+    });
+  }
+
   async function loadDailyQuote(language) {
     const textEl = document.getElementById("daily-quote-text");
     const sourceEl = document.getElementById("daily-quote-source");
@@ -247,11 +259,7 @@
   }
 
   async function applyLanguage(language) {
-    const select = document.getElementById("language-select");
-
-    if (select) {
-      select.value = language;
-    }
+    syncLanguageSelects(language);
 
     setSavedLanguage(language);
     await loadDailyQuote(language);
@@ -259,16 +267,16 @@
   }
 
   document.addEventListener("DOMContentLoaded", () => {
-    const select = document.getElementById("language-select");
     const language = getSavedLanguage();
+    const selects = getLanguageSelects();
 
-    if (select) {
-      select.value = language;
+    syncLanguageSelects(language);
 
+    selects.forEach((select) => {
       select.addEventListener("change", async (event) => {
         await applyLanguage(event.target.value);
       });
-    }
+    });
 
     applyLanguage(language);
   });

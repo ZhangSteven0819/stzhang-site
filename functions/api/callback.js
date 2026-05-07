@@ -5,26 +5,52 @@ function renderCallbackPage(status, content) {
     <meta charset="utf-8" />
     <title>Authentication complete</title>
   </head>
-  <body style="font-family: system-ui, sans-serif; padding: 32px;">
-    <p>Authentication complete. You can close this window.</p>
+  <body style="background:#0d0f0f;color:#f0eeeb;font-family:system-ui,sans-serif;padding:32px;">
+    <p>Authentication complete. This window should close automatically.</p>
 
     <script>
       (function () {
         var content = ${JSON.stringify(content)};
         var status = ${JSON.stringify(status)};
+        var payload = "authorization:github:" + status + ":" + JSON.stringify(content);
+        var attempts = 0;
 
-        function receiveMessage(message) {
-          window.opener.postMessage(
-            "authorization:github:" + status + ":" + JSON.stringify(content),
-            message.origin
-          );
+        function sendAuthorization(origin) {
+          if (!window.opener || window.opener.closed) return;
 
-          window.removeEventListener("message", receiveMessage, false);
+          try {
+            window.opener.postMessage(payload, origin || "*");
+          } catch (error) {
+            window.opener.postMessage(payload, "*");
+          }
+        }
+
+        function finishSoon() {
+          window.setTimeout(function () {
+            try {
+              window.close();
+            } catch (error) {}
+          }, 900);
         }
 
         if (window.opener) {
-          window.addEventListener("message", receiveMessage, false);
+          window.addEventListener("message", function (message) {
+            sendAuthorization(message.origin);
+            finishSoon();
+          }, false);
+
           window.opener.postMessage("authorizing:github", "*");
+          sendAuthorization("*");
+
+          var interval = window.setInterval(function () {
+            attempts += 1;
+            sendAuthorization("*");
+
+            if (attempts >= 12) {
+              window.clearInterval(interval);
+              finishSoon();
+            }
+          }, 250);
         } else {
           document.body.innerHTML = "<p>Authentication finished, but this window lost connection to the CMS window. Close this window and try again from /admin.</p>";
         }
@@ -56,6 +82,7 @@ export async function onRequestGet(context) {
 
   const clientId = env.GITHUB_CLIENT_ID;
   const clientSecret = env.GITHUB_CLIENT_SECRET;
+  const siteUrl = url.origin;
 
   if (!clientId || !clientSecret) {
     return new Response(
@@ -82,6 +109,7 @@ export async function onRequestGet(context) {
       client_id: clientId,
       client_secret: clientSecret,
       code,
+      redirect_uri: `${siteUrl}/api/callback`,
     }),
   });
 
