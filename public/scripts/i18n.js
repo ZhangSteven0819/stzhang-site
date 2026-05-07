@@ -1,7 +1,7 @@
 (() => {
   const STORAGE_KEY = "stzhang-language";
   const DEFAULT_LANGUAGE = "en";
-  const TRANSLATION_CACHE_VERSION = "v7";
+  const TRANSLATION_CACHE_VERSION = "v8";
   const CACHE_MIGRATION_KEY = "stzhang-translation-cache-version";
   const MAX_CONTEXT_CHARS = 8000;
   const MAX_CHUNK_CHARS = 3200;
@@ -343,6 +343,48 @@
     return translated;
   }
 
+  function normalizeForCompare(value) {
+    return String(value || "")
+      .toLowerCase()
+      .replace(/\s+/g, " ")
+      .replace(/[.,:;!?()[\]{}'"`~@#$%^&*_+=/\\|-]/g, "")
+      .trim();
+  }
+
+  function shouldRetryTranslation(language, source, translated) {
+    if (language === DEFAULT_LANGUAGE) {
+      return false;
+    }
+
+    const sourceText = String(source || "").trim();
+    const translatedText = String(translated || "").trim();
+
+    if (!sourceText) {
+      return false;
+    }
+
+    if (!translatedText) {
+      return true;
+    }
+
+    const sourceNormalized = normalizeForCompare(sourceText);
+    const translatedNormalized = normalizeForCompare(translatedText);
+
+    if (sourceNormalized && sourceNormalized === translatedNormalized) {
+      return true;
+    }
+
+    if (
+      (language === "zh-CN" || language === "zh-TW") &&
+      /[A-Za-z]{3,}/.test(sourceText) &&
+      !/[\u4e00-\u9fff]/.test(translatedText)
+    ) {
+      return true;
+    }
+
+    return false;
+  }
+
   function buildContextItems(entries) {
     const context = [];
     let totalChars = 0;
@@ -428,6 +470,7 @@
 
     try {
       const translations = await translateBatch(language, items, contextItems);
+      const unresolved = [];
 
       chunk.forEach((entry, index) => {
         const translated = polishTranslation(
@@ -435,9 +478,30 @@
           entry.trimmed,
           translations[index] || entry.trimmed
         );
+
+        if (shouldRetryTranslation(language, entry.trimmed, translated)) {
+          unresolved.push(entry);
+          return;
+        }
+
         localStorage.setItem(entry.cacheKey, translated);
         cached.set(entry.cacheKey, translated);
       });
+
+      if (unresolved.length) {
+        if (unresolved.length === chunk.length && chunk.length <= 1) {
+          return;
+        }
+
+        if (unresolved.length === 1) {
+          await translateEntries(language, unresolved, contextItems, cached);
+          return;
+        }
+
+        const midpoint = Math.ceil(unresolved.length / 2);
+        await translateEntries(language, unresolved.slice(0, midpoint), contextItems, cached);
+        await translateEntries(language, unresolved.slice(midpoint), contextItems, cached);
+      }
     } catch (error) {
       if (chunk.length <= 1) {
         return;
