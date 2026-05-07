@@ -1,10 +1,11 @@
 (() => {
   const STORAGE_KEY = "stzhang-language";
   const DEFAULT_LANGUAGE = "en";
-  const TRANSLATION_CACHE_VERSION = "v8";
+  const TRANSLATION_CACHE_VERSION = "v9";
   const CACHE_MIGRATION_KEY = "stzhang-translation-cache-version";
-  const MAX_CONTEXT_CHARS = 8000;
+  const MAX_CONTEXT_CHARS = 2200;
   const MAX_CHUNK_CHARS = 3200;
+  const MAX_CONTEXT_ITEM_CHARS = 180;
 
   const languageNames = {
     en: "English",
@@ -387,17 +388,36 @@
 
   function buildContextItems(entries) {
     const context = [];
+    const seen = new Set();
     let totalChars = 0;
+    const orderedEntries = [...entries].sort((left, right) => {
+      return left.trimmed.length - right.trimmed.length;
+    });
 
-    for (const entry of entries) {
+    for (const entry of orderedEntries) {
       const text = entry.trimmed;
+
+      if (!text || seen.has(text)) {
+        continue;
+      }
+
       const remaining = MAX_CONTEXT_CHARS - totalChars;
 
       if (remaining <= 0) break;
 
-      const snippet = text.length > remaining ? text.slice(0, remaining) : text;
+      const capped =
+        text.length > MAX_CONTEXT_ITEM_CHARS
+          ? `${text.slice(0, MAX_CONTEXT_ITEM_CHARS - 1)}…`
+          : text;
+      const snippet = capped.length > remaining ? capped.slice(0, remaining) : capped;
+
+      if (!snippet.trim()) {
+        continue;
+      }
+
       context.push(snippet);
       totalChars += snippet.length;
+      seen.add(text);
     }
 
     return context;
