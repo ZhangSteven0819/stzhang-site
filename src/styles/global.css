@@ -1070,6 +1070,7 @@ a:focus-visible,
   .hamburger {
     display: flex;
     margin-left: auto;
+    align-items: center;
   }
 
   .site-nav {
@@ -1078,6 +1079,10 @@ a:focus-visible,
 
   .dropdown-menu {
     right: 20px;
+  }
+
+  .site-header {
+    align-items: center;
   }
 }
 
