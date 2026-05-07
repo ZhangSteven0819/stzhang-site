@@ -3,6 +3,7 @@ const jsonHeaders = {
 };
 
 const MODEL_FALLBACKS = [
+  "llama-3.1-8b-instant",
   "llama-3.3-70b-versatile",
   "openai/gpt-oss-120b",
 ];
@@ -64,6 +65,14 @@ function hasMeaningfulTranslation(items, translations, targetLanguage) {
     return false;
   }
 
+  const blank = translations.filter((translation, index) => {
+    return String(items[index] || "").trim() && !String(translation || "").trim();
+  }).length;
+
+  if (blank > 0) {
+    return false;
+  }
+
   const unchanged = translations.filter((translation, index) => {
     const source = normalizeForCompare(items[index]);
     const result = normalizeForCompare(translation);
@@ -71,7 +80,22 @@ function hasMeaningfulTranslation(items, translations, targetLanguage) {
     return source && source === result;
   }).length;
 
-  return unchanged / Math.max(1, items.length) < 0.65;
+  if (unchanged / Math.max(1, items.length) >= 0.65) {
+    return false;
+  }
+
+  if (targetLanguage === "zh-CN" || targetLanguage === "zh-TW") {
+    const naturalLanguageItems = items.filter((item) => /[A-Za-z]{3,}/.test(item));
+    const translatedCjkItems = translations.filter((translation, index) => {
+      return /[A-Za-z]{3,}/.test(items[index]) && /[\u4e00-\u9fff]/.test(translation);
+    });
+
+    if (naturalLanguageItems.length && translatedCjkItems.length === 0) {
+      return false;
+    }
+  }
+
+  return true;
 }
 
 async function requestTranslation(apiKey, models, systemPrompt, payload) {
@@ -80,7 +104,9 @@ async function requestTranslation(apiKey, models, systemPrompt, payload) {
   for (const model of models) {
     const requestBody = {
       model,
-      temperature: 0.1,
+      temperature: 0,
+      max_tokens: 8192,
+      response_format: { type: "json_object" },
       messages: [
         {
           role: "system",
@@ -186,6 +212,8 @@ Each item is a DOM text node from the same web page. Use the full page context f
 The result must read as if originally written by a fluent native editor, never like machine translation.
 Prefer idiomatic, polished website copy over literal word-by-word mapping.
 Preserve meaning, tone, punctuation, and line-level structure unless a native phrasing needs a small adjustment.
+Never return an empty string for a non-empty input.
+If a token should remain unchanged, copy that token inside the translated sentence.
 Do not summarize.
 Do not add commentary.
 
