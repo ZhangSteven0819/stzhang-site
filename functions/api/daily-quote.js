@@ -284,8 +284,8 @@ export async function onRequestGet(context) {
     const models = [
       env.DAILY_QUOTE_MODEL,
       env.TRANSLATE_MODEL,
-      env.GROQ_MODEL,
       ...MODEL_FALLBACKS,
+      env.GROQ_MODEL,
     ].filter(Boolean);
 
     const parsed = await requestQuoteTranslation(

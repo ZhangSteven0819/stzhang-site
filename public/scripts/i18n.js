@@ -1,7 +1,7 @@
 (() => {
   const STORAGE_KEY = "stzhang-language";
   const DEFAULT_LANGUAGE = "en";
-  const TRANSLATION_CACHE_VERSION = "v3";
+  const TRANSLATION_CACHE_VERSION = "v4";
 
   const languageNames = {
     en: "English",
@@ -150,6 +150,8 @@
       body: JSON.stringify({
         targetLanguage: language,
         targetLanguageName: languageNames[language] || language,
+        pageTitle: document.title || "",
+        pagePath: window.location.pathname || "/",
         items,
       }),
     });

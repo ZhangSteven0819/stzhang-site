@@ -7,6 +7,29 @@ const MODEL_FALLBACKS = [
   "llama-3.3-70b-versatile",
 ];
 
+const TARGET_LOCALES = {
+  en: "English",
+  "zh-CN": "Simplified Chinese for mainland China",
+  "zh-TW": "Traditional Chinese for Taiwan and Hong Kong readers",
+  ja: "Japanese",
+  ko: "Korean",
+  es: "Spanish",
+  fr: "French",
+  de: "German",
+  pt: "Portuguese",
+  it: "Italian",
+  ru: "Russian",
+  ar: "Arabic",
+  hi: "Hindi",
+  bn: "Bengali",
+  ur: "Urdu",
+  id: "Indonesian",
+  vi: "Vietnamese",
+  th: "Thai",
+  tr: "Turkish",
+  nl: "Dutch",
+};
+
 function getJsonFromText(text) {
   const trimmed = text.trim();
 
@@ -24,28 +47,34 @@ function getJsonFromText(text) {
   }
 }
 
-async function requestTranslation(apiKey, models, systemPrompt, items) {
+async function requestTranslation(apiKey, models, systemPrompt, payload) {
   for (const model of models) {
+    const requestBody = {
+      model,
+      temperature: 0.1,
+      messages: [
+        {
+          role: "system",
+          content: systemPrompt,
+        },
+        {
+          role: "user",
+          content: JSON.stringify(payload),
+        },
+      ],
+    };
+
+    if (model.startsWith("openai/gpt-oss")) {
+      requestBody.reasoning_effort = "high";
+    }
+
     const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${apiKey}`,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        model,
-        temperature: 0.15,
-        messages: [
-          {
-            role: "system",
-            content: systemPrompt,
-          },
-          {
-            role: "user",
-            content: JSON.stringify({ items }),
-          },
-        ],
-      }),
+      body: JSON.stringify(requestBody),
     });
 
     if (!response.ok) {
@@ -62,7 +91,7 @@ async function requestTranslation(apiKey, models, systemPrompt, items) {
     const data = await response.json();
     const content = data.choices?.[0]?.message?.content || "";
     const parsed = getJsonFromText(content);
-    const translations = Array.isArray(parsed.translations) ? parsed.translations : items;
+    const translations = Array.isArray(parsed.translations) ? parsed.translations : payload.items;
 
     return { ok: true, translations };
   }
@@ -77,7 +106,9 @@ export async function onRequestPost(context) {
     const body = await request.json();
     const items = Array.isArray(body.items) ? body.items : [];
     const targetLanguage = body.targetLanguage || "en";
-    const targetLanguageName = body.targetLanguageName || targetLanguage;
+    const targetLanguageName = TARGET_LOCALES[targetLanguage] || body.targetLanguageName || targetLanguage;
+    const pageTitle = typeof body.pageTitle === "string" ? body.pageTitle : "";
+    const pagePath = typeof body.pagePath === "string" ? body.pagePath : "";
 
     if (!items.length) {
       return new Response(JSON.stringify({ translations: [] }), {
@@ -96,17 +127,22 @@ export async function onRequestPost(context) {
 
     const models = [
       env.TRANSLATE_MODEL,
-      env.GROQ_MODEL,
       ...MODEL_FALLBACKS,
+      env.GROQ_MODEL,
     ].filter(Boolean);
 
     const systemPrompt = `
-You are an elite literary website translator and transcreator.
+You are an elite native-speaking website localizer and literary editor.
+
+You are localizing a quiet personal blog called ST Zhang.
+Page path: ${pagePath || "/"}
+Page title: ${pageTitle || "ST Zhang"}
 
 Translate every item into ${targetLanguageName}.
-The result must read as if originally written by a fluent native writer, never like machine translation.
-Prefer idiomatic, elegant phrasing over literal word-by-word mapping.
-Preserve meaning, tone, punctuation, and line-level structure.
+Each item is a DOM text node from the same web page. Use the full list as context.
+The result must read as if originally written by a fluent native editor, never like machine translation.
+Prefer idiomatic, polished website copy over literal word-by-word mapping.
+Preserve meaning, tone, punctuation, and line-level structure unless a native phrasing needs a small adjustment.
 Do not summarize.
 Do not add commentary.
 
@@ -117,6 +153,12 @@ For mixed Chinese/English or English/Chinese text:
 - translate the natural-language parts,
 - keep names, product names, project names, code terms, URLs, and acronyms unchanged,
 - avoid over-translating technical terms.
+
+For all languages:
+- use natural menu labels, headings, card copy, and article microcopy,
+- avoid literal calques,
+- keep rhythm concise and readable,
+- translate as a native publication editor, not as a bilingual dictionary.
 
 For Chinese output specifically:
 - write smooth, publication-quality Chinese,
@@ -132,7 +174,13 @@ Return only valid JSON:
 The translations array must have exactly the same length and order as the input array.
 `;
 
-    const result = await requestTranslation(apiKey, models, systemPrompt, items);
+    const result = await requestTranslation(apiKey, models, systemPrompt, {
+      items,
+      pageTitle,
+      pagePath,
+      targetLanguage,
+      targetLanguageName,
+    });
 
     if (!result.ok) {
       return new Response(JSON.stringify({ translations: items, error: result.error }), {
