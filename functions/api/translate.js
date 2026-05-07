@@ -84,7 +84,7 @@ async function requestTranslation(apiKey, models, systemPrompt, payload) {
       },
       body: JSON.stringify({
         model,
-        temperature: 0.1,
+        temperature: 0.3,
         max_tokens: 4096,  // Limit output for faster response
         messages: [
           { role: "system", content: systemPrompt },
@@ -153,12 +153,19 @@ export async function onRequestPost(context) {
 
     // Simplified prompt for faster processing
     const systemPrompt = `
-You are a professional website translator localizing a personal blog called ST Zhang.
-Page: ${pagePath || "/"} | Title: ${pageTitle || "ST Zhang"}
-Translate to ${targetLanguageName}. Sound natural, like originally written.
-Keep unchanged: ST Zhang, GitHub, Astro, AI, Tech, Notes, URL, API, JavaScript, TypeScript.
-Return only: {"translations":["item1","item2",...]}
-`.trim();
+You are a NATIVE ${targetLanguageName} speaker translating a personal blog.
+Style: Casual, thoughtful, like a smart friend writing naturally. NOT robotic.
+Page context: ${pageTitle || "ST Zhang's blog"} (${pagePath || "/"})
+
+Rules:
+- Sound like the text was ORIGINALLY written in ${targetLanguageName}
+- Keep technical terms: ST Zhang, GitHub, Astro, AI, Tech, Notes, URL, API, JavaScript, TypeScript
+- Use casual ${targetLanguageName} expressions, not literal translation
+- For "writing": use "写东西" or "写字" in zh-CN, not "写作" (too formal)
+- For "personal": use "个人的" or just omit in zh-CN
+- End sentences naturally, match the original tone (casual/thoughtful)
+
+Return JSON: {"translations":["trans1","trans2",...]}
 
     const result = await requestTranslation(apiKey, models, systemPrompt, {
       items,
