@@ -1,7 +1,7 @@
 (() => {
   const STORAGE_KEY = "stzhang-language";
   const DEFAULT_LANGUAGE = "en";
-  const TRANSLATION_CACHE_VERSION = "v7";
+  const TRANSLATION_CACHE_VERSION = "v8";
   const CACHE_MIGRATION_KEY = "stzhang-translation-cache-version";
 
   // Translation state
@@ -145,7 +145,8 @@
     if (!text.trim()) return true;
     
     // Skip pure punctuation/symbols (but NOT code blocks - handled separately)
-    if (/^[\s\d.,:;!?()[]{}\'"`~@#$%^&*_+=/\\|-]+$/.test(text)) return true;
+    // Note: [] and {} must be escaped inside character class
+    if (/^[\s\d.,:;!?()\[\]\{\}'\"`~@#$%^&*_+=\/\\|-]+$/.test(text)) return true;
 
     return false;
   }
