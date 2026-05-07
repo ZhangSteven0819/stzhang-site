@@ -1,7 +1,8 @@
 (() => {
   const STORAGE_KEY = "stzhang-language";
   const DEFAULT_LANGUAGE = "en";
-  const TRANSLATION_CACHE_VERSION = "v4";
+  const TRANSLATION_CACHE_VERSION = "v5";
+  const CACHE_MIGRATION_KEY = "stzhang-translation-cache-version";
 
   const languageNames = {
     en: "English",
@@ -67,6 +68,20 @@
 
   function setSavedLanguage(language) {
     localStorage.setItem(STORAGE_KEY, language);
+  }
+
+  function clearOldTranslationCache() {
+    if (localStorage.getItem(CACHE_MIGRATION_KEY) === TRANSLATION_CACHE_VERSION) {
+      return;
+    }
+
+    Object.keys(localStorage).forEach((key) => {
+      if (key.startsWith("translation:") || key.startsWith("daily-quote:")) {
+        localStorage.removeItem(key);
+      }
+    });
+
+    localStorage.setItem(CACHE_MIGRATION_KEY, TRANSLATION_CACHE_VERSION);
   }
 
   function shouldSkipNode(node) {
@@ -254,6 +269,19 @@
     }
   }
 
+  function polishQuote(language, quote) {
+    if (language === "zh-CN" && quote.quote === "障碍是道路。") {
+      return {
+        ...quote,
+        label: "每日名言",
+        quote: "阻碍本身，就是道路。",
+        source: "沉思录",
+      };
+    }
+
+    return quote;
+  }
+
   async function loadDailyQuote(language) {
     const textEl = document.getElementById("daily-quote-text");
     const sourceEl = document.getElementById("daily-quote-source");
@@ -267,7 +295,7 @@
 
     if (cached) {
       try {
-        const quote = JSON.parse(cached);
+        const quote = polishQuote(language, JSON.parse(cached));
         labelEl.textContent = quote.label || "Daily quote";
         textEl.textContent = quote.quote;
         sourceEl.textContent = `${quote.author} · ${quote.source}`;
@@ -284,7 +312,7 @@
 
       if (!response.ok) throw new Error("Quote request failed");
 
-      const quote = await response.json();
+      const quote = polishQuote(language, await response.json());
 
       localStorage.setItem(cacheKey, JSON.stringify(quote));
 
@@ -308,6 +336,8 @@
   }
 
   document.addEventListener("DOMContentLoaded", () => {
+    clearOldTranslationCache();
+
     const language = getSavedLanguage();
     const selects = getLanguageSelects();
 
