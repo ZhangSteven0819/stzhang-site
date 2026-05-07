@@ -1,7 +1,7 @@
 (() => {
   const STORAGE_KEY = "stzhang-language";
   const DEFAULT_LANGUAGE = "en";
-  const TRANSLATION_CACHE_VERSION = "v10";
+  const TRANSLATION_CACHE_VERSION = "v11";
   const CACHE_MIGRATION_KEY = "stzhang-translation-cache-version";
   const MAX_CONTEXT_CHARS = 2200;
   const MAX_CHUNK_CHARS = 3200;
@@ -28,6 +28,29 @@
     th: "ไทย",
     tr: "Türkçe",
     nl: "Nederlands",
+  };
+
+  const translationTargetNames = {
+    en: "English",
+    "zh-CN": "Simplified Chinese for mainland China",
+    "zh-TW": "Traditional Chinese for Taiwan and Hong Kong readers",
+    ja: "Japanese",
+    ko: "Korean",
+    es: "Spanish",
+    fr: "French",
+    de: "German",
+    pt: "Portuguese",
+    it: "Italian",
+    ru: "Russian",
+    ar: "Arabic",
+    hi: "Hindi",
+    bn: "Bengali",
+    ur: "Urdu",
+    id: "Indonesian",
+    vi: "Vietnamese",
+    th: "Thai",
+    tr: "Turkish",
+    nl: "Dutch",
   };
 
   const languageLabelTranslations = {
@@ -492,7 +515,7 @@
       },
       body: JSON.stringify({
         targetLanguage: language,
-        targetLanguageName: languageNames[language] || language,
+        targetLanguageName: translationTargetNames[language] || language,
         pageTitle: document.title || "",
         pagePath: window.location.pathname || "/",
         contextItems,
@@ -708,7 +731,7 @@
 
     try {
       const response = await fetch(
-        `/api/daily-quote?lang=${encodeURIComponent(language)}&name=${encodeURIComponent(languageNames[language] || language)}`
+        `/api/daily-quote?lang=${encodeURIComponent(language)}&name=${encodeURIComponent(translationTargetNames[language] || language)}`
       );
 
       if (!response.ok) throw new Error("Quote request failed");
