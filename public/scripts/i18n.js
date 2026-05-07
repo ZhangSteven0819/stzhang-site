@@ -1,4 +1,5 @@
 (() => {
+  console.log('[i18n] Script loaded, version v8');
   const STORAGE_KEY = "stzhang-language";
   const DEFAULT_LANGUAGE = "en";
   const TRANSLATION_CACHE_VERSION = "v8";
@@ -240,6 +241,7 @@
   }
 
   async function translateBatch(language, items, contextItems) {
+    console.log('[i18n] translateBatch called with', items.length, 'items');
     try {
       const response = await fetch("/api/translate", {
         method: "POST",
@@ -275,6 +277,7 @@
   }
 
   async function translatePage(language) {
+    console.log('[i18n] translatePage called for', language);
     if (isTranslating) return;
     isTranslating = true;
 
@@ -472,10 +475,13 @@
   }
 
   document.addEventListener("DOMContentLoaded", () => {
+    console.log('[i18n] DOMContentLoaded fired');
     clearOldTranslationCache();
 
     const language = getSavedLanguage();
+    console.log('[i18n] Saved language:', language);
     const selects = getLanguageSelects();
+    console.log('[i18n] Found selects:', selects.length);
 
     syncLanguageSelects(language);
     syncLanguageLabel(language);
