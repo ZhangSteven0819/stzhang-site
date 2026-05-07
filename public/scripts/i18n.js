@@ -7,55 +7,55 @@
   var CACHE_VER = 'v13';
   var API = '/api/translate';
   
-  // Fixed phrase overrides - natural Chinese translations
+  // Fixed phrase overrides - natural translations
   var FIXED = {
     'zh-CN': {
-      'The Blog': '博客', // Keep simple
-      'Writing': '写东西', // More casual
-      'Topics': '话题',
-      'All writing': '所有文章',
-      'Notes and essays.': '随手记点东西',
+      'The Blog': '博客',
+      'Writing': '写作',
+      'Topics': '主题',
+      'All writing': '全部文章',
+      'Notes and essays.': '笔记与随笔',
       'Read essay': '阅读全文',
       'View all →': '查看全部 →',
       'Back home →': '返回首页 →',
       '← Back to writing': '← 返回写作',
-      'No posts yet.': '还没写东西',
-      'Writing, building, and thinking on the internet.': '在网上写点东西、折腾点项目、想想事情',
+      'No posts yet.': '暂无文章',
+      'Writing, building, and thinking on the internet.': '在互联网上写作、搭建与思考',
       'Personal blog': '个人博客',
-      'AI · Tech · Notes': 'AI · 科技 · 随手记',
-      '1 min read': '1 分钟',
+      'AI · Tech · Notes': 'AI · 科技 · 笔记',
+      '1 min read': '约 1 分钟',
       'Contents': '目录',
       'Daily quote': '每日一句',
-      'The obstacle is the way.': '障碍本身就是道路',
+      'The obstacle is the way.': '障碍即是道路',
       'Marcus Aurelius · Meditations': '马可·奥勒留《沉思录》',
-      'A running archive of writing about AI, technology, personal systems, internet culture, and small things I am trying to understand.': '收录了一些关于 AI、技术、个人系统、互联网文化，以及我正在琢磨的事情',
-      'Notes on models, tools, workflows, automation, and how AI changes the way people build and think.': '关于模型、工具、工作流、自动化的笔记，还有 AI 是怎么改变我们做事和思考方式的',
-      'Practical writing about software, web infrastructure, domains, deployment, and the small systems behind personal projects.': '关于软件、网络基础设施、域名、部署的实战记录，还有个人项目背后的那些小系统',
-      'Short observations, reading notes, decisions, and personal logs that do not need to become polished essays.': '一些零碎的想法、读书笔记、做决定的过程记录，不一定要写成完整的文章'
+      'A running archive of writing about AI, technology, personal systems, internet culture, and small things I am trying to understand.': '收录了一些关于 AI、技术、个人系统、互联网文化的文章，以及我正在探索的小事',
+      'Notes on models, tools, workflows, automation, and how AI changes the way people build and think.': '关于模型、工具、工作流、自动化的笔记，以及 AI 如何改变人们构建与思考的方式',
+      'Practical writing about software, web infrastructure, domains, deployment, and the small systems behind personal projects.': '关于软件、网络基础设施、域名、部署的实践记录，以及个人项目背后的小系统',
+      'Short observations, reading notes, decisions, and personal logs that do not need to become polished essays.': '简短的观察、阅读笔记、决策记录与个人日志，不一定写成完整的文章'
     },
     'zh-TW': {
       'The Blog': '部落格',
-      'Writing': '寫東西',
-      'Topics': '話題',
-      'All writing': '所有文章',
-      'Notes and essays.': '隨手記點東西',
+      'Writing': '寫作',
+      'Topics': '主題',
+      'All writing': '全部文章',
+      'Notes and essays.': '筆記與隨筆',
       'Read essay': '閱讀文章',
       'View all →': '查看全部 →',
       'Back home →': '返回首頁 →',
       '← Back to writing': '← 返回寫作',
-      'No posts yet.': '還沒寫東西',
-      'Writing, building, and thinking on the internet.': '在網路上寫點東西、折騰點專案、想想事情',
+      'No posts yet.': '暫無文章',
+      'Writing, building, and thinking on the internet.': '在網路上寫作、搭建與思考',
       'Personal blog': '個人部落格',
-      'AI · Tech · Notes': 'AI · 科技 · 隨手記',
-      '1 min read': '1 分鐘',
+      'AI · Tech · Notes': 'AI · 科技 · 筆記',
+      '1 min read': '約 1 分鐘',
       'Contents': '目錄',
       'Daily quote': '每日一句',
-      'The obstacle is the way.': '障礙本身就是道路',
+      'The obstacle is the way.': '障礙即是道路',
       'Marcus Aurelius · Meditations': '馬可·奧勒留《沉思錄》',
-      'A running archive of writing about AI, technology, personal systems, internet culture, and small things I am trying to understand.': '收錄了一些關於 AI、技術、個人系統、網路文化，以及我正在琢磨的事情',
-      'Notes on models, tools, workflows, automation, and how AI changes the way people build and think.': '關於模型、工具、工作流、自動化的筆記，還有 AI 是怎麼改變我們做事和思考方式的',
-      'Practical writing about software, web infrastructure, domains, deployment, and the small systems behind personal projects.': '關於軟體、網路基礎設施、網域、部署的實戰記錄，還有個人專案背後的那些小系統',
-      'Short observations, reading notes, decisions, and personal logs that do not need to become polished essays.': '一些零碎的想法、讀書筆記、做決定的過程記錄，不一定要寫成完整的文章'
+      'A running archive of writing about AI, technology, personal systems, internet culture, and small things I am trying to understand.': '收錄了一些關於 AI、技術、個人系統、網路文化的文章，以及我正在探索的小事',
+      'Notes on models, tools, workflows, automation, and how AI changes the way people build and think.': '關於模型、工具、工作流、自動化的筆記，以及 AI 如何改變人們建構與思考的方式',
+      'Practical writing about software, web infrastructure, domains, deployment, and the small systems behind personal projects.': '關於軟體、網路基礎設施、網域、部署的實踐記錄，以及個人專案背後的小系統',
+      'Short observations, reading notes, decisions, and personal logs that do not need to become polished essays.': '簡短的觀察、閱讀筆記、決策記錄與個人日誌，不一定寫成完整的文章'
     }
   };
 
