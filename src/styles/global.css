@@ -116,13 +116,12 @@ a {
 }
 
 .header-menu-button {
-  min-width: 138px;
+  width: 42px;
   height: 40px;
   display: inline-flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  padding: 0 10px 0 12px;
+  justify-content: center;
+  padding: 0;
   border: 1px solid var(--color-border);
   border-radius: 999px;
   background:
@@ -151,45 +150,18 @@ a {
   transform: translateY(-1px);
 }
 
-.menu-button-chip {
-  min-width: 38px;
-  height: 24px;
-  padding: 0 8px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.08);
-  color: var(--color-text-secondary);
-  font-family: "IBM Plex Sans", "Inter", system-ui, sans-serif;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.menu-button-text {
-  flex: 1;
-  text-align: left;
-  font-family: "IBM Plex Sans", "Inter", system-ui, sans-serif;
-  font-size: 14px;
-  font-weight: 500;
-}
-
 .menu-button-icon {
-  width: 22px;
-  height: 22px;
+  width: 18px;
+  height: 18px;
   display: inline-flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 4px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.06);
 }
 
 .menu-button-line {
-  width: 10px;
+  width: 16px;
   height: 1.5px;
   border-radius: 999px;
   background: currentColor;
@@ -197,11 +169,15 @@ a {
 }
 
 .header-menu-button.open .menu-button-line:first-child {
-  transform: translateY(2.75px) rotate(45deg);
+  transform: translateY(5.5px) rotate(45deg);
+}
+
+.header-menu-button.open .menu-button-line:nth-child(2) {
+  opacity: 0;
 }
 
 .header-menu-button.open .menu-button-line:last-child {
-  transform: translateY(-2.75px) rotate(-45deg);
+  transform: translateY(-5.5px) rotate(-45deg);
 }
 
 a:focus-visible,
@@ -1109,8 +1085,7 @@ a:focus-visible,
   }
 
   .header-menu-button {
-    min-width: 126px;
-    padding-right: 8px;
+    width: 42px;
   }
 }
 
@@ -1120,10 +1095,6 @@ a:focus-visible,
   }
 
   .header-menu-button {
-    min-width: 118px;
-  }
-
-  .menu-button-text {
-    font-size: 13px;
+    width: 40px;
   }
 }

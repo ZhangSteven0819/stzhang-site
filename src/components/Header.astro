@@ -15,9 +15,8 @@ const { current = "" } = Astro.props;
       aria-controls="header-dropdown-menu"
       data-no-translate
     >
-      <span class="menu-button-chip" id="menu-current-language">EN</span>
-      <span class="menu-button-text">Menu</span>
       <span class="menu-button-icon" aria-hidden="true">
+        <span class="menu-button-line"></span>
         <span class="menu-button-line"></span>
         <span class="menu-button-line"></span>
       </span>
@@ -82,21 +81,9 @@ const { current = "" } = Astro.props;
     const button = document.getElementById("header-menu-button");
     const menu = document.getElementById("header-dropdown-menu");
     const overlay = document.getElementById("menu-overlay");
-    const languageSelect = document.getElementById("language-select");
-    const languageChip = document.getElementById("menu-current-language");
 
     if (!button || !menu || !overlay) {
       return;
-    }
-
-    function setLanguageChip() {
-      if (!languageSelect || !languageChip) {
-        return;
-      }
-
-      const value = languageSelect.value || "en";
-      const shortCode = value.split("-")[0].toUpperCase();
-      languageChip.textContent = shortCode;
     }
 
     function closeMenu() {
@@ -136,10 +123,5 @@ const { current = "" } = Astro.props;
         closeMenu();
       }
     });
-
-    if (languageSelect) {
-      setLanguageChip();
-      languageSelect.addEventListener("change", setLanguageChip);
-    }
   });
 </script>
