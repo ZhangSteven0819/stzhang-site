@@ -196,7 +196,7 @@ a:focus-visible,
   justify-self: start;
 }
 
-.hero h1 {
+.hero-title {
   margin: 0;
   max-width: 720px;
   color: var(--color-text-primary);
@@ -206,19 +206,37 @@ a:focus-visible,
   letter-spacing: 0;
 }
 
-.hero-kicker {
+.hero-subtitle {
   margin: 24px 0 0;
   color: var(--color-text-secondary);
   font-size: 21px;
   font-weight: 400;
 }
 
-.hero-description {
+.hero-desc {
   max-width: 560px;
   margin: 14px 0 0;
   color: var(--color-text-muted);
   font-size: 19px;
   line-height: 1.68;
+}
+
+/* Parallax elements - JS controlled */
+.hero-tag,
+.hero-title,
+.hero-subtitle,
+.hero-desc {
+  will-change: transform;
+  transition: none;
+}
+
+.hero-tag {
+  display: inline-block;
+  margin-bottom: 12px;
+  color: var(--color-text-muted);
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .hero-aside {

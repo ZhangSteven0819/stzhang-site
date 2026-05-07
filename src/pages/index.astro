@@ -30,11 +30,10 @@ const showViewAll = posts.length > 6;
       <main class="page-main">
         <section class="hero">
           <div class="hero-copy">
-            <h1 data-no-translate>ST Zhang</h1>
-
-            <p class="hero-kicker">AI · Tech · Notes</p>
-
-            <p class="hero-description">
+            <span class="hero-tag">Personal blog</span>
+            <h1 class="hero-title" data-no-translate>ST Zhang</h1>
+            <p class="hero-subtitle">AI · Tech · Notes</p>
+            <p class="hero-desc">
               Writing, building, and thinking on the internet.
             </p>
           </div>
@@ -119,5 +118,60 @@ const showViewAll = posts.length > 6;
     </div>
 
     <script is:inline src="/scripts/i18n.js"></script>
+    
+    <script is:inline>
+      (function() {
+        // Only run on non-touch devices
+        const isTouchDevice = window.matchMedia('(hover: none)').matches;
+        if (isTouchDevice) return;
+
+        // Define parallax layers with their elements and factors
+        const layers = [
+          { el: document.querySelector('.hero-tag'), factor: 0.015 },
+          { el: document.querySelector('.hero-title'), factor: 0.030 },
+          { el: document.querySelector('.hero-subtitle'), factor: 0.020 },
+          { el: document.querySelector('.hero-desc'), factor: 0.012 },
+        ].filter(layer => layer.el !== null);
+
+        // Initialize current and target values for each layer
+        layers.forEach(layer => {
+          layer.currentX = 0;
+          layer.currentY = 0;
+          layer.targetX = 0;
+          layer.targetY = 0;
+        });
+
+        let mouseX = 0, mouseY = 0;
+
+        // Listen for mouse movement
+        document.addEventListener('mousemove', (e) => {
+          mouseX = e.clientX - window.innerWidth / 2;
+          mouseY = e.clientY - window.innerHeight / 2;
+          layers.forEach(layer => {
+            layer.targetX = mouseX * layer.factor;
+            layer.targetY = mouseY * layer.factor;
+          });
+        });
+
+        // Reset targets when mouse leaves window
+        document.addEventListener('mouseleave', () => {
+          layers.forEach(layer => {
+            layer.targetX = 0;
+            layer.targetY = 0;
+          });
+        });
+
+        // RAF loop with lerp
+        function tick() {
+          layers.forEach(layer => {
+            layer.currentX += (layer.targetX - layer.currentX) * 0.072;
+            layer.currentY += (layer.targetY - layer.currentY) * 0.072;
+            layer.el.style.transform = 'translate(' + layer.currentX.toFixed(2) + 'px, ' + layer.currentY.toFixed(2) + 'px)';
+          });
+          requestAnimationFrame(tick);
+        }
+        requestAnimationFrame(tick);
+      })();
+    </script>
   </body>
 </html>
