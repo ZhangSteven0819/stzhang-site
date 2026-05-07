@@ -1,8 +1,45 @@
 (() => {
   const STORAGE_KEY = "stzhang-language";
   const DEFAULT_LANGUAGE = "en";
-  const TRANSLATION_CACHE_VERSION = "v5";
+  const TRANSLATION_CACHE_VERSION = "v6";
   const CACHE_MIGRATION_KEY = "stzhang-translation-cache-version";
+
+  const phraseOverrides = {
+    "zh-CN": {
+      "The Blog": "博客",
+      "Writing": "写作",
+      "Topics": "主题",
+      "All writing": "全部文章",
+      "Notes and essays.": "笔记与随笔",
+      "Read essay": "阅读全文",
+      "View all →": "查看全部 →",
+      "Back home →": "返回首页 →",
+      "← Back to writing": "← 返回写作",
+      "No posts yet.": "还没有文章。",
+      "Writing, building, and thinking on the internet.": "在互联网上写作、构建与思考。",
+      "A running archive of writing about AI, technology, personal systems, internet culture, and small things I am trying to understand.": "这里收着一些关于 AI、技术、个人系统、互联网文化，以及那些我正在慢慢理解的小事的文字。",
+      "Notes on models, tools, workflows, automation, and how AI changes the way people build and think.": "关于模型、工具、工作流、自动化，以及 AI 如何改变人们构建与思考方式的笔记。",
+      "Practical writing about software, web infrastructure, domains, deployment, and the small systems behind personal projects.": "关于软件、网络基础设施、域名、部署，以及个人项目背后那些小系统的实践记录。",
+      "Short observations, reading notes, decisions, and personal logs that do not need to become polished essays.": "一些短观察、阅读笔记、决策记录和个人日志，不必都写成完整文章。",
+    },
+    "zh-TW": {
+      "The Blog": "部落格",
+      "Writing": "寫作",
+      "Topics": "主題",
+      "All writing": "全部文章",
+      "Notes and essays.": "筆記與隨筆",
+      "Read essay": "閱讀文章",
+      "View all →": "查看全部 →",
+      "Back home →": "返回首頁 →",
+      "← Back to writing": "← 返回寫作",
+      "No posts yet.": "還沒有文章。",
+      "Writing, building, and thinking on the internet.": "在網路上寫作、構建與思考。",
+      "A running archive of writing about AI, technology, personal systems, internet culture, and small things I am trying to understand.": "這裡收著一些關於 AI、技術、個人系統、網路文化，以及那些我正在慢慢理解的小事的文字。",
+      "Notes on models, tools, workflows, automation, and how AI changes the way people build and think.": "關於模型、工具、工作流、自動化，以及 AI 如何改變人們構建與思考方式的筆記。",
+      "Practical writing about software, web infrastructure, domains, deployment, and the small systems behind personal projects.": "關於軟體、網路基礎設施、網域、部署，以及個人專案背後那些小系統的實作記錄。",
+      "Short observations, reading notes, decisions, and personal logs that do not need to become polished essays.": "一些短觀察、閱讀筆記、決策記錄和個人日誌，不必都寫成完整文章。",
+    },
+  };
 
   const languageNames = {
     en: "English",
@@ -156,7 +193,11 @@
     return `${start}${translated}${end}`;
   }
 
-  async function translateBatch(language, items) {
+  function polishTranslation(language, source, translated) {
+    return phraseOverrides[language]?.[source.trim()] || translated;
+  }
+
+  async function translateBatch(language, items, contextItems) {
     const response = await fetch("/api/translate", {
       method: "POST",
       headers: {
@@ -167,6 +208,7 @@
         targetLanguageName: languageNames[language] || language,
         pageTitle: document.title || "",
         pagePath: window.location.pathname || "/",
+        contextItems,
         items,
       }),
     });
@@ -177,7 +219,11 @@
 
     const data = await response.json();
 
-    return Array.isArray(data.translations) ? data.translations : items;
+    const translations = Array.isArray(data.translations) ? data.translations : items;
+
+    return translations.map((translation, index) => (
+      polishTranslation(language, items[index] || "", translation)
+    ));
   }
 
   async function translatePage(language) {
@@ -192,10 +238,11 @@
       return;
     }
 
+    const pagePathHash = hashText(window.location.pathname || "/");
     const entries = nodes.map((node) => {
       const original = originalTextMap.get(node) || "";
       const trimmed = original.trim();
-      const cacheKey = `translation:${TRANSLATION_CACHE_VERSION}:${language}:${hashText(trimmed)}`;
+      const cacheKey = `translation:${TRANSLATION_CACHE_VERSION}:${language}:${pagePathHash}:${hashText(trimmed)}`;
 
       return {
         node,
@@ -218,15 +265,17 @@
       }
     });
 
-    for (let i = 0; i < missing.length; i += 12) {
-      const chunk = missing.slice(i, i + 12);
+    const contextItems = entries.map((entry) => entry.trimmed);
+
+    for (let i = 0; i < missing.length; i += 40) {
+      const chunk = missing.slice(i, i + 40);
       const items = chunk.map((entry) => entry.trimmed);
 
       try {
-        const translations = await translateBatch(language, items);
+        const translations = await translateBatch(language, items, contextItems);
 
         chunk.forEach((entry, index) => {
-          const translated = translations[index] || entry.trimmed;
+          const translated = polishTranslation(language, entry.trimmed, translations[index] || entry.trimmed);
           localStorage.setItem(entry.cacheKey, translated);
           cached.set(entry.cacheKey, translated);
         });

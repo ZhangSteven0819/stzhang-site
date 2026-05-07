@@ -109,6 +109,7 @@ export async function onRequestPost(context) {
     const targetLanguageName = TARGET_LOCALES[targetLanguage] || body.targetLanguageName || targetLanguage;
     const pageTitle = typeof body.pageTitle === "string" ? body.pageTitle : "";
     const pagePath = typeof body.pagePath === "string" ? body.pagePath : "";
+    const contextItems = Array.isArray(body.contextItems) ? body.contextItems : items;
 
     if (!items.length) {
       return new Response(JSON.stringify({ translations: [] }), {
@@ -139,7 +140,7 @@ Page path: ${pagePath || "/"}
 Page title: ${pageTitle || "ST Zhang"}
 
 Translate every item into ${targetLanguageName}.
-Each item is a DOM text node from the same web page. Use the full list as context.
+Each item is a DOM text node from the same web page. Use the full page context from the user message.
 The result must read as if originally written by a fluent native editor, never like machine translation.
 Prefer idiomatic, polished website copy over literal word-by-word mapping.
 Preserve meaning, tone, punctuation, and line-level structure unless a native phrasing needs a small adjustment.
@@ -163,8 +164,9 @@ For all languages:
 For Chinese output specifically:
 - write smooth, publication-quality Chinese,
 - avoid stiff calques and textbook phrasing,
-- prefer concise but natural wording,
+- prefer concise, natural wording with rhythm,
 - if a phrase has a widely used polished Chinese rendering, use it.
+- for personal blog copy, sound human and lightly editorial, not corporate.
 
 Return only valid JSON:
 {
@@ -180,6 +182,7 @@ The translations array must have exactly the same length and order as the input 
       pagePath,
       targetLanguage,
       targetLanguageName,
+      contextItems,
     });
 
     if (!result.ok) {
