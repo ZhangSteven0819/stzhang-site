@@ -4,8 +4,8 @@ const jsonHeaders = {
 
 // Use faster 8B model as primary, with larger models as fallback
 const MODEL_ORDER = [
-  "llama-3.1-8b-instant",  // Fastest, good for translation
-  "llama-3.3-70b-versatile",  // More accurate but slower
+  "llama-3.1-8b-instant",
+  "llama-3.3-70b-versatile",
 ];
 
 const TARGET_LOCALES = {
@@ -17,8 +17,8 @@ const TARGET_LOCALES = {
   es: "Spanish",
   fr: "French",
   de: "German",
-  pt: "Portuguese",
-  it: "Italian",
+  pt: "Português",
+  it: "Italiano",
   ru: "Russian",
   ar: "Arabic",
   hi: "Hindi",
@@ -85,7 +85,7 @@ async function requestTranslation(apiKey, models, systemPrompt, payload) {
       body: JSON.stringify({
         model,
         temperature: 0.3,
-        max_tokens: 4096,  // Limit output for faster response
+        max_tokens: 4096,
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: JSON.stringify(payload) },
@@ -130,7 +130,7 @@ export async function onRequestPost(context) {
       });
     }
 
-    // Check server-side cache first (huge speedup for repeated requests)
+    // Check server-side cache first
     const cacheKey = getCacheKey(items, targetLanguage);
     const cached = getCached(cacheKey);
     if (cached) {
@@ -151,21 +151,19 @@ export async function onRequestPost(context) {
     // Use fast model first, fall back to slower one
     const models = [env.TRANSLATE_MODEL || MODEL_ORDER[0], ...MODEL_ORDER.slice(1), env.GROQ_MODEL].filter(Boolean);
 
-    // Simplified prompt for faster processing
-    const systemPrompt = `
-You are a NATIVE ${targetLanguageName} speaker translating a personal blog.
-Style: Casual, thoughtful, like a smart friend writing naturally. NOT robotic.
-Page context: ${pageTitle || "ST Zhang's blog"} (${pagePath || "/"})
+    // Improved prompt for natural translation
+    const systemPrompt = `You are a skilled translator localizing a personal blog.
 
-Rules:
-- Sound like the text was ORIGINALLY written in ${targetLanguageName}
-- Keep technical terms: ST Zhang, GitHub, Astro, AI, Tech, Notes, URL, API, JavaScript, TypeScript
-- Use casual ${targetLanguageName} expressions, not literal translation
-- For "writing": use "写东西" or "写字" in zh-CN, not "写作" (too formal)
-- For "personal": use "个人的" or just omit in zh-CN
-- End sentences naturally, match the original tone (casual/thoughtful)
+Context: ${pageTitle || "ST Zhang's blog"} - a thoughtful personal site about technology and ideas.
 
-Return JSON: {"translations":["trans1","trans2",...]}
+Guidelines:
+- Translate naturally, like quality editorial content
+- Avoid robotic, literal translations
+- Use appropriate register: thoughtful, intellectual but approachable
+- Keep these terms unchanged: ST Zhang, GitHub, Astro, AI, Tech, Notes, URL, API, JavaScript, TypeScript
+- Make it read as if originally written in ${targetLanguageName}
+
+Return JSON with translations array.`;
 
     const result = await requestTranslation(apiKey, models, systemPrompt, {
       items,
@@ -212,7 +210,6 @@ export async function onRequestGet(context) {
     });
   }
   
-  // Test the API with a simple translation
   try {
     const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
       method: "POST",
