@@ -149,19 +149,52 @@
     window.requestAnimationFrame(translatePage);
   });
 
-  function setupMobileSidebar() {
-    // Sidebar functionality removed to avoid blocking scroll
-  }
-
   function fixPreviewIframe() {
-    // Fix preview iframe background
+    // Fix preview iframe background and styles
     const fixPreview = () => {
       document.querySelectorAll("iframe").forEach(iframe => {
         try {
           const doc = iframe.contentDocument || iframe.contentWindow?.document;
-          if (doc) {
-            doc.body.style.backgroundColor = "#141615";
+          if (doc && doc.body) {
+            // Apply dark theme to preview iframe
+            doc.body.style.backgroundColor = "#0d0f0f";
             doc.body.style.color = "#f0eeeb";
+            doc.body.style.fontFamily = '"Newsreader", "Noto Serif SC", Georgia, serif';
+            doc.body.style.margin = "0";
+            doc.body.style.padding = "48px 24px";
+            
+            // Style headings
+            doc.querySelectorAll('h1, h2, h3, h4, h5, h6').forEach(h => {
+              h.style.color = '#f0eeeb';
+              h.style.fontWeight = '400';
+            });
+            
+            // Style paragraphs
+            doc.querySelectorAll('p').forEach(p => {
+              p.style.color = '#f0eeeb';
+              p.style.lineHeight = '1.8';
+              p.style.fontSize = '18px';
+            });
+            
+            // Style links
+            doc.querySelectorAll('a').forEach(a => {
+              a.style.color = '#f0eeeb';
+            });
+            
+            // Style code
+            doc.querySelectorAll('code, pre').forEach(code => {
+              code.style.backgroundColor = '#141615';
+              code.style.color = '#f0eeeb';
+              code.style.padding = '2px 6px';
+              code.style.borderRadius = '4px';
+            });
+            
+            // Style blockquotes
+            doc.querySelectorAll('blockquote').forEach(bq => {
+              bq.style.borderLeft = '3px solid #2b302e';
+              bq.style.paddingLeft = '20px';
+              bq.style.color = '#aaa6a1';
+            });
           }
         } catch (e) {
           // Cross-origin iframe, skip
@@ -169,14 +202,22 @@
       });
     };
 
-    // Run periodically
-    setInterval(fixPreview, 2000);
-    document.addEventListener("DOMContentLoaded", fixPreview);
+    // Run on DOM changes
+    const iframeObserver = new MutationObserver(() => {
+      window.requestAnimationFrame(fixPreview);
+    });
+    
+    document.addEventListener("DOMContentLoaded", () => {
+      fixPreview();
+      iframeObserver.observe(document.body, { childList: true, subtree: true });
+    });
+    
+    // Also run periodically as backup
+    setInterval(fixPreview, 1500);
   }
 
   document.addEventListener("DOMContentLoaded", () => {
     translatePage();
-    setupMobileSidebar();
     fixPreviewIframe();
     observer.observe(document.body, {
       childList: true,
