@@ -1,7 +1,7 @@
 (() => {
   const STORAGE_KEY = "stzhang-language";
   const DEFAULT_LANGUAGE = "en";
-  const TRANSLATION_CACHE_VERSION = "v2";
+  const TRANSLATION_CACHE_VERSION = "v3";
 
   const languageNames = {
     en: "English",
