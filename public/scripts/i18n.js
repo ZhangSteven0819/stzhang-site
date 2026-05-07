@@ -1,7 +1,7 @@
 (() => {
   const STORAGE_KEY = "stzhang-language";
   const DEFAULT_LANGUAGE = "en";
-  const TRANSLATION_CACHE_VERSION = "v9";
+  const TRANSLATION_CACHE_VERSION = "v10";
   const CACHE_MIGRATION_KEY = "stzhang-translation-cache-version";
   const MAX_CONTEXT_CHARS = 2200;
   const MAX_CHUNK_CHARS = 3200;
@@ -423,6 +423,42 @@
     return context;
   }
 
+  function buildFocusedContextItems(entry) {
+    const context = [];
+    const seen = new Set();
+
+    function add(value) {
+      const text = String(value || "").trim();
+
+      if (!text || seen.has(text) || text === entry.trimmed) {
+        return;
+      }
+
+      const snippet =
+        text.length > MAX_CONTEXT_ITEM_CHARS
+          ? `${text.slice(0, MAX_CONTEXT_ITEM_CHARS - 1)}…`
+          : text;
+
+      context.push(snippet);
+      seen.add(text);
+    }
+
+    add(document.querySelector(".article-header h1")?.textContent);
+    add(document.querySelector(".article-description")?.textContent);
+
+    document
+      .querySelectorAll(".article-content h2, .article-content h3")
+      .forEach((heading) => {
+        if (context.length < 8) {
+          add(heading.textContent);
+        }
+      });
+
+    add(document.title.replace(/\s*[·||-]\s*ST Zhang\s*$/i, "").trim());
+
+    return context;
+  }
+
   function chunkEntries(entries) {
     const chunks = [];
     let current = [];
@@ -489,7 +525,9 @@
     const items = chunk.map((entry) => entry.trimmed);
 
     try {
-      const translations = await translateBatch(language, items, contextItems);
+      const effectiveContextItems =
+        chunk.length === 1 ? buildFocusedContextItems(chunk[0]) : contextItems;
+      const translations = await translateBatch(language, items, effectiveContextItems);
       const unresolved = [];
 
       chunk.forEach((entry, index) => {
