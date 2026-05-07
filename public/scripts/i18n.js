@@ -1,6 +1,7 @@
 (() => {
   const STORAGE_KEY = "stzhang-language";
   const DEFAULT_LANGUAGE = "en";
+  const TRANSLATION_CACHE_VERSION = "v2";
 
   const languageNames = {
     en: "English",
@@ -177,7 +178,7 @@
     const entries = nodes.map((node) => {
       const original = originalTextMap.get(node) || "";
       const trimmed = original.trim();
-      const cacheKey = `translation:${language}:${hashText(trimmed)}`;
+      const cacheKey = `translation:${TRANSLATION_CACHE_VERSION}:${language}:${hashText(trimmed)}`;
 
       return {
         node,
@@ -259,7 +260,7 @@
     if (!textEl || !sourceEl || !labelEl) return;
 
     const today = new Date().toISOString().slice(0, 10);
-    const cacheKey = `daily-quote:${today}:${language}`;
+    const cacheKey = `daily-quote:${TRANSLATION_CACHE_VERSION}:${today}:${language}`;
     const cached = localStorage.getItem(cacheKey);
 
     if (cached) {
