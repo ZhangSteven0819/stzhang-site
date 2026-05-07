@@ -37,7 +37,8 @@ export async function onRequestPost(context) {
     const apiKey = env.GROQ_API_KEY;
 
     if (!apiKey) {
-      return new Response(JSON.stringify({ translations: items }), {
+      console.log("GROQ_API_KEY not found in environment");
+      return new Response(JSON.stringify({ translations: items, error: "GROQ_API_KEY not configured" }), {
         headers: jsonHeaders,
       });
     }
@@ -92,7 +93,9 @@ The translations array must have exactly the same length and order as the input 
     });
 
     if (!response.ok) {
-      return new Response(JSON.stringify({ translations: items }), {
+      const errorText = await response.text();
+      console.log("Groq API error:", response.status, errorText);
+      return new Response(JSON.stringify({ translations: items, error: `Groq API error: ${response.status}` }), {
         headers: jsonHeaders,
       });
     }
@@ -108,15 +111,59 @@ The translations array must have exactly the same length and order as the input 
       headers: jsonHeaders,
     });
   } catch (error) {
+    console.log("Translation error:", error.message);
     return new Response(
       JSON.stringify({
         translations: [],
-        error: "Translation failed",
+        error: "Translation failed: " + error.message,
       }),
       {
         status: 200,
         headers: jsonHeaders,
       }
     );
+  }
+}
+
+export async function onRequestGet(context) {
+  const { env } = context;
+  const apiKey = env.GROQ_API_KEY;
+  
+  if (!apiKey) {
+    return new Response(JSON.stringify({ status: "error", message: "GROQ_API_KEY not configured" }), {
+      headers: jsonHeaders,
+    });
+  }
+  
+  // Test the API with a simple translation
+  try {
+    const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "llama-3.3-70b-versatile",
+        messages: [
+          { role: "user", content: "Translate 'Hello World' to Chinese. Return JSON: {\"translation\": \"...\"}" }
+        ],
+      }),
+    });
+    
+    if (response.ok) {
+      return new Response(JSON.stringify({ status: "ok", message: "GROQ_API_KEY is working" }), {
+        headers: jsonHeaders,
+      });
+    } else {
+      const error = await response.text();
+      return new Response(JSON.stringify({ status: "error", message: "GROQ API error: " + response.status, detail: error }), {
+        headers: jsonHeaders,
+      });
+    }
+  } catch (error) {
+    return new Response(JSON.stringify({ status: "error", message: error.message }), {
+      headers: jsonHeaders,
+    });
   }
 }
