@@ -198,32 +198,38 @@
   }
 
   async function translateBatch(language, items, contextItems) {
-    const response = await fetch("/api/translate", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        targetLanguage: language,
-        targetLanguageName: languageNames[language] || language,
-        pageTitle: document.title || "",
-        pagePath: window.location.pathname || "/",
-        contextItems,
-        items,
-      }),
-    });
+    try {
+      const response = await fetch("/api/translate", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          targetLanguage: language,
+          targetLanguageName: languageNames[language] || language,
+          pageTitle: document.title || "",
+          pagePath: window.location.pathname || "/",
+          contextItems,
+          items,
+        }),
+      });
 
-    if (!response.ok) {
-      throw new Error("Translation request failed");
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      const translations = Array.isArray(data.translations) ? data.translations : items;
+
+      return translations.map((translation, index) => (
+        polishTranslation(language, items[index] || "", translation)
+      ));
+    } catch (error) {
+      console.error("Translation batch failed:", error);
+      // Return original items on failure
+      return items;
     }
-
-    const data = await response.json();
-
-    const translations = Array.isArray(data.translations) ? data.translations : items;
-
-    return translations.map((translation, index) => (
-      polishTranslation(language, items[index] || "", translation)
-    ));
   }
 
   async function translatePage(language) {
@@ -267,25 +273,42 @@
 
     const contextItems = entries.map((entry) => entry.trimmed);
 
-    for (let i = 0; i < missing.length; i += 40) {
-      const chunk = missing.slice(i, i + 40);
+    // Process in smaller batches for more reliable translation
+    const BATCH_SIZE = 30;
+    for (let i = 0; i < missing.length; i += BATCH_SIZE) {
+      const chunk = missing.slice(i, i + BATCH_SIZE);
       const items = chunk.map((entry) => entry.trimmed);
 
-      try {
-        const translations = await translateBatch(language, items, contextItems);
+      let translations = null;
+      let retries = 0;
+      const MAX_RETRIES = 2;
 
-        chunk.forEach((entry, index) => {
-          const translated = polishTranslation(language, entry.trimmed, translations[index] || entry.trimmed);
-          localStorage.setItem(entry.cacheKey, translated);
-          cached.set(entry.cacheKey, translated);
-        });
-      } catch (error) {
-        chunk.forEach((entry) => {
-          cached.set(entry.cacheKey, entry.trimmed);
-        });
+      // Retry logic for failed batches
+      while (retries <= MAX_RETRIES && !translations) {
+        try {
+          translations = await translateBatch(language, items, contextItems);
+        } catch (error) {
+          retries++;
+          if (retries > MAX_RETRIES) {
+            console.error("Translation batch failed after retries:", error);
+            translations = items; // Fall back to original
+          } else {
+            // Wait before retry
+            await new Promise(r => setTimeout(r, 500 * retries));
+          }
+        }
       }
+
+      chunk.forEach((entry, index) => {
+        const translated = translations && translations[index] 
+          ? polishTranslation(language, entry.trimmed, translations[index])
+          : entry.trimmed;
+        localStorage.setItem(entry.cacheKey, translated);
+        cached.set(entry.cacheKey, translated);
+      });
     }
 
+    // Apply translations to all entries
     entries.forEach((entry) => {
       const translated = cached.get(entry.cacheKey) || entry.trimmed;
       entry.node.nodeValue = preserveWhitespace(entry.original, translated);
