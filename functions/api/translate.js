@@ -8,6 +8,12 @@ const MODEL_FALLBACKS = [
   "openai/gpt-oss-120b",
 ];
 
+const ARTICLE_MODEL_FALLBACKS = [
+  "openai/gpt-oss-120b",
+  "llama-3.3-70b-versatile",
+  "llama-3.1-8b-instant",
+];
+
 const TARGET_LOCALES = {
   en: "English",
   "zh-CN": "Simplified Chinese for mainland China",
@@ -173,6 +179,7 @@ export async function onRequestPost(context) {
   try {
     const body = await request.json();
     const items = Array.isArray(body.items) ? body.items : [];
+    const contentType = body.contentType === "article" ? "article" : "page";
     const targetLanguage = body.targetLanguage || "en";
     const targetLanguageName = TARGET_LOCALES[targetLanguage] || body.targetLanguageName || targetLanguage;
     const pageTitle = typeof body.pageTitle === "string" ? body.pageTitle : "";
@@ -194,13 +201,47 @@ export async function onRequestPost(context) {
       });
     }
 
-    const models = [
-      env.TRANSLATE_MODEL,
-      ...MODEL_FALLBACKS,
-      env.GROQ_MODEL,
-    ].filter(Boolean);
+    const baseModels =
+      contentType === "article"
+        ? [env.ARTICLE_TRANSLATE_MODEL, env.TRANSLATE_MODEL, ...ARTICLE_MODEL_FALLBACKS, env.GROQ_MODEL]
+        : [env.TRANSLATE_MODEL, ...MODEL_FALLBACKS, env.GROQ_MODEL];
+    const models = [...new Set(baseModels.filter(Boolean))];
 
-    const systemPrompt = `
+    const systemPrompt = contentType === "article" ? `
+You are an elite native-speaking literary translator and editor.
+
+You are localizing an article from a personal blog called ST Zhang.
+Page path: ${pagePath || "/"}
+Page title: ${pageTitle || "ST Zhang"}
+
+Translate every item into ${targetLanguageName}.
+Each item is either article microcopy, a heading, or article body text from the same page.
+Write like a fluent native editor. The output must feel like original writing in the target language.
+Do not leave English unchanged unless it is a proper noun, product name, acronym, URL, or code term.
+Translate short headings too. Examples:
+- "Introduction" should become a natural heading in the target language.
+- "Looking Ahead" should become a natural heading in the target language.
+- "Contents" should become a natural table-of-contents label in the target language.
+Translate summaries and body paragraphs fully. Keep people, school, product, and place names when appropriate.
+Never return an empty string for a non-empty input.
+Do not summarize. Do not explain.
+
+Preserve these exact terms only when they are names or technical tokens:
+ST Zhang, ZhangSteven0819, GitHub, Astro, Decap CMS, Cloudflare Pages, Groq, AI, Tech, Notes, JavaScript, TypeScript, HTML, CSS, API, URL, Galileo Academy of Science and Technology, MUNI, BART, UCSF, WeChat.
+
+For Chinese output specifically:
+- write smooth, publication-quality Chinese,
+- prefer natural article prose over literal mapping,
+- keep headings concise and readable,
+- when a one-word English heading appears, translate it as a real Chinese heading, not as English.
+
+Return only valid JSON:
+{
+  "translations": ["..."]
+}
+
+The translations array must have exactly the same length and order as the input array.
+` : `
 You are an elite native-speaking website localizer and literary editor.
 
 You are localizing a quiet personal blog called ST Zhang.
@@ -248,6 +289,7 @@ The translations array must have exactly the same length and order as the input 
 
     const result = await requestTranslation(apiKey, models, systemPrompt, {
       items,
+      contentType,
       pageTitle,
       pagePath,
       targetLanguage,

@@ -533,6 +533,7 @@
       body: JSON.stringify({
         targetLanguage: language,
         targetLanguageName: translationTargetNames[language] || language,
+        contentType: document.querySelector(".article-page") ? "article" : "page",
         pageTitle: document.title || "",
         pagePath: window.location.pathname || "/",
         contextItems,
