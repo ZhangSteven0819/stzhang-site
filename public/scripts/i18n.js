@@ -1,271 +1,641 @@
-// ST Zhang i18n Translation Script
-(function() {
-  'use strict';
-  
-  var STORAGE_KEY = 'stzhang-language';
-  var DEFAULT_LANG = 'en';
-  var CACHE_VER = 'v13';
-  var API = '/api/translate';
-  
-  // Fixed phrase overrides - natural translations
-  var FIXED = {
-    'zh-CN': {
-      'The Blog': '博客',
-      'Writing': '写作',
-      'Topics': '主题',
-      'All writing': '全部文章',
-      'Notes and essays.': '笔记与随笔',
-      'Read essay': '阅读全文',
-      'View all →': '查看全部 →',
-      'Back home →': '返回首页 →',
-      '← Back to writing': '← 返回写作',
-      'No posts yet.': '暂无文章',
-      'Writing, building, and thinking on the internet.': '在互联网上写作、搭建与思考',
-      'Personal blog': '个人博客',
-      'AI · Tech · Notes': 'AI · 科技 · 笔记',
-      '1 min read': '约 1 分钟',
-      'Contents': '目录',
-      'Daily quote': '每日一句',
-      'The obstacle is the way.': '障碍即是道路',
-      'Marcus Aurelius · Meditations': '马可·奥勒留《沉思录》',
-      'A running archive of writing about AI, technology, personal systems, internet culture, and small things I am trying to understand.': '收录了一些关于 AI、技术、个人系统、互联网文化的文章，以及我正在探索的小事',
-      'Notes on models, tools, workflows, automation, and how AI changes the way people build and think.': '关于模型、工具、工作流、自动化的笔记，以及 AI 如何改变人们构建与思考的方式',
-      'Practical writing about software, web infrastructure, domains, deployment, and the small systems behind personal projects.': '关于软件、网络基础设施、域名、部署的实践记录，以及个人项目背后的小系统',
-      'Short observations, reading notes, decisions, and personal logs that do not need to become polished essays.': '简短的观察、阅读笔记、决策记录与个人日志，不一定写成完整的文章'
+(() => {
+  const STORAGE_KEY = "stzhang-language";
+  const DEFAULT_LANGUAGE = "en";
+  const TRANSLATION_CACHE_VERSION = "v7";
+  const CACHE_MIGRATION_KEY = "stzhang-translation-cache-version";
+  const MAX_CONTEXT_CHARS = 8000;
+  const MAX_CHUNK_CHARS = 3200;
+
+  const languageNames = {
+    en: "English",
+    "zh-CN": "简体中文",
+    "zh-TW": "繁體中文",
+    ja: "日本語",
+    ko: "한국어",
+    es: "Español",
+    fr: "Français",
+    de: "Deutsch",
+    pt: "Português",
+    it: "Italiano",
+    ru: "Русский",
+    ar: "العربية",
+    hi: "हिन्दी",
+    bn: "বাংলা",
+    ur: "اردو",
+    id: "Bahasa Indonesia",
+    vi: "Tiếng Việt",
+    th: "ไทย",
+    tr: "Türkçe",
+    nl: "Nederlands",
+  };
+
+  const languageLabelTranslations = {
+    en: "Language",
+    "zh-CN": "语言",
+    "zh-TW": "語言",
+    ja: "言語",
+    ko: "언어",
+    es: "Idioma",
+    fr: "Langue",
+    de: "Sprache",
+    pt: "Idioma",
+    it: "Lingua",
+    ru: "Язык",
+    ar: "اللغة",
+    hi: "भाषा",
+    bn: "ভাষা",
+    ur: "زبان",
+    id: "Bahasa",
+    vi: "Ngôn ngữ",
+    th: "ภาษา",
+    tr: "Dil",
+    nl: "Taal",
+  };
+
+  const phraseOverrides = {
+    "zh-CN": {
+      "The Blog": "博客",
+      Writing: "写作",
+      Topics: "主题",
+      "All writing": "全部文章",
+      "Notes and essays.": "笔记与随笔。",
+      "Read essay": "阅读全文",
+      "View all →": "查看全部 →",
+      "Back home →": "返回首页 →",
+      "← Back to writing": "← 返回写作",
+      "No posts yet.": "还没有文章。",
+      Contents: "目录",
+      "Daily quote": "每日名言",
+      "Personal blog": "个人博客",
+      "Writing, building, and thinking on the internet.": "在互联网上写作、搭建与思考。",
+      "Notes on models, tools, workflows, automation, and how AI changes the way people build and think.":
+        "关于模型、工具、工作流、自动化，以及 AI 如何改变人们构建与思考方式的笔记。",
+      "Practical writing about software, web infrastructure, domains, deployment, and the small systems behind personal projects.":
+        "关于软件、网络基础设施、域名、部署，以及个人项目背后那些小系统的实践记录。",
+      "Short observations, reading notes, decisions, and personal logs that do not need to become polished essays.":
+        "短观察、阅读笔记、决策记录和个人日志，不必每一篇都写成完整文章。",
     },
-    'zh-TW': {
-      'The Blog': '部落格',
-      'Writing': '寫作',
-      'Topics': '主題',
-      'All writing': '全部文章',
-      'Notes and essays.': '筆記與隨筆',
-      'Read essay': '閱讀文章',
-      'View all →': '查看全部 →',
-      'Back home →': '返回首頁 →',
-      '← Back to writing': '← 返回寫作',
-      'No posts yet.': '暫無文章',
-      'Writing, building, and thinking on the internet.': '在網路上寫作、搭建與思考',
-      'Personal blog': '個人部落格',
-      'AI · Tech · Notes': 'AI · 科技 · 筆記',
-      '1 min read': '約 1 分鐘',
-      'Contents': '目錄',
-      'Daily quote': '每日一句',
-      'The obstacle is the way.': '障礙即是道路',
-      'Marcus Aurelius · Meditations': '馬可·奧勒留《沉思錄》',
-      'A running archive of writing about AI, technology, personal systems, internet culture, and small things I am trying to understand.': '收錄了一些關於 AI、技術、個人系統、網路文化的文章，以及我正在探索的小事',
-      'Notes on models, tools, workflows, automation, and how AI changes the way people build and think.': '關於模型、工具、工作流、自動化的筆記，以及 AI 如何改變人們建構與思考的方式',
-      'Practical writing about software, web infrastructure, domains, deployment, and the small systems behind personal projects.': '關於軟體、網路基礎設施、網域、部署的實踐記錄，以及個人專案背後的小系統',
-      'Short observations, reading notes, decisions, and personal logs that do not need to become polished essays.': '簡短的觀察、閱讀筆記、決策記錄與個人日誌，不一定寫成完整的文章'
+    "zh-TW": {
+      "The Blog": "部落格",
+      Writing: "寫作",
+      Topics: "主題",
+      "All writing": "全部文章",
+      "Notes and essays.": "筆記與隨筆。",
+      "Read essay": "閱讀全文",
+      "View all →": "查看全部 →",
+      "Back home →": "返回首頁 →",
+      "← Back to writing": "← 返回寫作",
+      "No posts yet.": "還沒有文章。",
+      Contents: "目錄",
+      "Daily quote": "每日名言",
+      "Personal blog": "個人部落格",
+      "Writing, building, and thinking on the internet.": "在網路上寫作、搭建與思考。",
+      "Notes on models, tools, workflows, automation, and how AI changes the way people build and think.":
+        "關於模型、工具、工作流、自動化，以及 AI 如何改變人們建構與思考方式的筆記。",
+      "Practical writing about software, web infrastructure, domains, deployment, and the small systems behind personal projects.":
+        "關於軟體、網路基礎設施、網域、部署，以及個人專案背後那些小系統的實作記錄。",
+      "Short observations, reading notes, decisions, and personal logs that do not need to become polished essays.":
+        "短觀察、閱讀筆記、決策記錄和個人日誌，不必每一篇都寫成完整文章。",
+    },
+  };
+
+  const curatedQuotes = {
+    "zh-CN": {
+      "The obstacle is the way.": {
+        label: "每日名言",
+        quote: "阻碍本身，就是道路。",
+        author: "Marcus Aurelius",
+        source: "沉思录",
+      },
+      "No man is free who is not master of himself.": {
+        label: "每日名言",
+        quote: "不能掌控自己的人，谈不上真正自由。",
+        author: "Epictetus",
+        source: "论说集",
+      },
+      "Luck is what happens when preparation meets opportunity.": {
+        label: "每日名言",
+        quote: "所谓运气，不过是准备恰好遇见了机会。",
+        author: "Seneca",
+        source: "道德书简",
+      },
+      "The journey of a thousand miles begins with a single step.": {
+        label: "每日名言",
+        quote: "千里之行，始于足下。",
+        author: "Laozi",
+        source: "道德经",
+      },
+      "He who has a why to live can bear almost any how.": {
+        label: "每日名言",
+        quote: "知道为何而活的人，几乎能承受任何一种活法。",
+        author: "Friedrich Nietzsche",
+        source: "偶像的黄昏",
+      },
+      "What you do every day matters more than what you do once in a while.": {
+        label: "每日名言",
+        quote: "真正塑造你的，从来不是偶尔做了什么，而是每天都在做什么。",
+        author: "Gretchen Rubin",
+        source: "幸福计划",
+      },
+      "Act as if what you do makes a difference. It does.": {
+        label: "每日名言",
+        quote: "就当你的行动真的会改变什么那样去做。它确实会。",
+        author: "William James",
+        source: "文集",
+      },
+      "The best way out is always through.": {
+        label: "每日名言",
+        quote: "最好的出路，往往就是穿过去。",
+        author: "Robert Frost",
+        source: "致仆人们",
+      },
+      "Do not wait to strike till the iron is hot; make it hot by striking.": {
+        label: "每日名言",
+        quote: "不要等铁热了才锤，而要在锤打中把它打热。",
+        author: "William Butler Yeats",
+        source: "佚名引述",
+      },
+      "Simplicity is the ultimate sophistication.": {
+        label: "每日名言",
+        quote: "简洁，是复杂抵达极致后的优雅。",
+        author: "Leonardo da Vinci",
+        source: "手稿摘引",
+      },
+    },
+    "zh-TW": {
+      "The obstacle is the way.": {
+        label: "每日名言",
+        quote: "阻礙本身，就是道路。",
+        author: "Marcus Aurelius",
+        source: "沉思錄",
+      },
+      "No man is free who is not master of himself.": {
+        label: "每日名言",
+        quote: "不能掌控自己的人，談不上真正自由。",
+        author: "Epictetus",
+        source: "論說集",
+      },
+      "Luck is what happens when preparation meets opportunity.": {
+        label: "每日名言",
+        quote: "所謂運氣，不過是準備恰好遇見了機會。",
+        author: "Seneca",
+        source: "道德書簡",
+      },
+      "The journey of a thousand miles begins with a single step.": {
+        label: "每日名言",
+        quote: "千里之行，始於足下。",
+        author: "Laozi",
+        source: "道德經",
+      },
+      "He who has a why to live can bear almost any how.": {
+        label: "每日名言",
+        quote: "知道為何而活的人，幾乎能承受任何一種活法。",
+        author: "Friedrich Nietzsche",
+        source: "偶像的黃昏",
+      },
+      "What you do every day matters more than what you do once in a while.": {
+        label: "每日名言",
+        quote: "真正塑造你的，從來不是偶爾做了什麼，而是每天都在做什麼。",
+        author: "Gretchen Rubin",
+        source: "幸福計畫",
+      },
+      "Act as if what you do makes a difference. It does.": {
+        label: "每日名言",
+        quote: "就當你的行動真的會改變什麼那樣去做。它確實會。",
+        author: "William James",
+        source: "文集",
+      },
+      "The best way out is always through.": {
+        label: "每日名言",
+        quote: "最好的出路，往往就是穿過去。",
+        author: "Robert Frost",
+        source: "致僕人們",
+      },
+      "Do not wait to strike till the iron is hot; make it hot by striking.": {
+        label: "每日名言",
+        quote: "不要等鐵熱了才敲，而要在敲打中把它打熱。",
+        author: "William Butler Yeats",
+        source: "佚名引述",
+      },
+      "Simplicity is the ultimate sophistication.": {
+        label: "每日名言",
+        quote: "簡潔，是複雜抵達極致後的優雅。",
+        author: "Leonardo da Vinci",
+        source: "手稿摘引",
+      },
+    },
+  };
+
+  const originalTextMap = new WeakMap();
+
+  function hashText(value) {
+    let hash = 5381;
+
+    for (let i = 0; i < value.length; i += 1) {
+      hash = (hash * 33) ^ value.charCodeAt(i);
     }
-  };
 
-  var LANG_NAMES = {
-    en: 'English', 'zh-CN': '简体中文', 'zh-TW': '繁體中文',
-    ja: '日本語', ko: '한국어', es: 'Español', fr: 'Français',
-    de: 'Deutsch', pt: 'Português', it: 'Italiano', ru: 'Русский',
-    ar: 'العربية', hi: 'हिन्दी', bn: 'বাংলা', ur: 'اردو',
-    id: 'Bahasa Indonesia', vi: 'Tiếng Việt', th: 'ไทย',
-    tr: 'Türkçe', nl: 'Nederlands'
-  };
+    return (hash >>> 0).toString(36);
+  }
 
-  var LABEL_NAMES = {
-    en: 'Language', 'zh-CN': '语言', 'zh-TW': '語言',
-    ja: '言語', ko: '언어', es: 'Idioma', fr: 'Langue',
-    de: 'Sprache', pt: 'Idioma', it: 'Lingua', ru: 'Язык',
-    ar: 'اللغة', hi: 'भाषा', bn: 'ভাষা', ur: 'زبان',
-    id: 'Bahasa', vi: 'Ngôn ngữ', th: 'ภาษา',
-    tr: 'Dil', nl: 'Taal'
-  };
+  function getSavedLanguage() {
+    return localStorage.getItem(STORAGE_KEY) || DEFAULT_LANGUAGE;
+  }
 
-  function hash(s) {
-    var h = 0x811c9dc5;
-    for (var i = 0; i < s.length; i++) {
-      h ^= s.charCodeAt(i);
-      h = (h * 0x01000193) >>> 0;
+  function setSavedLanguage(language) {
+    localStorage.setItem(STORAGE_KEY, language);
+  }
+
+  function clearOldTranslationCache() {
+    if (localStorage.getItem(CACHE_MIGRATION_KEY) === TRANSLATION_CACHE_VERSION) {
+      return;
     }
-    return h.toString(36);
+
+    Object.keys(localStorage).forEach((key) => {
+      if (key.startsWith("translation:") || key.startsWith("daily-quote:")) {
+        localStorage.removeItem(key);
+      }
+    });
+
+    localStorage.setItem(CACHE_MIGRATION_KEY, TRANSLATION_CACHE_VERSION);
   }
 
-  function getLang() {
-    try { return localStorage.getItem(STORAGE_KEY) || DEFAULT_LANG; } 
-    catch(e) { return DEFAULT_LANG; }
-  }
+  function shouldSkipNode(node) {
+    const parent = node.parentElement;
 
-  function setLang(l) {
-    try { localStorage.setItem(STORAGE_KEY, l); } catch(e) {}
-  }
+    if (!parent) return true;
 
-  function ck(text, lang) { return 'i18n:' + CACHE_VER + ':' + lang + ':' + hash(text); }
+    if (
+      parent.closest(
+        "script, style, svg, code, pre, textarea, input, select, [data-no-translate]"
+      )
+    ) {
+      return true;
+    }
 
-  function gc(text, lang) {
-    try { return localStorage.getItem(ck(text, lang)); } catch(e) { return null; }
-  }
+    const text = node.nodeValue || "";
 
-  function sc(text, lang, trans) {
-    try { localStorage.setItem(ck(text, lang), trans); } catch(e) {}
-  }
+    if (!text.trim()) return true;
+    if (/^[\s\d.,:;!?()[\]{}'"`~@#$%^&*_+=/\\|-]+$/.test(text)) return true;
 
-  function isSkip(el) {
-    if (!el) return true;
-    var t = el.tagName;
-    // Skip these tags entirely
-    if (t === 'SCRIPT' || t === 'STYLE' || t === 'SVG' || t === 'TEXTAREA' || t === 'INPUT' || t === 'SELECT') return true;
-    // Skip elements marked with data-no-translate
-    if (el.closest && el.closest('[data-no-translate]')) return true;
     return false;
   }
 
   function getTextNodes() {
-    var r = [];
-    var w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
-      acceptNode: function(n) {
-        if (isSkip(n.parentElement)) return NodeFilter.FILTER_REJECT;
-        var txt = (n.nodeValue || '').trim();
-        if (!txt) return NodeFilter.FILTER_REJECT;
-        return NodeFilter.FILTER_ACCEPT;
+    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
+      acceptNode(node) {
+        return shouldSkipNode(node)
+          ? NodeFilter.FILTER_REJECT
+          : NodeFilter.FILTER_ACCEPT;
+      },
+    });
+
+    const nodes = [];
+    let current = walker.nextNode();
+
+    while (current) {
+      nodes.push(current);
+      current = walker.nextNode();
+    }
+
+    return nodes;
+  }
+
+  function rememberOriginalText(nodes) {
+    nodes.forEach((node) => {
+      if (!originalTextMap.has(node)) {
+        originalTextMap.set(node, node.nodeValue || "");
       }
     });
-    var n;
-    while (n = w.nextNode()) r.push(n);
-    return r;
   }
 
-  function getFixed(lang, text) {
-    if (FIXED[lang] && FIXED[lang][text]) return FIXED[lang][text];
-    return null;
-  }
+  function restoreOriginalText() {
+    getTextNodes().forEach((node) => {
+      const original = originalTextMap.get(node);
 
-  function applyNode(n, orig, trans) {
-    // Ensure trans is always a string
-    if (typeof trans !== 'string') {
-      if (trans && typeof trans === 'object') {
-        trans = JSON.stringify(trans);
-      } else {
-        trans = String(trans);
+      if (typeof original === "string") {
+        node.nodeValue = original;
       }
-    }
-    // Preserve whitespace: replace trimmed text while keeping leading/trailing whitespace
-    var lead = (orig.match(/^\s*/) || [''])[0];
-    var trail = (orig.match(/\s*$/) || [''])[0];
-    n.nodeValue = lead + trans + trail;
+    });
   }
 
-  function doTranslate() {
-    var lang = getLang();
-    if (lang === DEFAULT_LANG) {
-      // Restore all original text
-      var nodes = getTextNodes();
-      nodes.forEach(function(n) {
-        var txt = (n.nodeValue || '').trim();
-        var cached = gc(txt, DEFAULT_LANG);
-        if (cached) {
-          applyNode(n, n.nodeValue, cached);
-        }
+  function preserveWhitespace(original, translated) {
+    const start = original.match(/^\s*/)?.[0] || "";
+    const end = original.match(/\s*$/)?.[0] || "";
+
+    return `${start}${translated}${end}`;
+  }
+
+  function polishTranslation(language, source, translated) {
+    const trimmed = source.trim();
+    const override = phraseOverrides[language]?.[trimmed];
+
+    if (override) return override;
+
+    if (language === "zh-CN" && /^(\d+)\s+min read$/i.test(trimmed)) {
+      return `${trimmed.match(/^(\d+)/)?.[1] || "1"} 分钟阅读`;
+    }
+
+    if (language === "zh-TW" && /^(\d+)\s+min read$/i.test(trimmed)) {
+      return `${trimmed.match(/^(\d+)/)?.[1] || "1"} 分鐘閱讀`;
+    }
+
+    return translated;
+  }
+
+  function buildContextItems(entries) {
+    const context = [];
+    let totalChars = 0;
+
+    for (const entry of entries) {
+      const text = entry.trimmed;
+      const remaining = MAX_CONTEXT_CHARS - totalChars;
+
+      if (remaining <= 0) break;
+
+      const snippet = text.length > remaining ? text.slice(0, remaining) : text;
+      context.push(snippet);
+      totalChars += snippet.length;
+    }
+
+    return context;
+  }
+
+  function chunkEntries(entries) {
+    const chunks = [];
+    let current = [];
+    let currentChars = 0;
+
+    entries.forEach((entry) => {
+      const nextChars = entry.trimmed.length;
+
+      if (current.length && currentChars + nextChars > MAX_CHUNK_CHARS) {
+        chunks.push(current);
+        current = [];
+        currentChars = 0;
+      }
+
+      current.push(entry);
+      currentChars += nextChars;
+    });
+
+    if (current.length) {
+      chunks.push(current);
+    }
+
+    return chunks;
+  }
+
+  async function translateBatch(language, items, contextItems) {
+    const response = await fetch("/api/translate", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        targetLanguage: language,
+        targetLanguageName: languageNames[language] || language,
+        pageTitle: document.title || "",
+        pagePath: window.location.pathname || "/",
+        contextItems,
+        items,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Translation request failed");
+    }
+
+    const data = await response.json();
+
+    if (data.error) {
+      throw new Error(data.error);
+    }
+
+    const translations = Array.isArray(data.translations) ? data.translations : [];
+
+    if (translations.length !== items.length) {
+      throw new Error("Translation count mismatch");
+    }
+
+    return translations.map((translation, index) =>
+      polishTranslation(language, items[index] || "", translation || items[index] || "")
+    );
+  }
+
+  async function translateEntries(language, chunk, contextItems, cached) {
+    const items = chunk.map((entry) => entry.trimmed);
+
+    try {
+      const translations = await translateBatch(language, items, contextItems);
+
+      chunk.forEach((entry, index) => {
+        const translated = polishTranslation(
+          language,
+          entry.trimmed,
+          translations[index] || entry.trimmed
+        );
+        localStorage.setItem(entry.cacheKey, translated);
+        cached.set(entry.cacheKey, translated);
       });
+    } catch (error) {
+      if (chunk.length <= 1) {
+        return;
+      }
+
+      const midpoint = Math.ceil(chunk.length / 2);
+      await translateEntries(language, chunk.slice(0, midpoint), contextItems, cached);
+      await translateEntries(language, chunk.slice(midpoint), contextItems, cached);
+    }
+  }
+
+  async function translatePage(language) {
+    document.documentElement.lang = language;
+    document.documentElement.dataset.language = language;
+
+    const nodes = getTextNodes();
+    rememberOriginalText(nodes);
+
+    if (language === DEFAULT_LANGUAGE) {
+      restoreOriginalText();
       return;
     }
 
-    var nodes = getTextNodes();
-    var needApi = [];
+    const pagePathHash = hashText(window.location.pathname || "/");
+    const entries = nodes
+      .map((node) => {
+        const original = originalTextMap.get(node) || "";
+        const trimmed = original.trim();
+        const cacheKey = `translation:${TRANSLATION_CACHE_VERSION}:${language}:${pagePathHash}:${hashText(trimmed)}`;
 
-    // First pass: apply fixed phrases and cached translations
-    nodes.forEach(function(n) {
-      var orig = n.nodeValue || '';
-      var trim = orig.trim();
-      if (!trim) return;
-      
-      // Check fixed phrase override first
-      var fixed = getFixed(lang, trim);
-      if (fixed) {
-        applyNode(n, orig, fixed);
-        return;
+        return {
+          node,
+          original,
+          trimmed,
+          cacheKey,
+        };
+      })
+      .filter((entry) => entry.trimmed.length > 0);
+
+    const missing = [];
+    const cached = new Map();
+
+    entries.forEach((entry) => {
+      const value = localStorage.getItem(entry.cacheKey);
+
+      if (value) {
+        cached.set(entry.cacheKey, value);
+      } else {
+        missing.push(entry);
       }
-      
-      // Check cache
-      var cached = gc(trim, lang);
-      if (cached) {
-        applyNode(n, orig, cached);
-        return;
-      }
-      
-      // Mark for API translation
-      needApi.push({ node: n, orig: orig, trim: trim });
     });
 
-    // Second pass: translate uncached items via API
-    if (needApi.length === 0) return;
+    const contextItems = buildContextItems(entries);
 
-    var BATCH = 30;
-    
-    (function translateBatch(startIdx) {
-      if (startIdx >= needApi.length) return;
+    for (const chunk of chunkEntries(missing)) {
+      await translateEntries(language, chunk, contextItems, cached);
+    }
 
-      var endIdx = Math.min(startIdx + BATCH, needApi.length);
-      var batch = needApi.slice(startIdx, endIdx);
-      var texts = batch.map(function(item) { return item.trim; });
+    entries.forEach((entry) => {
+      const translated =
+        cached.get(entry.cacheKey) ||
+        polishTranslation(language, entry.trimmed, entry.trimmed);
+      entry.node.nodeValue = preserveWhitespace(entry.original, translated);
+    });
+  }
 
-      fetch(API, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          targetLanguage: lang,
-          targetLanguageName: LANG_NAMES[lang] || lang,
-          pagePath: location.pathname,
-          items: texts
-        })
-      }).then(function(r) {
-        if (!r.ok) return translateBatch(endIdx);
-        return r.json();
-      }).then(function(d) {
-        if (!d) return translateBatch(endIdx);
-        var trans = d.translations || texts;
-        
-        batch.forEach(function(item, i) {
-          var translated = trans[i];
-          // Ensure translated is always a string
-          if (typeof translated !== 'string') {
-            translated = item.trim; // Fall back to original if translation is invalid
-          }
-          sc(item.trim, lang, translated);
-          applyNode(item.node, item.orig, translated);
-        });
-        
-        // Continue with next batch
-        translateBatch(endIdx);
-      }).catch(function(e) {
-        console.error('[i18n] Error:', e);
-        translateBatch(endIdx);
+  function getLanguageSelects() {
+    return Array.from(
+      document.querySelectorAll(
+        "#language-select, #language-select-mobile, [data-language-select]"
+      )
+    );
+  }
+
+  function syncLanguageSelects(language) {
+    getLanguageSelects().forEach((select) => {
+      select.value = language;
+    });
+  }
+
+  function syncLanguageLabel(language) {
+    const label = document.getElementById("language-label");
+    const select = document.getElementById("language-select");
+    const translatedLabel =
+      languageLabelTranslations[language] || languageLabelTranslations.en;
+
+    if (label) {
+      label.textContent = translatedLabel;
+    }
+
+    if (select) {
+      select.setAttribute("aria-label", translatedLabel);
+    }
+  }
+
+  function formatQuoteSource(quote) {
+    return `${quote.author} · ${quote.source}`;
+  }
+
+  function polishQuote(language, quote) {
+    const byLanguage = curatedQuotes[language];
+
+    if (!byLanguage) {
+      return quote;
+    }
+
+    const curated = byLanguage[quote.quote];
+
+    if (curated) {
+      return curated;
+    }
+
+    if (
+      quote.quote === "障碍是道路。" ||
+      quote.quote === "障碍即道路。" ||
+      quote.quote === "The obstacle is the way."
+    ) {
+      return byLanguage["The obstacle is the way."] || quote;
+    }
+
+    return quote;
+  }
+
+  async function loadDailyQuote(language) {
+    const textEl = document.getElementById("daily-quote-text");
+    const sourceEl = document.getElementById("daily-quote-source");
+    const labelEl = document.getElementById("daily-quote-label");
+
+    if (!textEl || !sourceEl || !labelEl) return;
+
+    const today = new Date().toISOString().slice(0, 10);
+    const cacheKey = `daily-quote:${TRANSLATION_CACHE_VERSION}:${today}:${language}`;
+    const cached = localStorage.getItem(cacheKey);
+
+    if (cached) {
+      try {
+        const quote = polishQuote(language, JSON.parse(cached));
+        labelEl.textContent = quote.label || "Daily quote";
+        textEl.textContent = quote.quote;
+        sourceEl.textContent = formatQuoteSource(quote);
+        return;
+      } catch (error) {
+        localStorage.removeItem(cacheKey);
+      }
+    }
+
+    try {
+      const response = await fetch(
+        `/api/daily-quote?lang=${encodeURIComponent(language)}&name=${encodeURIComponent(languageNames[language] || language)}`
+      );
+
+      if (!response.ok) throw new Error("Quote request failed");
+
+      const quote = polishQuote(language, await response.json());
+
+      localStorage.setItem(cacheKey, JSON.stringify(quote));
+
+      labelEl.textContent = quote.label || "Daily quote";
+      textEl.textContent = quote.quote;
+      sourceEl.textContent = formatQuoteSource(quote);
+    } catch (error) {
+      const fallback = polishQuote(language, {
+        label: "Daily quote",
+        quote: "The obstacle is the way.",
+        author: "Marcus Aurelius",
+        source: "Meditations",
       });
-    })(0);
+
+      labelEl.textContent = fallback.label || "Daily quote";
+      textEl.textContent = fallback.quote;
+      sourceEl.textContent = formatQuoteSource(fallback);
+    }
   }
 
-  function syncUI(lang) {
-    var sels = document.querySelectorAll('#language-select, #language-select-mobile');
-    sels.forEach(function(s) { s.value = lang; });
-    var lbl = document.getElementById('language-label');
-    if (lbl) lbl.textContent = LABEL_NAMES[lang] || 'Language';
+  async function applyLanguage(language) {
+    syncLanguageSelects(language);
+    syncLanguageLabel(language);
+
+    setSavedLanguage(language);
+    await loadDailyQuote(language);
+    await translatePage(language);
   }
 
-  function init() {
-    var lang = getLang();
-    syncUI(lang);
-    
-    // Listen for language select changes
-    document.querySelectorAll('#language-select, #language-select-mobile').forEach(function(s) {
-      s.addEventListener('change', function(e) {
-        setLang(e.target.value);
-        syncUI(e.target.value);
-        doTranslate();
+  document.addEventListener("DOMContentLoaded", () => {
+    clearOldTranslationCache();
+
+    const language = getSavedLanguage();
+    const selects = getLanguageSelects();
+
+    syncLanguageSelects(language);
+    syncLanguageLabel(language);
+
+    selects.forEach((select) => {
+      select.addEventListener("change", async (event) => {
+        await applyLanguage(event.target.value);
       });
     });
-    
-    // Initial translation
-    doTranslate();
-  }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-  } else {
-    init();
-  }
+    applyLanguage(language);
+  });
 })();
