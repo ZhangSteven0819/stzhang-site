@@ -75,6 +75,8 @@ const { current = "" } = Astro.props;
     const overlay = document.getElementById('menu-overlay');
     const langMobile = document.getElementById('language-select-mobile');
     const langDesktop = document.getElementById('language-select');
+    const langTrigger = document.getElementById('language-trigger');
+    const langOptions = document.getElementById('language-options');
     
     function closeMenu() {
       menu.classList.remove('open');
@@ -107,6 +109,15 @@ const { current = "" } = Astro.props;
         if (!menu.contains(e.target) && !btn.contains(e.target)) {
           closeMenu();
         }
+      });
+    }
+    
+    // Language toggle
+    if (langTrigger && langOptions) {
+      langTrigger.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        langOptions.classList.toggle('show');
       });
     }
     

@@ -1103,6 +1103,11 @@ a:focus-visible,
 
 .language-options {
   padding: 0 16px 8px;
+  display: none;
+}
+
+.language-options.show {
+  display: block;
 }
 
 .language-select-mobile {
